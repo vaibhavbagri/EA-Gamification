@@ -1,0 +1,106 @@
+{
+  "project_info": {
+    "project_number": "763160624870",
+    "firebase_url": "https://scan-me-32626.firebaseio.com",
+    "project_id": "scan-me-32626",
+    "storage_bucket": "scan-me-32626.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:763160624870:android:a65ffc1d41a049e7dc4527",
+        "android_client_info": {
+          "package_name": "com.liminal.eagamification"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "763160624870-uvhui8kemn6cgea7nlgntpfgoumbjr2o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.liminal.eagamification",
+            "certificate_hash": "c718b5a688cfbd9dc7f1bbd74d7dad8bbb72a623"
+          }
+        },
+        {
+          "client_id": "763160624870-i2a8i88qa2ebh60m7jr543gtnq1agb19.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDybNsl-WrDUoPAykp7pCCuYZ914aeVXgY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "763160624870-vih1hav2ucb0posfluk0k2a2o0cvs9jp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:763160624870:android:2041c12895c14beadc4527",
+        "android_client_info": {
+          "package_name": "com.liminal.easy_augment_example"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "763160624870-i2a8i88qa2ebh60m7jr543gtnq1agb19.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDybNsl-WrDUoPAykp7pCCuYZ914aeVXgY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "763160624870-vih1hav2ucb0posfluk0k2a2o0cvs9jp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:763160624870:android:9fd6391088f2efdfdc4527",
+        "android_client_info": {
+          "package_name": "com.liminal.gamifyar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "763160624870-i2a8i88qa2ebh60m7jr543gtnq1agb19.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDybNsl-WrDUoPAykp7pCCuYZ914aeVXgY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "763160624870-vih1hav2ucb0posfluk0k2a2o0cvs9jp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
