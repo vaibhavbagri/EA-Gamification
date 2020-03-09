@@ -20,6 +20,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private GoogleSignInAccount account;
     private FirebaseAuth mAuth;
+    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         UserProfile userProfile = new UserProfile(account.getEmail(), account.getGivenName(), account.getFamilyName(), account.getPhotoUrl(), account.getId());
         addUserInFirebase(userProfile, isNewUser);
         setSharedPreferences(userProfile);
-        startActivity(new Intent(MainActivity.this, MenuActivity.class));
+        startActivity(new Intent(this, MenuActivity.class));
         finish();
     }
 
@@ -87,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
             try {
                 account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
-                updateUserProfile(true);
             }
             catch (ApiException e) {
                 Log.w("EAG_MAIN_ACTIVITY", "signInResult:failed code=" + e.getStatusCode());
@@ -101,17 +102,18 @@ public class MainActivity extends AppCompatActivity {
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
-                        Log.d("EAG_MAIN_ACTIVITY", "signInWithCredential:success");
-                        FirebaseUser user = mAuth.getCurrentUser();
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w("EAG_MAIN_ACTIVITY", "signInWithCredential:failure", task.getException());
-                    }
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("EAG_MAIN_ACTIVITY", "signInWithCredential:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            updateUserProfile(true);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("EAG_MAIN_ACTIVITY", "signInWithCredential:failure", task.getException());
+                        }
 
-                });
+                    });
     }
 
     private void addUserInFirebase(UserProfile userProfile, boolean isNewUser)
