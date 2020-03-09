@@ -3,14 +3,17 @@ package com.liminal.eagamification;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -83,8 +86,9 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Read data from firebase
-//                Log.d("EAG_", String.valueOf(dataSnapshot.getValue()));
-                updateUI((Long) dataSnapshot.child("rewardDetails").child("rewardPoints").getValue());
+                updateUserProfileLayout((Long) dataSnapshot.child("rewardDetails").child("rewardPoints").getValue(),
+                        (String) dataSnapshot.child("personalDetails").child("firstName").getValue(),
+                        (String) dataSnapshot.child("personalDetails").child("photoURL").getValue());
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -92,7 +96,6 @@ public class MenuActivity extends AppCompatActivity {
                 Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
             }
         };
-        Log.d("EAG_", sharedPreferences.getString("id",""));
         databaseReference.child(sharedPreferences.getString("id","")).addValueEventListener(eventListener);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -102,11 +105,21 @@ public class MenuActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
-    void updateUI(long rewardPoints)
+    void updateUserProfileLayout(long rewardPoints, String userName, String photoURL)
     {
+        // Update username
+        TextView userNameView = findViewById(R.id.userNameView);
+        userNameView.setText("Hello " + userName);
+
+        // Update reward points
         TextView rewardPointsView = findViewById(R.id.rewardPointsView);
         rewardPointsView.setText(String.valueOf(rewardPoints));
-        Log.d("EAG_FIREBASE_DB", "Reward Points : " + rewardPoints);
+
+        // Update profile picture
+        ImageView profilePictureView = findViewById(R.id.profilePictureview);
+        Glide.with(this).load(Uri.parse(photoURL)).into(profilePictureView);
+
+        Log.d("EAG_UPDATE_PROFILE", "Username : " + userName + " Reward Points : " + rewardPoints);
     }
 
     @Override
@@ -131,7 +144,6 @@ public class MenuActivity extends AppCompatActivity {
         FirebaseAuth.getInstance().signOut();
         mGoogleSignInClient.signOut()
                 .addOnCompleteListener(this, task -> {
-                    Toast.makeText(MenuActivity.this,"Successfully signed out",Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(MenuActivity.this, MainActivity.class));
                     finish();
                 });
