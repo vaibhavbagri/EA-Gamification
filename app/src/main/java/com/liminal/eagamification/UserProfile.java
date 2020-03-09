@@ -11,13 +11,11 @@ class UserProfile {
 
     // User details
     String ID;
-    int rewardPoints;
 
     public String email;
     public String firstName;
     public String lastName;
     public String photoURL;
-
 
     // Empty constructor needed for Firebase
     UserProfile()

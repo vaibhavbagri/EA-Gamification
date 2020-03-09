@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         if(account != null)
         {
             Log.d("EAG_MAIN_ACTIVTY","User logged in with account : " + account.getEmail());
-            updateUserProfile();
+            updateUserProfile(false);
         }
         else
         {
@@ -68,10 +68,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Function to update User details in firebase
-    private void updateUserProfile()
+    private void updateUserProfile(boolean isNewUser)
     {
         UserProfile userProfile = new UserProfile(account.getEmail(), account.getGivenName(), account.getFamilyName(), account.getPhotoUrl(), account.getId());
-        addUserInFirebase(userProfile);
+        addUserInFirebase(userProfile, isNewUser);
         setSharedPreferences(userProfile);
         startActivity(new Intent(MainActivity.this, MenuActivity.class));
         finish();
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
-                updateUserProfile();
+                updateUserProfile(true);
             }
             catch (ApiException e) {
                 Log.w("EAG_MAIN_ACTIVITY", "signInResult:failed code=" + e.getStatusCode());
@@ -114,16 +114,19 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    private void addUserInFirebase(UserProfile userProfile)
+    private void addUserInFirebase(UserProfile userProfile, boolean isNewUser)
     {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("User Profile Table");
-        databaseReference.child(userProfile.ID).setValue(userProfile);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("userProfileTable");
+        databaseReference.child(userProfile.ID).child("personalDetails").setValue(userProfile);
+        if(isNewUser)
+            databaseReference.child(userProfile.ID).child("rewardDetails").child("rewardPoints").setValue(0);
     }
 
     private void setSharedPreferences(UserProfile userProfile)
     {
         SharedPreferences sharedPreferences = getSharedPreferences("User_Details", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("id", userProfile.ID);
         editor.putString("first_name", userProfile.firstName);
         editor.putString("last_name", userProfile.lastName);
         editor.putString("photo_url", userProfile.photoURL);
