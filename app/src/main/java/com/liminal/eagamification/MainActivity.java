@@ -11,8 +11,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -40,7 +42,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        new Handler().postDelayed(this::authenticateUser, 1000);
+        ImageView loaderView = (ImageView) findViewById(R.id.loadingGifView);
+        Glide.with(this).asGif().load(R.drawable.loading_cube).into(loaderView);
+
+        new Handler().postDelayed(this::authenticateUser, 2000);
     }
 
     // Function to authenticate user using Google sign-in
