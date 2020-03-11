@@ -113,11 +113,11 @@ public class MenuActivity extends AppCompatActivity {
     {
         // Update username
         TextView userNameView = findViewById(R.id.userNameView);
-        userNameView.setText("Hello " + userName);
+        userNameView.setText("Hi " + userName + "!");
 
         // Update reward points
         TextView rewardPointsView = findViewById(R.id.rewardPointsView);
-        rewardPointsView.setText(String.valueOf(rewardPoints));
+        rewardPointsView.setText(String.valueOf(rewardPoints) + " ");
 
         // Update profile picture
         ImageView profilePictureView = findViewById(R.id.profilePictureview);
