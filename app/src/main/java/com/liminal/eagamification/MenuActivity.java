@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,17 +45,14 @@ import androidx.appcompat.widget.Toolbar;
 public class MenuActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-    private DatabaseReference databaseReference;
-    private SharedPreferences sharedPreferences;
     private GoogleSignInClient mGoogleSignInClient;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        sharedPreferences = getSharedPreferences("User_Details", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("User_Details", Context.MODE_PRIVATE);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
 
@@ -79,7 +77,7 @@ public class MenuActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("userProfileTable");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("userProfileTable");
 
         // Add a listener to update UI when User Profile is updated
         ValueEventListener eventListener = new ValueEventListener() {
@@ -103,6 +101,12 @@ public class MenuActivity extends AppCompatActivity {
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+//        EasyAugmentHelper easyAugmentHelper = new EasyAugmentHelper("101", this, MenuActivity.class.getName());
+//        easyAugmentHelper.loadMarkerImages();
+//
+//        Button button = findViewById(R.id.easy_augment_button);
+//        button.setOnClickListener(view -> easyAugmentHelper.activateScanner());
     }
 
     void updateUserProfileLayout(long rewardPoints, String userName, String photoURL)

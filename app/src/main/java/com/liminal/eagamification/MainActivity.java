@@ -1,4 +1,3 @@
-
 package com.liminal.eagamification;
 
 import androidx.annotation.NonNull;
@@ -32,17 +31,14 @@ import com.google.firebase.database.ValueEventListener;
 public class MainActivity extends AppCompatActivity {
 
     private int RC_SIGN_IN = 0;
-    private GoogleSignInClient mGoogleSignInClient;
     private GoogleSignInAccount account;
-    private FirebaseAuth mAuth;
-    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ImageView loaderView = (ImageView) findViewById(R.id.loadingGifView);
+        ImageView loaderView = findViewById(R.id.loadingGifView);
         Glide.with(this).asGif().load(R.drawable.loading_cube).into(loaderView);
 
         new Handler().postDelayed(this::authenticateUser, 2000);
@@ -67,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
                     .requestEmail()
                     .build();
 
-            mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-            mAuth = FirebaseAuth.getInstance();
+            GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
             Intent signInIntent = mGoogleSignInClient.getSignInIntent();
             startActivityForResult(signInIntent, RC_SIGN_IN);
         }
