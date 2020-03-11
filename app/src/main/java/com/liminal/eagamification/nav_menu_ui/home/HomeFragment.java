@@ -1,4 +1,4 @@
-package com.liminal.eagamification.ui.home;
+package com.liminal.eagamification.nav_menu_ui.home;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

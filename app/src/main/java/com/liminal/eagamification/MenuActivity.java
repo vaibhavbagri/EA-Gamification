@@ -69,7 +69,7 @@ public class MenuActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
+                R.id.nav_home, R.id.nav_feedback, R.id.nav_about_us)
                 .setDrawerLayout(drawer)
                 .build();
 
@@ -101,12 +101,6 @@ public class MenuActivity extends AppCompatActivity {
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-//        EasyAugmentHelper easyAugmentHelper = new EasyAugmentHelper("101", this, MenuActivity.class.getName());
-//        easyAugmentHelper.loadMarkerImages();
-//
-//        Button button = findViewById(R.id.easy_augment_button);
-//        button.setOnClickListener(view -> easyAugmentHelper.activateScanner());
     }
 
     void updateUserProfileLayout(long rewardPoints, String userName, String photoURL)

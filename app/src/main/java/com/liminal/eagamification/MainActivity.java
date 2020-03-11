@@ -115,8 +115,12 @@ public class MainActivity extends AppCompatActivity {
 
             }
             catch (ApiException e) {
-                Log.d("EAG_GOOGLE_AUTH", "SignInResult : failed code=" + e.getStatusCode());
-                Toast.makeText(MainActivity.this, "Sign-in failed", Toast.LENGTH_LONG).show();
+                if(e.getStatusCode() == 12501)
+                    Toast.makeText(MainActivity.this, "Please sign-in to continue", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(MainActivity.this, "Sign-in failed, please try again", Toast.LENGTH_SHORT).show();
+                authenticateUser();
+                Log.d("EAG_GOOGLE_AUTH", "SignInResult : failed code = " + e.getStatusCode());
             }
         }
     }
