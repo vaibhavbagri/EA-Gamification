@@ -31,7 +31,7 @@ class AugmentView {
     void createViewRenderable(Anchor anchor, int viewID) {
         Log.d("SCAN_ACTIVITY_VIEW","Creating view");
         // Fix width of view augmented to 0.1 meters
-        FixedWidthViewSizer viewSizer = new FixedWidthViewSizer(0.1f);
+        FixedWidthViewSizer viewSizer = new FixedWidthViewSizer(0.3f);
         ViewRenderable
                 .builder()
                 .setView(context, viewID)

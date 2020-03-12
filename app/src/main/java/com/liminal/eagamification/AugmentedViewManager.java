@@ -1,13 +1,11 @@
 package com.liminal.eagamification;
 
+import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -17,8 +15,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-
 class AugmentedViewManager {
     private View view;
     private Context context;
@@ -27,48 +23,55 @@ class AugmentedViewManager {
     {
         context = scannerContext;
         this.view = view;
+
         Button button = view.findViewById(R.id.button);
-        button.setOnClickListener(view1 -> popUpEditText());
-    }
+        button.setOnClickListener(dialog -> createPopUpDialog());
 
-    private void popUpEditText() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Comments");
+        TextView haikuContentView = view.findViewById(R.id.haikuContentView);
 
-        final EditText input = new EditText(context);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        input.setLayoutParams(lp);
-        builder.setView(input);
-
-        // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("haikuContent");
+        ValueEventListener eventListener = new ValueEventListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                // do something here on OK
-
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Read data from firebase
+                haikuContentView.setText(String.valueOf(dataSnapshot.child("haikuText").getValue()));
             }
-        });
-
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Read failed
+                Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
             }
-        });
-        builder.show();
+        };
+
+        databaseReference.addValueEventListener(eventListener);
 
     }
 
-    private void onViewInflated()
+    void createPopUpDialog()
     {
-        Button button = view.findViewById(R.id.button);
-        Intent intent = new Intent(context, RedirectWeb.class);
-        intent.putExtra("WEBSITE", "https://github.com/google-ar/sceneform-android-sdk/issues/989");
-        button.setOnClickListener(view -> context.startActivity(intent));
-        TextView textView = view.findViewById(R.id.textView);
+        // Dialog for taking text input
+        final Dialog inputTextDialog = new Dialog(context);
+        inputTextDialog.setContentView(R.layout.dialog_text_input);
 
+        Button cancelButton = inputTextDialog.findViewById(R.id.dialogInputTextCancelButton);
+        Button uploadButton = inputTextDialog.findViewById(R.id.dialogInputTextUploadButton);
+
+        EditText inputText = inputTextDialog.findViewById(R.id.dialogInputTextEditText);
+
+        cancelButton.setOnClickListener(view -> inputTextDialog.dismiss());
+        uploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uploadText(String.valueOf(inputText.getText()));
+                inputTextDialog.dismiss();
+            }
+        });
+
+        inputTextDialog.show();
+    }
+
+    private void uploadText(String text){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("haikuContent");
+        databaseReference.child("haikuText").setValue(text);
     }
 }

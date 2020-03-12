@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/bangers"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="Hi !"
+        android:text="@string/placeholder_greeting"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="24sp" />
 
@@ -55,6 +55,7 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_gravity="center_vertical"
+            android:layout_marginTop="4dp"
             android:layout_weight="1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -67,9 +68,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:fontFamily="@font/bangers"
-            android:text="0 "
+            android:text="@string/default_coin_value"
             android:textSize="30sp"
-            app:layout_constraintStart_toEndOf="@+id/rewardCoin" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/rewardCoin"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

@@ -1,5 +1,6 @@
 package com.liminal.eagamification.nav_menu_ui.home;
 
+import android.app.Dialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -32,8 +34,12 @@ public class HomeFragment extends Fragment {
         EasyAugmentHelper easyAugmentHelper = new EasyAugmentHelper("101", getActivity(), MenuActivity.class.getName());
         easyAugmentHelper.loadMarkerImages();
 
-        Button arButton = root.findViewById(R.id.easyAugmentButton);
-        Button uploadButton = root.findViewById(R.id.uploadButton);
+        CardView arButton = root.findViewById(R.id.AR);
+        CardView uploadButton = root.findViewById(R.id.Upload);
+
+
+//        Button arButton = root.findViewById(R.id.easyAugmentButton);
+//        Button uploadButton = root.findViewById(R.id.uploadButton);
 
         uploadButton.setOnClickListener(view -> chooseNewImage());
         arButton.setOnClickListener(view -> easyAugmentHelper.activateScanner());
@@ -47,6 +53,7 @@ public class HomeFragment extends Fragment {
         intent.setType("image/*");
         startActivityForResult(android.content.Intent.createChooser(intent, "Select target augmented image"),1);
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, android.content.Intent data) {
