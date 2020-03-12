@@ -42,7 +42,7 @@
         </activity>
         <activity android:name=".RedirectVideo" />
         <activity android:name=".RedirectWeb" />
-        <activity android:name=".ScanActivity" />
+        <activity android:name=".ScanActivity"/>
         <service
             android:name="MarkerDownloadService"
             android:permission="android.permission.BIND_JOB_SERVICE" />

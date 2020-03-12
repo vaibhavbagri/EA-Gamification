@@ -3,6 +3,7 @@ package com.liminal.eagamification;
 // Import statements
 import android.content.ComponentName;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +13,11 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.ProgressiveMediaSource;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.ar.core.AugmentedImage;
 import com.google.ar.core.Frame;
 import com.bumptech.glide.Glide;
@@ -51,6 +57,10 @@ public class ScanActivity extends AppCompatActivity {
 
     //Required for view augmentation
     private AugmentView augmentView;
+
+    //Required for playing audio
+    private SimpleExoPlayer player;
+    private boolean isPlaying = false;
 
     private final Map<AugmentedImage, AugmentedImageNode> augmentedImageMap = new HashMap<>();
 
@@ -99,6 +109,12 @@ public class ScanActivity extends AppCompatActivity {
             augmentVideo.setChangeIndexTrue();
             augmentVideo.isTracking = false;
             augmentView.isTracking = false;
+
+            //Stop playing audio when new marker detected
+            if(isPlaying) {
+                isPlaying = false;
+                player.setPlayWhenReady(false);
+            }
         }
         if(currentMarker == null) return;
 
@@ -155,6 +171,22 @@ public class ScanActivity extends AppCompatActivity {
                     case "5": //Augment View
                         Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting view : " + imageDetailsArrayList.get(currentMarker.getIndex()).redirect);
                         augmentFlag = 2;
+                        break;
+
+                    case "6": //Play Audio
+                        if(!isPlaying)
+                        {
+                            String url = imageDetailsArrayList.get(currentMarker.getIndex()).redirect;
+                            Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Playing audio : " + url);
+                            player = new SimpleExoPlayer.Builder(this).build();
+                            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this, "EasyAugment");
+                            Uri uri = Uri.parse(url);
+                            MediaSource mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
+                            player.prepare(mediaSource, false, false);
+                            player.setPlayWhenReady(true);
+                            isPlaying = true;
+                        }
+                        break;
                 }
                 break;
 
