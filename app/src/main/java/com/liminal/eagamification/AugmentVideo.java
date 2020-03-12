@@ -22,6 +22,7 @@ class AugmentVideo {
     private ModelRenderable renderable;
     private SimpleExoPlayer player;
     private DataSource.Factory dataSourceFactory;
+    private AnchorNode anchorNode;
     private boolean changeIndex = false;
     boolean isTracking = false;
 
@@ -59,7 +60,7 @@ class AugmentVideo {
     void playVideo(Anchor anchor, float extentX, float extentZ, Scene scene) {
         player.setPlayWhenReady(true);
 
-        AnchorNode anchorNode = new AnchorNode(anchor);
+        anchorNode = new AnchorNode(anchor);
 
         texture.getSurfaceTexture().setOnFrameAvailableListener(surfaceTexture -> {
             anchorNode.setRenderable(renderable);
@@ -80,5 +81,13 @@ class AugmentVideo {
 
     void setChangeIndexTrue(){
         changeIndex = true;
+    }
+
+    void release(Scene scene) {
+        player.release();
+        scene.removeChild(anchorNode);
+        anchorNode.getAnchor().detach();
+        anchorNode.setParent(null);
+        anchorNode = null;
     }
 }

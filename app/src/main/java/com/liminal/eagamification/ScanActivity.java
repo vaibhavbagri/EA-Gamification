@@ -83,6 +83,9 @@ public class ScanActivity extends AppCompatActivity {
         //Initialize Augment Video player
         augmentVideo = new AugmentVideo();
 
+        //Initialize audio player
+        player = new SimpleExoPlayer.Builder(this).build();
+
         augmentView = new AugmentView(arFragment,this);
 
         if (arFragment != null) {
@@ -101,21 +104,37 @@ public class ScanActivity extends AppCompatActivity {
         AugmentedImage newMarker = detectMarker(frame);
 
         // If a New marker is detected update the current marker
-        if(newMarker !=  null && newMarker != currentMarker)
+        if(newMarker !=  null)
         {
-            currentMarker = newMarker;
+            if(currentMarker == null)
+                currentMarker = newMarker;
 
-            //prepare for change in video playing on marker
-            augmentVideo.setChangeIndexTrue();
-            augmentVideo.isTracking = false;
-            augmentView.isTracking = false;
+            else if(newMarker.getIndex() != currentMarker.getIndex()) {
 
-            //Stop playing audio when new marker detected
-            if(isPlaying) {
-                isPlaying = false;
-                player.setPlayWhenReady(false);
+                currentMarker = newMarker;
+
+                //Stop video being played on previous marker
+                if(augmentVideo.isTracking)
+                {
+                    augmentVideo.setChangeIndexTrue();
+                    augmentVideo.isTracking = false;
+                    augmentVideo.release(scene);
+                }
+                //Remove view augmented on previous marker
+                if(augmentView.isTracking)
+                {
+                    augmentView.isTracking = false;
+                    augmentView.release(scene);
+                }
+
+                //Stop playing audio when new marker detected
+                if (isPlaying) {
+                    isPlaying = false;
+                    player.release();
+                }
             }
         }
+
         if(currentMarker == null) return;
 
         // Work with the marker that is currently in frame
@@ -178,7 +197,6 @@ public class ScanActivity extends AppCompatActivity {
                         {
                             String url = imageDetailsArrayList.get(currentMarker.getIndex()).redirect;
                             Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Playing audio : " + url);
-                            player = new SimpleExoPlayer.Builder(this).build();
                             DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this, "EasyAugment");
                             Uri uri = Uri.parse(url);
                             MediaSource mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
@@ -295,6 +313,10 @@ public class ScanActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        if(player!=null)
+            player.release();
+        player = null;
+        Log.d("SCAN_ACTIVITY_STOP", "JUST STOP IT PLEASE");
         // Destroy the scanner activity once an image is found
         finish();
     }

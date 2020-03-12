@@ -7,6 +7,7 @@ import android.widget.Button;
 
 import com.google.ar.core.Anchor;
 import com.google.ar.sceneform.AnchorNode;
+import com.google.ar.sceneform.Scene;
 import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.FixedWidthViewSizer;
@@ -19,6 +20,7 @@ class AugmentView {
     boolean isTracking = false;
     private ArFragment arFragment;
     private Context context;
+    private AnchorNode anchorNode;
 
     AugmentView(ArFragment arFragment, Context context)
     {
@@ -45,12 +47,19 @@ class AugmentView {
     // Add View Renderable to AR Scene
     private void addtoScene(ViewRenderable viewRenderable, Anchor anchor) {
         Log.d("SCAN_ACTIVITY_VIEW","Adding anchor");
-        AnchorNode anchorNode = new AnchorNode(anchor);
+        anchorNode = new AnchorNode(anchor);
         TransformableNode node = new TransformableNode(arFragment.getTransformationSystem());
         // Rotate node by -90 degrees on x axis
         node.setLocalRotation(Quaternion.axisAngle(new Vector3(1f, 0, 0), -90));
         node.setParent(anchorNode);
         node.setRenderable(viewRenderable);
         arFragment.getArSceneView().getScene().addChild(anchorNode);
+    }
+
+    void release(Scene scene) {
+        scene.removeChild(anchorNode);
+        anchorNode.getAnchor().detach();
+        anchorNode.setParent(null);
+        anchorNode = null;
     }
 }
