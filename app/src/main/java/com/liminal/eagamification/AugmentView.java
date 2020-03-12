@@ -38,6 +38,7 @@ class AugmentView {
                     viewRenderable.setSizer(viewSizer);
                     viewRenderable.setVerticalAlignment(ViewRenderable.VerticalAlignment.CENTER);
                     addtoScene(viewRenderable,anchor);
+                    AugmentedViewManager augmentedViewManager = new AugmentedViewManager(viewRenderable.getView(), context);
                 });
     }
 
