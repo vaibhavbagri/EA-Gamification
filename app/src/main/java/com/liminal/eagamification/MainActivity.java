@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         ImageView loaderView = findViewById(R.id.loadingGifView);
         Glide.with(this).asGif().load(R.drawable.loading_cube).into(loaderView);
 
-        new Handler().postDelayed(this::authenticateUser, 2000);
+        new Handler().postDelayed(this::authenticateUser, 2180);
     }
 
     // Function to authenticate user using Google sign-in
