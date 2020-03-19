@@ -27,8 +27,7 @@ import com.google.ar.sceneform.Scene;
 import com.google.ar.sceneform.ux.ArFragment;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Objects;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
@@ -53,16 +52,18 @@ public class ScanActivity extends AppCompatActivity {
     private TextView loadingText;
 
     //Augmentation flag: 0 - 3D model , 1 - video , 2 - view
-    private int augmentFlag;
+    private String augmentFlag;
 
     //Required for view augmentation
     private AugmentView augmentView;
 
     //Required for playing audio
     private SimpleExoPlayer player;
-    private boolean isPlaying = false;
+    private boolean isAudioPlaying = false;
 
-    private final Map<AugmentedImage, AugmentedImageNode> augmentedImageMap = new HashMap<>();
+    //Required for augmenting 3D model
+    private boolean isAugmenting = false;
+    private AugmentedImageNode node;
 
 
     @Override
@@ -81,7 +82,7 @@ public class ScanActivity extends AppCompatActivity {
         scannerView = findViewById(R.id.scanner_view);
 
         //Initialize Augment Video player
-        augmentVideo = new AugmentVideo();
+        augmentVideo = new AugmentVideo(this);
 
         //Initialize audio player
         player = new SimpleExoPlayer.Builder(this).build();
@@ -116,7 +117,6 @@ public class ScanActivity extends AppCompatActivity {
                 //Stop video being played on previous marker
                 if(augmentVideo.isTracking)
                 {
-                    augmentVideo.setChangeIndexTrue();
                     augmentVideo.isTracking = false;
                     augmentVideo.release(scene);
                 }
@@ -128,9 +128,20 @@ public class ScanActivity extends AppCompatActivity {
                 }
 
                 //Stop playing audio when new marker detected
-                if (isPlaying) {
-                    isPlaying = false;
+                if (isAudioPlaying) {
+                    isAudioPlaying = false;
                     player.release();
+                }
+
+                //Remove 3D model when new marker detected
+                if (isAugmenting) {
+                    isAugmenting = false;
+                    delete_model();
+                }
+
+                //If new marker has been tracked before, re initialize its necessary variables
+                if(newMarker.getTrackingState() == TrackingState.TRACKING){
+                    augmentFlag = imageDetailsArrayList.get(currentMarker.getIndex()).redirectTo;
                 }
             }
         }
@@ -177,23 +188,22 @@ public class ScanActivity extends AppCompatActivity {
 
                     case "3": // Augment Model
                         Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting model : " + imageDetailsArrayList.get(currentMarker.getIndex()).redirect);
-                        augmentFlag = 0;
+                        augmentFlag = "3";
                         break;
 
                     case "4": // Augment Video
                         Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting video : " + imageDetailsArrayList.get(currentMarker.getIndex()).redirect);
-                        augmentVideo.videoAugment(imageDetailsArrayList.get(currentMarker.getIndex()).redirect,this);
-                        Log.d("SCAN_ACTIVITY_VIDEO","Video Player Initialized");
-                        augmentFlag = 1;
+//                        augmentVideo.videoAugment(imageDetailsArrayList.get(currentMarker.getIndex()).redirect,this);
+                        augmentFlag = "4";
                         break;
 
                     case "5": //Augment View
                         Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Augmenting view : " + imageDetailsArrayList.get(currentMarker.getIndex()).redirect);
-                        augmentFlag = 2;
+                        augmentFlag = "5";
                         break;
 
                     case "6": //Play Audio
-                        if(!isPlaying)
+                        if(!isAudioPlaying)
                         {
                             String url = imageDetailsArrayList.get(currentMarker.getIndex()).redirect;
                             Log.d("SCAN_ACTIVITY_REDIRECT_TO", "Playing audio : " + url);
@@ -202,7 +212,7 @@ public class ScanActivity extends AppCompatActivity {
                             MediaSource mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
                             player.prepare(mediaSource, false, false);
                             player.setPlayWhenReady(true);
-                            isPlaying = true;
+                            isAudioPlaying = true;
                         }
                         break;
                 }
@@ -231,26 +241,28 @@ public class ScanActivity extends AppCompatActivity {
 
                 switch (augmentFlag)
                 {
-                    case 0: //Augment Model
-                        if (!augmentedImageMap.containsKey(currentMarker))
+                    case "3": //Augment Model
+                        if(!isAugmenting)
                         {
-                            AugmentedImageNode node = new AugmentedImageNode(this, imageDetailsArrayList.get(currentMarker.getIndex()).redirect);
+                            node = new AugmentedImageNode(this, imageDetailsArrayList.get(currentMarker.getIndex()).redirect,arFragment);
                             node.setImage(currentMarker);
-                            augmentedImageMap.put(currentMarker, node);
                             scene.addChild(node);
+                            Log.d("SCAN_ACTIVITY_MODEL", "Model augmented");
+                            isAugmenting = true;
                         }
                         break;
 
-                    case 1: //Augment Video
+                    case "4": //Augment Video
                         if(!augmentVideo.isTracking)
                         {
+                            augmentVideo.videoAugment(imageDetailsArrayList.get(currentMarker.getIndex()).redirect,this);
                             augmentVideo.playVideo(currentMarker.createAnchor(currentMarker.getCenterPose()), currentMarker.getExtentX(), currentMarker.getExtentZ(), scene);
                             Log.d("SCAN_ACTIVITY_VIDEO", "Video is playing");
                             augmentVideo.isTracking = true;
                         }
                         break;
 
-                    case 2: //Augment View
+                    case "5": //Augment View
                         if(!augmentView.isTracking)
                         {
                             //Get view ID of layout to be rendered
@@ -265,15 +277,22 @@ public class ScanActivity extends AppCompatActivity {
 
             case STOPPED: // Image Marker is not present in camera frame
                 Log.d("SCAN_ACTIVITY_TRACKING_STATE", "tracking state : STOPPED");
-                augmentedImageMap.remove(currentMarker);
+//                augmentedImageMap.remove(currentMarker);
                 break;
         }
+    }
+
+    private void delete_model() {
+        scene.removeChild(node);
+        Objects.requireNonNull(node.getAnchor()).detach();
+        node.setParent(null);
+        node = null;
     }
 
     // Function to detect markers
     private AugmentedImage detectMarker(Frame frame) {
         for (AugmentedImage augmentedImage : frame.getUpdatedTrackables(AugmentedImage.class)) {
-            if (augmentedImage.getTrackingState() == TrackingState.PAUSED)
+            if (augmentedImage.getTrackingState() == TrackingState.PAUSED || augmentedImage.getTrackingMethod() == AugmentedImage.TrackingMethod.FULL_TRACKING)
             {
                 Log.d("SCAN_ACTIVITY_DETECT", String.valueOf(augmentedImage.getIndex()));
                 return augmentedImage;
@@ -303,11 +322,17 @@ public class ScanActivity extends AppCompatActivity {
         loadingText.setText(text);
     }
 
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        if (augmentedImageMap.isEmpty())
+//            scannerView.setVisibility(View.VISIBLE);
+//    }
+
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (augmentedImageMap.isEmpty())
-            scannerView.setVisibility(View.VISIBLE);
+    protected void onPause() {
+        super.onPause();
+        onStop();
     }
 
     @Override

@@ -1,9 +1,7 @@
 package com.liminal.eagamification;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
-import android.widget.Button;
 
 import com.google.ar.core.Anchor;
 import com.google.ar.sceneform.AnchorNode;
@@ -13,7 +11,11 @@ import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.FixedWidthViewSizer;
 import com.google.ar.sceneform.rendering.ViewRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
+import com.google.ar.sceneform.ux.BaseTransformableNode;
+import com.google.ar.sceneform.ux.SelectionVisualizer;
 import com.google.ar.sceneform.ux.TransformableNode;
+
+import java.util.Objects;
 
 class AugmentView {
 
@@ -40,7 +42,7 @@ class AugmentView {
                     viewRenderable.setSizer(viewSizer);
                     viewRenderable.setVerticalAlignment(ViewRenderable.VerticalAlignment.CENTER);
                     addtoScene(viewRenderable,anchor);
-                    AugmentedViewManager augmentedViewManager = new AugmentedViewManager(viewRenderable.getView(), context);
+                    new AugmentedViewManager(viewRenderable.getView(), context);
                 });
     }
 
@@ -53,12 +55,16 @@ class AugmentView {
         node.setLocalRotation(Quaternion.axisAngle(new Vector3(1f, 0, 0), -90));
         node.setParent(anchorNode);
         node.setRenderable(viewRenderable);
+        node.getTranslationController().setEnabled(false);
+        node.getRotationController().setEnabled(false);
+        node.getScaleController().setEnabled(false);
+        arFragment.getTransformationSystem().setSelectionVisualizer(new BaseSelectionVisualizer());
         arFragment.getArSceneView().getScene().addChild(anchorNode);
     }
 
     void release(Scene scene) {
         scene.removeChild(anchorNode);
-        anchorNode.getAnchor().detach();
+        Objects.requireNonNull(anchorNode.getAnchor()).detach();
         anchorNode.setParent(null);
         anchorNode = null;
     }

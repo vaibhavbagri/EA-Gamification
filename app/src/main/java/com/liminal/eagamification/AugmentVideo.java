@@ -16,50 +16,48 @@ import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ExternalTexture;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 
-class AugmentVideo {
+import java.util.Objects;
+
+class AugmentVideo{
 
     private ExternalTexture texture;
     private ModelRenderable renderable;
     private SimpleExoPlayer player;
-    private DataSource.Factory dataSourceFactory;
     private AnchorNode anchorNode;
-    private boolean changeIndex = false;
     boolean isTracking = false;
 
+    AugmentVideo(Context context){
+        texture = new ExternalTexture();
+        player = new SimpleExoPlayer.Builder(context).build();
+    }
+
     void videoAugment(String url, Context context){
-        if(player == null)
-        {
-            //Initialize player
-            texture = new ExternalTexture();
-            player = new SimpleExoPlayer.Builder(context).build();
-            dataSourceFactory = new DefaultDataSourceFactory(context, "EasyAugment");
-            changeVideo(url,dataSourceFactory);
-            player.setVideoSurface(texture.getSurface());
-            player.setRepeatMode(Player.REPEAT_MODE_ALL);
-            player.setPlayWhenReady(false);
+        //Initialize player
+        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(context, "EasyAugment");
+        Uri uri = Uri.parse(url);
+        MediaSource mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
+        player.prepare(mediaSource, false, false);
+        player.setVideoSurface(texture.getSurface());
+        player.setRepeatMode(Player.REPEAT_MODE_ALL);
+        player.setPlayWhenReady(false);
 
-            //Initialize plane to be augmented
-            ModelRenderable
-                    .builder()
-                    .setSource(context, R.raw.augmented_video_model)
-                    .build()
-                    .thenAccept(modelRenderable -> {
-                        modelRenderable.getMaterial().setExternalTexture("videoTexture",
-                                texture);
+        //Initialize plane to be augmented
+        ModelRenderable
+                .builder()
+                .setSource(context, R.raw.augmented_video_model)
+                .build()
+                .thenAccept(modelRenderable -> {
+                    modelRenderable.getMaterial().setExternalTexture("videoTexture",
+                            texture);
 
-                        renderable = modelRenderable;
-                        renderable.setShadowCaster(false);
-                        renderable.setShadowReceiver(false);
-                    });
-        }
-        if(changeIndex)
-            changeVideo(url,dataSourceFactory);
+                    renderable = modelRenderable;
+                    renderable.setShadowCaster(false);
+                    renderable.setShadowReceiver(false);
+                });
     }
 
     // Place plane over marker and set it as video augmentation surface
     void playVideo(Anchor anchor, float extentX, float extentZ, Scene scene) {
-        player.setPlayWhenReady(true);
-
         anchorNode = new AnchorNode(anchor);
 
         texture.getSurfaceTexture().setOnFrameAvailableListener(surfaceTexture -> {
@@ -69,24 +67,14 @@ class AugmentVideo {
 
         anchorNode.setWorldScale(new Vector3(extentX, 1f, extentZ));
         scene.addChild(anchorNode);
-    }
-
-    // Change video being played over augmented plane
-    private void changeVideo(String url, DataSource.Factory dataSourceFactory) {
-        Uri uri = Uri.parse(url);
-        MediaSource mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
-        player.prepare(mediaSource, false, false);
-        changeIndex = false;
-    }
-
-    void setChangeIndexTrue(){
-        changeIndex = true;
+        player.setPlayWhenReady(true);
     }
 
     void release(Scene scene) {
         player.release();
+        player = null;
         scene.removeChild(anchorNode);
-        anchorNode.getAnchor().detach();
+        Objects.requireNonNull(anchorNode.getAnchor()).detach();
         anchorNode.setParent(null);
         anchorNode = null;
     }
