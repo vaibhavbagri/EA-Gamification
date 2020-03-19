@@ -8,12 +8,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -31,18 +34,31 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
+        ImageView loaderView = root.findViewById(R.id.menuAdvertisementImageView);
+        Glide.with(this).asGif().load(R.drawable.scenery).into(loaderView);
+
         EasyAugmentHelper easyAugmentHelper = new EasyAugmentHelper("101", getActivity(), MenuActivity.class.getName());
         easyAugmentHelper.loadMarkerImages();
 
-        CardView arButton = root.findViewById(R.id.AR);
-        CardView uploadButton = root.findViewById(R.id.Upload);
+//        CardView arButton = root.findViewById(R.id.AR);
+//        CardView uploadButton = root.findViewById(R.id.Upload);
 
 
-//        Button arButton = root.findViewById(R.id.easyAugmentButton);
+        Button arButton = root.findViewById(R.id.gameStartButton1);
 //        Button uploadButton = root.findViewById(R.id.uploadButton);
 
-        uploadButton.setOnClickListener(view -> chooseNewImage());
-        arButton.setOnClickListener(view -> easyAugmentHelper.activateScanner());
+//        uploadButton.setOnClickListener(view -> chooseNewImage());
+
+
+        arButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlphaAnimation buttonClick = new AlphaAnimation(1f, 0.5f);
+                buttonClick.setDuration(200);
+                v.startAnimation(buttonClick);
+                easyAugmentHelper.activateScanner();
+            }
+        });
 
         return root;
     }
