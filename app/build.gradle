@@ -8,10 +8,14 @@ android {
 
     defaultConfig {
         applicationId "com.liminal.eagamification"
-        minSdkVersion 24
+        minSdkVersion 26
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
+
+        ndk {
+            abiFilters 'armeabi-v7a'
+        }
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -56,6 +60,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
+    implementation project(path: ':unityLibrary')
 }
 
 sceneform.asset('sampledata/models/Astronaut.obj',
