@@ -35,6 +35,7 @@ public class AugmentedImageFragment extends ArFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        Log.d(TAG,"On attach");
         // Sceneform support check
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N)
             Log.e(TAG, "Sceneform requires Android N or later");
@@ -52,11 +53,13 @@ public class AugmentedImageFragment extends ArFragment {
         getArSceneView().setLightEstimationEnabled(false);
         getArSceneView().getPlaneRenderer().setEnabled(false);
         getArSceneView().setLightEstimationEnabled(false);
+        Log.d(TAG,"On create view");
         return view;
     }
 
     @Override
     protected Config getSessionConfiguration(Session session) {
+        Log.d(TAG,"Get session configuration");
         Config config = super.getSessionConfiguration(session);
         config.setFocusMode(Config.FocusMode.AUTO);
         config.setLightEstimationMode(Config.LightEstimationMode.DISABLED);
@@ -66,7 +69,7 @@ public class AugmentedImageFragment extends ArFragment {
         return config;
     }
 
-    private boolean setupAugmentedImageDatabase(Config config, Session session) {
+    protected boolean setupAugmentedImageDatabase(Config config, Session session) {
         // Create Augmented image database and add the reference image to it
         AugmentedImageDatabase augmentedImageDatabase = new AugmentedImageDatabase(session);
 

@@ -33,7 +33,7 @@ import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOption
 
 public class ScanActivity extends AppCompatActivity {
 
-    private ArFragment arFragment;
+    private AugmentedImageFragment arFragment;
     private ImageView scannerView;
 
     private Scene scene;
@@ -66,6 +66,7 @@ public class ScanActivity extends AppCompatActivity {
     private AugmentedImageNode node;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +79,7 @@ public class ScanActivity extends AppCompatActivity {
         imageDetailsArrayList = DBManager.getDownloadedFromImageDetails();
 
         // Load Augmented Image Fragment
-        arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
+        arFragment = (AugmentedImageFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
         scannerView = findViewById(R.id.scanner_view);
 
         //Initialize Augment Video player
@@ -88,6 +89,7 @@ public class ScanActivity extends AppCompatActivity {
         player = new SimpleExoPlayer.Builder(this).build();
 
         augmentView = new AugmentView(arFragment,this);
+
 
         if (arFragment != null) {
             scene = arFragment.getArSceneView().getScene();

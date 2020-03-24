@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -30,6 +31,7 @@ import com.liminal.eagamification.R;
 import com.unity3d.player.UnityPlayerActivity;
 
 import java.io.File;
+import java.util.Objects;
 
 public class HomeFragment extends Fragment {
 
@@ -40,7 +42,7 @@ public class HomeFragment extends Fragment {
         ImageView loaderView = root.findViewById(R.id.menuAdvertisementImageView);
         Glide.with(this).asGif().load(R.drawable.scenery).into(loaderView);
 
-        EasyAugmentHelper easyAugmentHelper = new EasyAugmentHelper("101", getActivity(), MenuActivity.class.getName());
+        EasyAugmentHelper easyAugmentHelper = new EasyAugmentHelper("101", Objects.requireNonNull(getActivity()), MenuActivity.class.getName());
         easyAugmentHelper.loadMarkerImages();
 
         Button haikuButton = root.findViewById(R.id.gameStartButton1);
@@ -50,6 +52,7 @@ public class HomeFragment extends Fragment {
             AlphaAnimation buttonClick = new AlphaAnimation(1f, 0.5f);
             buttonClick.setDuration(100);
             v.startAnimation(buttonClick);
+            Toast.makeText(getContext(), "Database is setting up, please wait.", Toast.LENGTH_SHORT).show();
             new Handler().postDelayed(easyAugmentHelper::activateScanner,100);
         });
 

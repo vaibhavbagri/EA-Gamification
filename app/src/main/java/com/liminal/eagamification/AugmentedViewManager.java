@@ -15,14 +15,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
+
 class AugmentedViewManager {
-    private View view;
     private Context context;
 
     AugmentedViewManager(View view, Context scannerContext)
     {
         context = scannerContext;
-        this.view = view;
 
         Button button = view.findViewById(R.id.button);
         button.setOnClickListener(dialog -> createPopUpDialog());
@@ -47,7 +46,7 @@ class AugmentedViewManager {
 
     }
 
-    void createPopUpDialog()
+    private void createPopUpDialog()
     {
         // Dialog for taking text input
         final Dialog inputTextDialog = new Dialog(context);
@@ -59,12 +58,9 @@ class AugmentedViewManager {
         EditText inputText = inputTextDialog.findViewById(R.id.dialogInputTextEditText);
 
         cancelButton.setOnClickListener(view -> inputTextDialog.dismiss());
-        uploadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                uploadText(String.valueOf(inputText.getText()));
-                inputTextDialog.dismiss();
-            }
+        uploadButton.setOnClickListener(v -> {
+            uploadText(String.valueOf(inputText.getText()));
+            inputTextDialog.dismiss();
         });
 
         inputTextDialog.show();
