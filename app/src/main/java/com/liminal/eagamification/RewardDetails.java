@@ -2,13 +2,15 @@ package com.liminal.eagamification;
 
 class RewardDetails {
     private String rid;
+    private String adminID;
     private String title;
     private String description;
     private long cost;
     private long quantity;
 
-    RewardDetails(String rid, String title, String description, long cost, long quantity){
+    RewardDetails(String rid, String adminID, String title, String description, long cost, long quantity){
         this.rid = rid;
+        this.adminID = adminID;
         this.title = title;
         this.description = description;
         this.cost = cost;
@@ -17,6 +19,10 @@ class RewardDetails {
 
     String getRid(){
         return rid;
+    }
+
+    String getAdminID() {
+        return adminID;
     }
 
     String getTitle() {

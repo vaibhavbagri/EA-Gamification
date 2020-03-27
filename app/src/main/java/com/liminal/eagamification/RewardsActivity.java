@@ -2,9 +2,11 @@ package com.liminal.eagamification;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
@@ -14,6 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -36,7 +39,10 @@ public class RewardsActivity extends AppCompatActivity {
     private List<RewardDetails> rewardDetailsList = new ArrayList<>();
     private RewardsAdapter rewardsAdapter;
     private DatabaseReference databaseReference;
+    private DatabaseReference userRewardsReference;
     private long rewardPoints;
+    private static final int QRCODE_CAPTURE = 9001;
+    private RewardDetails claimedReward;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +60,7 @@ public class RewardsActivity extends AppCompatActivity {
         recyclerView.setAdapter(rewardsAdapter);
 
         SharedPreferences sharedPreferences = getSharedPreferences("User_Details", Context.MODE_PRIVATE);
-        DatabaseReference userRewardsReference = FirebaseDatabase.getInstance().getReference()
+        userRewardsReference = FirebaseDatabase.getInstance().getReference()
                 .child("userProfileTable")
                 .child(sharedPreferences.getString("id",""))
                 .child("rewardDetails");
@@ -99,15 +105,17 @@ public class RewardsActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Sorry you have insufficient coins!", Toast.LENGTH_SHORT).show();
                     else
                     {
-                        userRewardsReference.child("rewardPoints").setValue(rewardPoints - rewardDetails.getCost());
-                        databaseReference.child(rewardDetails.getRid()).child("quantity").setValue(rewardDetails.getQuantity()-1);
+//                        userRewardsReference.child("rewardPoints").setValue(rewardPoints - rewardDetails.getCost());
+//                        databaseReference.child(rewardDetails.getRid()).child("quantity").setValue(rewardDetails.getQuantity()-1);
+                        claimedReward = rewardDetails;
+                        Intent intent = new Intent(RewardsActivity.this, QRScannerActivity.class);
+                        intent.putExtra("adminID",rewardDetails.getAdminID());
+                        startActivityForResult(intent,QRCODE_CAPTURE);
                     }
                     inputTextDialog.dismiss();
                 });
 
                 inputTextDialog.show();
-
-//                Toast.makeText(getApplicationContext(), rewardDetails.getTitle() + " is selected!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -124,11 +132,12 @@ public class RewardsActivity extends AppCompatActivity {
                 rewardDetailsList.clear();
                 for (DataSnapshot reward : dataSnapshot.getChildren()) {
                     String rid = reward.getKey();
+                    String adminID = Objects.requireNonNull(reward.child("adminID").getValue()).toString();
                     String title = Objects.requireNonNull(reward.child("title").getValue()).toString();
                     String description = Objects.requireNonNull(reward.child("description").getValue()).toString();
                     long cost = (long) reward.child("cost").getValue();
                     long quantity = (long) reward.child("quantity").getValue();
-                    RewardDetails rewardDetails = new RewardDetails(rid, title, description, cost, quantity);
+                    RewardDetails rewardDetails = new RewardDetails(rid, adminID, title, description, cost, quantity);
                     rewardDetailsList.add(rewardDetails);
                     assert rid != null;
                     Log.d("Rewards_Activity", rid);
@@ -145,5 +154,20 @@ public class RewardsActivity extends AppCompatActivity {
 
         databaseReference.addValueEventListener(eventListener);
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == QRCODE_CAPTURE){
+            if(resultCode == CommonStatusCodes.SUCCESS){
+                userRewardsReference.child("rewardPoints").setValue(rewardPoints - claimedReward.getCost());
+                databaseReference.child(claimedReward.getRid()).child("quantity").setValue(claimedReward.getQuantity()-1);
+                Toast.makeText(RewardsActivity.this,"CORRECT QR CODE",Toast.LENGTH_SHORT).show();
+            }
+            else
+                Toast.makeText(RewardsActivity.this,"INCORRECT QR CODE",Toast.LENGTH_SHORT).show();
+        }
+        else
+            super.onActivityResult(requestCode, resultCode, data);
     }
 }
