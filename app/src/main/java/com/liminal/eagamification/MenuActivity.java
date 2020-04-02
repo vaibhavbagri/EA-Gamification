@@ -33,10 +33,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-
 public class MenuActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
@@ -126,7 +122,7 @@ public class MenuActivity extends AppCompatActivity {
 
         // Update reward points
         TextView rewardPointsView = findViewById(R.id.rewardPointsView);
-        rewardPointsView.setText(String.valueOf(rewardPoints) + " ");
+        rewardPointsView.setText(rewardPoints + " ");
 
         // Update profile picture
         ImageView profilePictureView = findViewById(R.id.profilePictureview);

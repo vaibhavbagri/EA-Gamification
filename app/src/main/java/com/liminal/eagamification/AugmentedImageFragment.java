@@ -4,6 +4,7 @@ package com.liminal.eagamification;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.ar.core.AugmentedImageDatabase;
@@ -20,6 +22,8 @@ import com.google.ar.core.exceptions.ImageInsufficientQualityException;
 import com.google.ar.sceneform.ux.ArFragment;
 
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 
 // Extend the ArFragment to customize the ARCore session configuration to include Augmented Images.
@@ -31,16 +35,15 @@ public class AugmentedImageFragment extends ArFragment {
     // Do a runtime check for the OpenGL level available at runtime to avoid Sceneform crashing the application.
     private static final double MIN_OPENGL_VERSION = 3.0;
 
-
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         Log.d(TAG,"On attach");
         // Sceneform support check
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N)
             Log.e(TAG, "Sceneform requires Android N or later");
         // OpenGL version check
-        if (Double.parseDouble(((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getDeviceConfigurationInfo().getGlEsVersion()) < MIN_OPENGL_VERSION)
+        if (Double.parseDouble(((ActivityManager) Objects.requireNonNull(context.getSystemService(Context.ACTIVITY_SERVICE))).getDeviceConfigurationInfo().getGlEsVersion()) < MIN_OPENGL_VERSION)
             Log.e(TAG, "Sceneform requires OpenGL ES 3.0 or later");
     }
 
@@ -66,10 +69,16 @@ public class AugmentedImageFragment extends ArFragment {
         if (!setupAugmentedImageDatabase(config, session)) {
             Log.e(TAG, "Could not setup augmented image database");
         }
+//        AsyncDatabaseSetup asyncDatabaseSetup = new AsyncDatabaseSetup(config,session);
+//        try {
+//            config = asyncDatabaseSetup.execute().get();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         return config;
     }
 
-    protected boolean setupAugmentedImageDatabase(Config config, Session session) {
+    private boolean setupAugmentedImageDatabase(Config config, Session session) {
         // Create Augmented image database and add the reference image to it
         AugmentedImageDatabase augmentedImageDatabase = new AugmentedImageDatabase(session);
 
@@ -99,3 +108,46 @@ public class AugmentedImageFragment extends ArFragment {
         return true;
     }
 }
+
+//class AsyncDatabaseSetup extends AsyncTask<String, String, Config>
+//{
+//    private Config config;
+//    private Session session;
+//
+//    AsyncDatabaseSetup(Config config, Session session){
+//        this.config = config;
+//        this.session = session;
+//    }
+//
+//    @Override
+//    protected Config doInBackground(String... strings) {
+//        // Create Augmented image database and add the reference image to it
+//        AugmentedImageDatabase augmentedImageDatabase = new AugmentedImageDatabase(session);
+//
+//        // Load the reference images into the database
+//        int imageCount = 0;
+//        String TAG = "ASYNC_DATABASE";
+//        Log.d(TAG, "Setting up Augmented Image Database");
+//
+//        ArrayList<Bitmap> markerImages = ImageManager.loadMarkerImages();
+//        if (markerImages != null) {
+//            for (Bitmap augmentedImageBitmap : markerImages) {
+//                Log.d(TAG, "Image loaded in DB");
+//                imageCount += 1;
+//                try {
+//                    augmentedImageDatabase.addImage("Marker_Img_" + imageCount + ".jpg", augmentedImageBitmap);
+//                }
+//                catch (ImageInsufficientQualityException e) {
+//                    Log.d(TAG, "Image Marker quality poor");
+//                }
+//            }
+//        }
+//        else
+//            Log.d(TAG,"No markers found");
+//
+//        config.setAugmentedImageDatabase(augmentedImageDatabase);
+//
+//        Log.d(TAG, "Augmented Image Database has been setup");
+//        return config;
+//    }
+//}
