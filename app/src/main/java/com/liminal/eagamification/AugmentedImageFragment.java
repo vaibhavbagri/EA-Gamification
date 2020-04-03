@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
-
 // Extend the ArFragment to customize the ARCore session configuration to include Augmented Images.
 public class AugmentedImageFragment extends ArFragment {
 

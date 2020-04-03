@@ -29,6 +29,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.liminal.eagamification.ChartsSelectActivity;
 import com.liminal.eagamification.EasyAugmentHelper;
 import com.liminal.eagamification.MenuActivity;
 import com.liminal.eagamification.R;
@@ -53,8 +54,23 @@ public class HomeFragment extends Fragment {
 
         Button haikuButton = root.findViewById(R.id.gameStartButton1);
         Button driveButton = root.findViewById(R.id.gameStartButton2);
+        Button chartButton = root.findViewById(R.id.gameStartButton3);
 
         client = LocationServices.getFusedLocationProviderClient(Objects.requireNonNull(getContext()));
+
+        chartButton.setOnClickListener(v -> {
+            AlphaAnimation buttonClick = new AlphaAnimation(1f, 0.5f);
+            buttonClick.setDuration(100);
+            v.startAnimation(buttonClick);
+            client.getLastLocation().addOnSuccessListener(getActivity(), location -> {
+                if(location!=null)
+                    Log.d("EAG_LOCATION",location.toString());
+            });
+            new Handler().postDelayed(() -> {
+                Intent unityIntent = new Intent(getActivity(), ChartsSelectActivity.class);
+                startActivity(unityIntent);
+            },100);
+        });
 
         haikuButton.setOnClickListener(v -> {
             AlphaAnimation buttonClick = new AlphaAnimation(1f, 0.5f);
