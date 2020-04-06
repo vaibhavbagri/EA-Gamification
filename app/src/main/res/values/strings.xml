@@ -25,4 +25,5 @@
     <string name="placeholder_greeting">Hi !</string>
 
     <string name="game_view_content_description">Game view</string>
+    <string name="title_activity_google_maps">Map</string>
 </resources>

@@ -1,12 +1,7 @@
 package com.liminal.eagamification.nav_menu_ui.home;
 
-import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
-import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,24 +13,18 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.liminal.eagamification.ChartsSelectActivity;
 import com.liminal.eagamification.EasyAugmentHelper;
+import com.liminal.eagamification.GoogleMapsActivity;
 import com.liminal.eagamification.MenuActivity;
 import com.liminal.eagamification.R;
 import com.unity3d.player.UnityPlayerActivity;
 
-import java.io.File;
 import java.util.Objects;
 
 public class HomeFragment extends Fragment {
@@ -55,8 +44,23 @@ public class HomeFragment extends Fragment {
         Button haikuButton = root.findViewById(R.id.gameStartButton1);
         Button driveButton = root.findViewById(R.id.gameStartButton2);
         Button chartButton = root.findViewById(R.id.gameStartButton3);
+        Button gmapsButton = root.findViewById(R.id.gameStartButton4);
 
         client = LocationServices.getFusedLocationProviderClient(Objects.requireNonNull(getContext()));
+
+        gmapsButton.setOnClickListener(v -> {
+            AlphaAnimation buttonClick = new AlphaAnimation(1f, 0.5f);
+            buttonClick.setDuration(100);
+            v.startAnimation(buttonClick);
+            client.getLastLocation().addOnSuccessListener(getActivity(), location -> {
+                if(location!=null)
+                    Log.d("EAG_LOCATION",location.toString());
+            });
+            new Handler().postDelayed(() -> {
+                Intent unityIntent = new Intent(getActivity(), GoogleMapsActivity.class);
+                startActivity(unityIntent);
+            },100);
+        });
 
         chartButton.setOnClickListener(v -> {
             AlphaAnimation buttonClick = new AlphaAnimation(1f, 0.5f);
