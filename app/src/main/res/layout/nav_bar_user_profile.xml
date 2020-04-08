@@ -51,7 +51,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/rewardCoin"
+            android:id="@+id/coinIcon"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_gravity="center_vertical"
@@ -66,12 +66,12 @@
             android:id="@+id/rewardPointsView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:fontFamily="@font/bangers"
             android:text="@string/default_coin_value"
             android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/rewardCoin"
+            app:layout_constraintStart_toEndOf="@id/coinIcon"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

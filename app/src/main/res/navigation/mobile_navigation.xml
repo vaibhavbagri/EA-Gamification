@@ -19,8 +19,15 @@
         tools:layout="@layout/fragment_gallery" />
 
     <fragment
+        android:id="@+id/nav_profile"
+        android:name="com.liminal.eagamification.nav_menu_ui.profile.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_about_us" />
+
+    <fragment
         android:id="@+id/nav_about_us"
         android:name="com.liminal.eagamification.nav_menu_ui.about_us.AboutUsFragment"
         android:label="@string/about_us"
         tools:layout="@layout/fragment_about_us" />
+
 </navigation>
