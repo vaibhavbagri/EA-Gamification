@@ -1,9 +1,4 @@
-package com.liminal.eagamification;
-
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
+package com.liminal.eagamification.nav_menu_ui.feedback;
 
 import android.app.Dialog;
 import android.content.pm.PackageManager;
@@ -11,6 +6,9 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.TextView;
@@ -32,13 +30,22 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.liminal.eagamification.ARGame;
+import com.liminal.eagamification.EasyAugmentHelper;
+import com.liminal.eagamification.MenuActivity;
+import com.liminal.eagamification.R;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Executor;
 
-public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener, GoogleMap.OnMarkerClickListener {
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
-    private static final String TAG = "Google Maps Activity";
+public class MapsFragment extends Fragment implements OnMapReadyCallback, LocationListener, GoogleMap.OnMarkerClickListener {
+
+    private static final String TAG = "Google Maps Fragment";
     private GoogleMap mMap;
 
     // The entry point to the Fused Location Provider.
@@ -62,16 +69,15 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     //Firebase connectivity
     private DatabaseReference databaseReference;
 
+    //To start Scan Activity
     private EasyAugmentHelper easyAugmentHelper;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.activity_google_maps, container, false);
         databaseReference = FirebaseDatabase.getInstance().getReference().child("gamesTable");
 
         //Setup Easy Augment Helper
-        easyAugmentHelper = new EasyAugmentHelper("101", this, MenuActivity.class.getName());
+        easyAugmentHelper = new EasyAugmentHelper("101", Objects.requireNonNull(getActivity()), MenuActivity.class.getName());
         easyAugmentHelper.loadMarkerImages();
 
         // Retrieve location and camera position from saved instance state.
@@ -79,30 +85,61 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
         }
 
-        // Retrieve the content view that renders the map.
-        setContentView(R.layout.activity_google_maps);
-
         // Construct a FusedLocationProviderClient.
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
         // Build the map.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
         assert mapFragment != null;
         mapFragment.getMapAsync(this);
-
+        return root;
     }
 
-    /**
-     * Saves the state of the map when the activity is paused.
-     */
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        if (mMap != null) {
-            outState.putParcelable(KEY_CAMERA_POSITION, mMap.getCameraPosition());
-            outState.putParcelable(KEY_LOCATION, mLastKnownLocation);
-            super.onSaveInstanceState(outState);
-        }
+    public void onLocationChanged(Location location) {
+        getDeviceLocation();
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        ARGame gameObject = (ARGame) marker.getTag();
+        final Dialog gameDialog = new Dialog(Objects.requireNonNull(getContext()));
+        gameDialog.setContentView(R.layout.dialog_play_game);
+
+        Button cancelButton = gameDialog.findViewById(R.id.cancelButton);
+        Button playButton = gameDialog.findViewById(R.id.playButton);
+
+        TextView name = gameDialog.findViewById(R.id.name);
+        TextView description = gameDialog.findViewById(R.id.description);
+        TextView rewardPoints = gameDialog.findViewById(R.id.rewardPoints);
+
+        double user_latitude = mLastKnownLocation.getLatitude();
+        double user_longitude = mLastKnownLocation.getLongitude();
+        assert gameObject != null;
+        double game_latitude = gameObject.latitude;
+        double game_longitude = gameObject.longitude;
+        double latitude_diff = user_latitude - game_latitude;
+        double longitude_diff = user_longitude - game_longitude;
+        if(latitude_diff<1 && latitude_diff>-1)
+            if(longitude_diff<1 && longitude_diff>-1)
+                playButton.setEnabled(true);
+
+        name.setText(gameObject.name);
+        description.setText(gameObject.description);
+        rewardPoints.setText(String.valueOf(gameObject.rewardPoints));
+        cancelButton.setOnClickListener(v -> gameDialog.dismiss());
+        playButton.setOnClickListener(v -> {
+            AlphaAnimation buttonClick = new AlphaAnimation(1f, 0.5f);
+            buttonClick.setDuration(100);
+            v.startAnimation(buttonClick);
+            Toast.makeText(getContext(), "Database is setting up, please wait.", Toast.LENGTH_LONG).show();
+            new Handler().postDelayed(easyAugmentHelper::activateScanner,100);
+            gameDialog.dismiss();
+        });
+
+        gameDialog.show();
+        return false;
     }
 
     @Override
@@ -117,7 +154,7 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
                 for(DataSnapshot game: dataSnapshot.getChildren())
                 {
                     String name = game.getKey();
-                    String description = game.child("description").getValue().toString();
+                    String description = Objects.requireNonNull(game.child("description").getValue()).toString();
                     double latitude = (double) game.child("latitude").getValue();
                     double longitude = (double) game.child("longitude").getValue();
                     long rewardPoints = (long) game.child("rewardPoints").getValue();
@@ -155,7 +192,7 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
         try {
             if (mLocationPermissionGranted) {
                 Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(this, task -> {
+                locationResult.addOnCompleteListener(Objects.requireNonNull(getActivity()), task -> {
                     if (task.isSuccessful()) {
                         // Set the map's camera position to the current location of the device.
                         mLastKnownLocation = task.getResult();
@@ -188,12 +225,12 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
          * device. The result of the permission request is handled by a callback,
          * onRequestPermissionsResult.
          */
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+        if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()).getApplicationContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mLocationPermissionGranted = true;
         } else {
-            ActivityCompat.requestPermissions(this,
+            ActivityCompat.requestPermissions(getActivity(),
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
@@ -234,43 +271,7 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
                 getLocationPermission();
             }
         } catch (SecurityException e)  {
-            Log.e("Exception: %s", e.getMessage());
+            Log.e("Exception: %s", Objects.requireNonNull(e.getMessage()));
         }
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        getDeviceLocation();
-    }
-
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-        ARGame gameObject = (ARGame) marker.getTag();
-        final Dialog gameDialog = new Dialog(this);
-        gameDialog.setContentView(R.layout.dialog_play_game);
-
-        Button cancelButton = gameDialog.findViewById(R.id.cancelButton);
-        Button playButton = gameDialog.findViewById(R.id.playButton);
-
-        TextView name = gameDialog.findViewById(R.id.name);
-        TextView description = gameDialog.findViewById(R.id.description);
-        TextView rewardPoints = gameDialog.findViewById(R.id.rewardPoints);
-
-        assert gameObject != null;
-        name.setText(gameObject.name);
-        description.setText(gameObject.description);
-        rewardPoints.setText(String.valueOf(gameObject.rewardPoints));
-        cancelButton.setOnClickListener(v -> gameDialog.dismiss());
-        playButton.setOnClickListener(v -> {
-            AlphaAnimation buttonClick = new AlphaAnimation(1f, 0.5f);
-            buttonClick.setDuration(100);
-            v.startAnimation(buttonClick);
-            Toast.makeText(this, "Database is setting up, please wait.", Toast.LENGTH_LONG).show();
-            new Handler().postDelayed(easyAugmentHelper::activateScanner,100);
-            gameDialog.dismiss();
-        });
-
-        gameDialog.show();
-        return false;
     }
 }
