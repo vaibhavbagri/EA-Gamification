@@ -13,49 +13,47 @@
 11-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml
 12
 13    <uses-feature android:glEsVersion="0x00030000" />
-13-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:20:3-52
-13-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:20:17-49
+13-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:18:3-52
+13-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:18:17-49
 14
-15    <supports-gl-texture android:name="GL_OES_compressed_ETC1_RGB8_texture" />
-15-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:21:3-77
-15-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:21:24-74
+15    <uses-permission android:name="android.permission.INTERNET" />
+15-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:19:3-65
+15-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:19:20-62
 16
-17    <uses-permission android:name="android.permission.CAMERA" />
-17-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:22:3-63
-17-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:22:20-60
-18    <uses-permission android:name="android.permission.INTERNET" />
-18-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:23:3-65
-18-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:23:20-62
-19
+17    <uses-feature
+17-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:20:3-88
+18        android:name="android.hardware.touchscreen"
+18-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:20:17-60
+19        android:required="false" />
+19-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:20:61-85
 20    <uses-feature
-20-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:24:3-97
-21        android:name="android.hardware.sensor.accelerometer"
-21-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:24:17-69
+20-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:21:3-99
+21        android:name="android.hardware.touchscreen.multitouch"
+21-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:21:17-71
 22        android:required="false" />
-22-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:24:70-94
+22-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:21:72-96
 23    <uses-feature
-23-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:25:3-88
-24        android:name="android.hardware.touchscreen"
-24-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:25:17-60
+23-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:22:3-108
+24        android:name="android.hardware.touchscreen.multitouch.distinct"
+24-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:22:17-80
 25        android:required="false" />
-25-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:25:61-85
-26    <uses-feature
-26-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:26:3-99
-27        android:name="android.hardware.touchscreen.multitouch"
-27-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:26:17-71
-28        android:required="false" />
-28-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:26:72-96
+25-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:22:81-105
+26
+27    <uses-permission android:name="android.permission.CAMERA" />
+27-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:23:3-63
+27-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:23:20-60
+28
 29    <uses-feature
-29-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:27:3-108
-30        android:name="android.hardware.touchscreen.multitouch.distinct"
-30-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:27:17-80
-31        android:required="false" />
-31-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:27:81-105
+29-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:24:3-85
+30        android:name="android.hardware.camera.ar"
+30-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:24:17-58
+31        android:required="true" />
+31-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:24:59-82
 32
 33    <application>
-33-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:4:3-19:17
+33-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:4:3-17:17
 34        <activity
-34-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:5:5-12:16
+34-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:5:5-11:16
 35            android:name="com.unity3d.player.UnityPlayerActivity"
 35-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:5:15-68
 36            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|fontScale|layoutDirection|density"
@@ -68,61 +66,55 @@
 39-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:5:111-149
 40            android:theme="@style/UnityThemeSelector" >
 40-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:5:69-110
-41
-42            <!-- <intent-filter> -->
-43            <!-- <action android:name="android.intent.action.MAIN" /> -->
-44            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-45            <!-- </intent-filter> -->
-46            <meta-data
-46-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:10:7-82
-47                android:name="unityplayer.UnityActivity"
-47-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:10:18-58
-48                android:value="true" />
-48-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:10:59-79
-49            <meta-data
-49-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:11:7-78
-50                android:name="android.notch_support"
-50-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:11:18-54
-51                android:value="true" />
-51-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:11:55-75
-52        </activity>
-53
-54        <meta-data
-54-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:13:5-73
-55            android:name="unity.tango-enable"
-55-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:13:16-49
-56            android:value="True" />
-56-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:13:50-70
-57        <meta-data
-57-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:14:5-88
-58            android:name="unityplayer.SkipPermissionsDialog"
-58-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:14:16-64
-59            android:value="true" />
-59-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:14:65-85
-60        <meta-data
-60-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:15:5-69
-61            android:name="unity.splash-mode"
-61-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:15:16-48
-62            android:value="0" />
-62-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:15:49-66
-63        <meta-data
-63-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:16:5-74
-64            android:name="unity.splash-enable"
-64-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:16:16-50
-65            android:value="True" />
-65-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:16:51-71
-66        <meta-data
-66-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:17:5-81
-67            android:name="notch.config"
-67-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:17:16-43
-68            android:value="portrait|landscape" />
-68-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:17:44-78
-69        <meta-data
-69-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:18:5-101
-70            android:name="unity.build-id"
-70-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:18:16-45
-71            android:value="93f52bce-b82b-4515-8542-1973767bf69d" />
-71-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:18:46-98
-72    </application>
-73
-74</manifest>
+41            <intent-filter>
+41-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:6:7-9:23
+42                <action android:name="android.intent.action.MAIN" />
+42-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:7:9-61
+42-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:7:17-58
+43
+44                <category android:name="android.intent.category.LAUNCHER" />
+44-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:8:9-69
+44-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:8:19-66
+45            </intent-filter>
+46
+47            <meta-data
+47-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:10:7-82
+48                android:name="unityplayer.UnityActivity"
+48-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:10:18-58
+49                android:value="true" />
+49-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:10:59-79
+50        </activity>
+51
+52        <meta-data
+52-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:12:5-69
+53            android:name="unity.splash-mode"
+53-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:12:16-48
+54            android:value="0" />
+54-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:12:49-66
+55        <meta-data
+55-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:13:5-74
+56            android:name="unity.splash-enable"
+56-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:13:16-50
+57            android:value="True" />
+57-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:13:51-71
+58        <meta-data
+58-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:14:5-101
+59            android:name="unity.build-id"
+59-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:14:16-45
+60            android:value="8c6d3724-eb60-473e-8088-4c7371676ef2" />
+60-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:14:46-98
+61        <meta-data
+61-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:15:5-88
+62            android:name="unityplayer.SkipPermissionsDialog"
+62-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:15:16-64
+63            android:value="true" />
+63-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:15:65-85
+64        <meta-data
+64-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:16:5-77
+65            android:name="com.google.ar.core"
+65-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:16:16-49
+66            android:value="required" />
+66-->C:\Users\vaibh\Downloads\Liminal\EA-Gamification\unityLibrary\src\main\AndroidManifest.xml:16:50-74
+67    </application>
+68
+69</manifest>
