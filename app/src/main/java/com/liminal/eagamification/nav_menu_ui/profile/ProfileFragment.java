@@ -22,6 +22,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseError;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.liminal.eagamification.MenuActivity;
 import com.liminal.eagamification.R;
 import com.liminal.eagamification.UserProfile;
@@ -154,11 +157,14 @@ public class ProfileFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         try {
             if (resultCode == android.app.Activity.RESULT_OK) {
-                if (requestCode == 1) {
+                if (requestCode == 1)
+                {
                     // Get the URI of target image
                     Uri imageURI = data.getData();
                     // Upload to firebase
-                    profilePictureRef.putFile(imageURI);
+                    profilePictureRef.putFile(imageURI)
+                            .addOnSuccessListener(taskSnapshot -> loadProfilePicture())
+                            .addOnFailureListener(exception -> { });
                 }
             }
         } catch (Exception e) {
