@@ -75,7 +75,8 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Read data from firebase
-                updateUserProfileLayout((Long) dataSnapshot.child("rewardDetails").child("rewardPoints").getValue(),
+                updateUserProfileLayout(
+                        (Long) dataSnapshot.child("rewardDetails").child("rewardPoints").getValue(),
                         (String) dataSnapshot.child("personalDetails").child("firstName").getValue(),
                         (String) dataSnapshot.child("personalDetails").child("photoURL").getValue());
             }
@@ -86,26 +87,6 @@ public class MenuActivity extends AppCompatActivity {
             }
         };
         databaseReference.child(sharedPreferences.getString("id","")).addValueEventListener(eventListener);
-
-//        StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
-//
-//
-//        mStorageRef.putFile(getResources().(R.drawable.ar_explore_logo))
-//                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                    @Override
-//                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                        // Get a URL to the uploaded content
-//                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception exception) {
-//                        // Handle unsuccessful uploads
-//                        // ...
-//                    }
-//                });
-
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()

@@ -1,9 +1,5 @@
 package com.liminal.eagamification;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +8,10 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -32,12 +32,22 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
+public class MainActivity extends AppCompatActivity{
 
-public class MainActivity extends AppCompatActivity {
+    // Time for which splash screen should be shown
+    private int splashScreenTime = 2160;
 
-    private int RC_SIGN_IN = 0;
+    // Account that stores user details
     private GoogleSignInAccount account;
+
+    // Database reference
+    private DatabaseReference userProfileReference;
+
+    // Firebase auth reference
     private FirebaseAuth mAuth;
+
+    // Shared preferences to store user details
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,11 +56,21 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
+        // get reference to user details
+        sharedPreferences = getSharedPreferences("User_Details", Context.MODE_PRIVATE);
+
+        // Get reference to User Profile table
+        userProfileReference = FirebaseDatabase.getInstance().getReference().child("userProfileTable");
+
+        // Show a loader on the splash screen
         ImageView loaderView = findViewById(R.id.loadingGifView);
         Glide.with(this).asGif().load(R.drawable.loading_cube).into(loaderView);
 
-        new Handler().postDelayed(this::authenticateUser, 2180);
+        // Authenticate users after a delay
+        new Handler().postDelayed(this::authenticateUser, splashScreenTime);
     }
+
+
 
     // Function to authenticate user using Google sign-in
     private void authenticateUser()
@@ -58,11 +78,16 @@ public class MainActivity extends AppCompatActivity {
         // Check if user is already signed in
         account = GoogleSignIn.getLastSignedInAccount(this);
 
+        // User is already signed in
         if(account != null)
         {
-            Log.d("EAG_MAIN_ACTIVTY","User logged in with account : " + account.getEmail());
-            updateUserProfile(false);
+            // Add account ID to shared preferences
+            sharedPreferences.edit().putString("id", account.getId()).apply();
+            Log.d("EAG_USER_LOGIN","User logged in with account : " + account.getEmail());
+            // Start the application
+            startActivity(new Intent(this, MenuActivity.class));
         }
+        // User hasn't already signed in
         else
         {
             // Configure Google sign-in
@@ -73,91 +98,94 @@ public class MainActivity extends AppCompatActivity {
 
             GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
             FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+            // Start activity for Sign-in
             Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-            startActivityForResult(signInIntent, RC_SIGN_IN);
+            startActivityForResult(signInIntent, 0);
         }
     }
 
-    // Function to update User details in firebase
-    private void updateUserProfile(boolean isNewUser)
-    {
-        Log.d("EAG_USER_DETAILS", "email : " + account.getEmail() + " userName : " + account.getDisplayName() + " id : " + account.getId());
-        UserProfile userProfile = new UserProfile(account.getEmail(), account.getGivenName(), account.getFamilyName(), account.getPhotoUrl(), account.getId());
-        addUserInFirebase(userProfile, isNewUser);
-        setSharedPreferences(userProfile);
-        startActivity(new Intent(this, MenuActivity.class));
-        finish();
-    }
 
+    // Obtain Sign-in result here
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == 0) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
+                // Get account with which user has logged in
                 account = task.getResult(ApiException.class);
-                assert account != null;
+                // Firebase authentication
                 firebaseAuthWithGoogle(account);
 
-                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("userProfileTable");
+                // Add account ID to shared preferences
+                sharedPreferences.edit().putString("id", account.getId()).apply();
+
+                // Check if account ID exists in the database
                 ValueEventListener idListener = new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        // existing user log-in
                         if(dataSnapshot.hasChild(Objects.requireNonNull(account.getId())))
                         {
                             Log.d("EAG_GOOGLE_AUTH", "Signed in with account : " + account.getEmail());
-                            updateUserProfile(false);
                         }
+                        // new user log-in
                         else
                         {
                             Log.d("EAG_GOOGLE_AUTH", "New user with signed in with account : " + account.getEmail());
-                            updateUserProfile(true);
+                            addUserProfile();
                         }
+                        // Start the application
+                        startActivity(new Intent(MainActivity.this, MenuActivity.class));
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
                         Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
                     }
                 };
-                databaseReference.addListenerForSingleValueEvent(idListener);
-
+                userProfileReference.addListenerForSingleValueEvent(idListener);
             }
+
+            // Handle Sign-in failures
             catch (ApiException e) {
                 if(e.getStatusCode() == 12501)
                     Toast.makeText(MainActivity.this, "Please sign-in to continue", Toast.LENGTH_SHORT).show();
                 else
                     Toast.makeText(MainActivity.this, "Sign-in failed, please try again", Toast.LENGTH_SHORT).show();
+                // Reauthenticate if Sign-in fails
                 authenticateUser();
                 Log.d("EAG_GOOGLE_AUTH", "SignInResult : failed code = " + e.getStatusCode());
             }
         }
     }
 
-    private void addUserInFirebase(UserProfile userProfile, boolean isNewUser)
+
+
+
+    // Function to add new user to firebase
+    private void addUserProfile()
     {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("userProfileTable");
-        databaseReference.child(userProfile.ID).child("personalDetails").setValue(userProfile);
-        if(isNewUser)
-            databaseReference.child(userProfile.ID).child("rewardDetails").child("rewardPoints").setValue(0);
+        Log.d("EAG_USER_PROFILE", "Adding new User to Database \nEmail : " + account.getEmail() + " Name : " + account.getGivenName() + " " + account.getFamilyName() + " Photo URL : " + account.getPhotoUrl());
+
+        // Add profile to User Profile table
+        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("email").setValue(account.getEmail());
+        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("firstName").setValue(account.getGivenName());
+        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("lastName").setValue(account.getFamilyName());
+        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("photoURL").setValue(String.valueOf(account.getPhotoUrl()));
+
+        // Set reward points to 0
+        userProfileReference.child(sharedPreferences.getString("id","")).child("rewardDetails").child("rewardPoints").setValue(0);
     }
 
-    private void setSharedPreferences(UserProfile userProfile)
-    {
-        SharedPreferences sharedPreferences = getSharedPreferences("User_Details", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("id", userProfile.ID);
-        editor.putString("first_name", userProfile.firstName);
-        editor.putString("last_name", userProfile.lastName);
-        editor.putString("photo_url", userProfile.photoURL);
-        editor.apply();
-    }
 
+
+
+    // Firebase Authentication (No idea how this works)
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d("EAG_MAIN_ACTIVITY", "firebaseAuthWithGoogle:" + acct.getId());
-
-
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
 
         mAuth.signInWithCredential(credential)
@@ -166,13 +194,11 @@ public class MainActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("EAG_MAIN_ACTIVITY", "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            updateUserProfile(true);
-                        } else {
+                        }
+                        else {
                             // If sign in fails, display a message to the user.
                             Log.w("EAG_MAIN_ACTIVITY", "signInWithCredential:failure", task.getException());
                         }
-
                     });
     }
-
 }

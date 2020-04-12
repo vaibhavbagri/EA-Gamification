@@ -35,7 +35,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.liminal.eagamification.MenuActivity;
 import com.liminal.eagamification.R;
-import com.liminal.eagamification.UserProfile;
 
 import java.io.File;
 import java.net.URI;
@@ -54,6 +53,7 @@ public class ProfileFragment extends Fragment {
 
     private SharedPreferences sharedPreferences;
     private StorageReference profilePictureRef;
+    private DatabaseReference userProfileReference;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_profile, container, false);
@@ -75,23 +75,21 @@ public class ProfileFragment extends Fragment {
         Button changePicButton = root.findViewById(R.id.addPicButton);
         Button updateProfileButton = root.findViewById(R.id.updateProfileButton);
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("userProfileTable");
+        userProfileReference = FirebaseDatabase.getInstance().getReference().child("userProfileTable");
         profilePictureRef = FirebaseStorage.getInstance().getReference().child(sharedPreferences.getString("id","")).child("ProfilePicture");
-
-        // Load the current profile picture into imageview
-        loadProfilePicture();
 
         // Add a listener to update UI when User Profile is updated
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Read data from firebase and update EditProfile layout
-                updateUserProfileLayout(root,
+                updateUserProfileLayout(
                         (String) dataSnapshot.child("personalDetails").child("userName").getValue(),
                         (String) dataSnapshot.child("personalDetails").child("firstName").getValue(),
                         (String) dataSnapshot.child("personalDetails").child("lastName").getValue(),
                         (String) dataSnapshot.child("personalDetails").child("DOB").getValue(),
-                        (String) dataSnapshot.child("personalDetails").child("phoneNo").getValue());
+                        (String) dataSnapshot.child("personalDetails").child("mobileNo").getValue(),
+                        (String) dataSnapshot.child("personalDetails").child("photoURL").getValue());
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -99,32 +97,23 @@ public class ProfileFragment extends Fragment {
                 Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
             }
         };
-
-        databaseReference.child(sharedPreferences.getString("id","")).addValueEventListener(eventListener);
+        userProfileReference.child(sharedPreferences.getString("id","")).addValueEventListener(eventListener);
 
         // Upload profile picture
         changePicButton.setOnClickListener(v -> chooseNewImage());
-
         // Update profile information
         updateProfileButton.setOnClickListener(v -> updateUserProfile());
 
         return root;
     }
 
-    // Function to load profile picture
-    private void loadProfilePicture()
-    {
-        Log.d("EAG_DP_LOAD", "Loading Picture : " + profilePictureRef.getName());
-        Glide.with(getActivity())
-                .load(profilePictureRef)
-                .into(profilePictureView);
-    }
+
 
     // Function to update Edit Profile Layout with current field values
-    private void updateUserProfileLayout(View root, String userName, String firstName, String lastName, String dob, String phoneNo)
+    private void updateUserProfileLayout(String userName, String firstName, String lastName, String dob, String mobileNo, String photo_url)
     {
         // Set Text fields for all Edit texts
-        if(!userName.equals("NA"))
+        if(userName != null)
         {
             userNameTextView.setText(userName);
             userNameEditText.setText(userName);
@@ -133,14 +122,18 @@ public class ProfileFragment extends Fragment {
         firstNameEditText.setText(firstName);
         lastNameEditText.setText(lastName);
 
-        if(!dob.equals("NA"))
+        if(dob != null)
             DOBEditText.setText(dob);
 
-        if(!phoneNo.equals("NA"))
-            phoneNoEditText.setText(phoneNo);
+        if(mobileNo != null)
+            phoneNoEditText.setText(mobileNo);
 
-        Log.d("EAG_EDIT_PROFILE", "Username : " + userName + " First Name : " + firstName + " Last Name : " + lastName +  " DOB : " + dob + " Mobile No : " + phoneNo);
+        Glide.with(getActivity()).load(Uri.parse(photo_url)).into(profilePictureView);
+
+        Log.d("EAG_EDIT_PROFILE", "Username : " + userName + " First Name : " + firstName + " Last Name : " + lastName +  " DOB : " + dob + " Mobile No : " + mobileNo);
     }
+
+
 
     // Function to choose new image
     private void chooseNewImage()
@@ -151,26 +144,31 @@ public class ProfileFragment extends Fragment {
         startActivityForResult(android.content.Intent.createChooser(intent, "Select target augmented image"), 1);
     }
 
+
+
     // Get result of choose image here
     @Override
     public void onActivityResult(int requestCode, int resultCode, android.content.Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
-            if (resultCode == android.app.Activity.RESULT_OK) {
-                if (requestCode == 1)
-                {
-                    // Get the URI of target image
-                    Uri imageURI = data.getData();
-                    // Upload to firebase
-                    profilePictureRef.putFile(imageURI)
-                            .addOnSuccessListener(taskSnapshot -> loadProfilePicture())
-                            .addOnFailureListener(exception -> { });
-                }
+            if (resultCode == android.app.Activity.RESULT_OK && requestCode == 1)
+            {
+                // Get the URI of target image
+                Uri imageURI = data.getData();
+
+                // Upload to firebase
+                profilePictureRef.putFile(imageURI).addOnSuccessListener(taskSnapshot -> profilePictureRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    // Upload link for profile picture to User Profile
+                    userProfileReference.child(sharedPreferences.getString("id", "")).child("personalDetails").child("photoURL").setValue(uri.toString());
+                }));
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Log.e("EAG_CHOOSE_IMAGE", "Target image selection error ", e);
         }
     }
+
+
 
     // Function to upload new user details on Firebase
     private void updateUserProfile()
@@ -179,18 +177,11 @@ public class ProfileFragment extends Fragment {
         String firstName = String.valueOf(firstNameEditText.getText());
         String lastName = String.valueOf(lastNameEditText.getText());
         String DOB = String.valueOf(DOBEditText.getText()).equals("") ? "NA" : String.valueOf(DOBEditText.getText());
-        String phoneNo = String.valueOf(phoneNoEditText.getText()).equals("") ? "NA" : String.valueOf(phoneNoEditText.getText());
+        String mobileNo = String.valueOf(phoneNoEditText.getText()).equals("") ? "NA" : String.valueOf(phoneNoEditText.getText());
 
-        UserProfile userProfile = new UserProfile(
-                sharedPreferences.getString("email", ""),
-                firstName,
-                lastName,
-                sharedPreferences.getString("photo_url", ""),
-                sharedPreferences.getString("id", ""),
-                phoneNo,
-                DOB,
-                userName);
 
+
+        // Check validity of username
         if(checkUsernameValidity(userName))
         {
             DatabaseReference userNameDatabaseReference = FirebaseDatabase.getInstance().getReference().child("userNameTable");
@@ -200,21 +191,24 @@ public class ProfileFragment extends Fragment {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     // username is unique
                     if (!dataSnapshot.exists()) {
-                        DatabaseReference userProfileDatabaseReference = FirebaseDatabase.getInstance().getReference().child("userProfileTable");
-                        userProfileDatabaseReference.child(sharedPreferences.getString("id", "")).child("personalDetails").setValue(userProfile);
+                        // Update user profile
+                        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("email").setValue(userName);
+                        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("firstName").setValue(firstName);
+                        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("lastName").setValue(lastName);
+                        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("DOB").setValue(DOB);
+                        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("mobileNo").setValue(mobileNo);
+                        // Update usernames table
                         userNameDatabaseReference.child(sharedPreferences.getString("id", "")).child("userName").setValue(userName);
                     }
                     else
-                    {
                         Toast.makeText(getActivity(), "Username already exists", Toast.LENGTH_SHORT).show();
-                    }
                 }
                 @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }});
+                public void onCancelled(@NonNull DatabaseError databaseError) { }});
         }
     }
+
+
 
     // Function to check validity of username
     private boolean checkUsernameValidity(String text) {
