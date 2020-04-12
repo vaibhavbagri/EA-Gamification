@@ -20,23 +20,31 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
+
 
 public class MainActivity extends AppCompatActivity {
 
     private int RC_SIGN_IN = 0;
     private GoogleSignInAccount account;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mAuth = FirebaseAuth.getInstance();
 
         ImageView loaderView = findViewById(R.id.loadingGifView);
         Glide.with(this).asGif().load(R.drawable.loading_cube).into(loaderView);
@@ -90,12 +98,14 @@ public class MainActivity extends AppCompatActivity {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 account = task.getResult(ApiException.class);
+                assert account != null;
+                firebaseAuthWithGoogle(account);
 
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("userProfileTable");
                 ValueEventListener idListener = new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.hasChild(account.getId()))
+                        if(dataSnapshot.hasChild(Objects.requireNonNull(account.getId())))
                         {
                             Log.d("EAG_GOOGLE_AUTH", "Signed in with account : " + account.getEmail());
                             updateUserProfile(false);
@@ -144,25 +154,25 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
-}
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        Log.d("EAG_MAIN_ACTIVITY", "firebaseAuthWithGoogle:" + acct.getId());
 
-//    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-//        Log.d("EAG_MAIN_ACTIVITY", "firebaseAuthWithGoogle:" + acct.getId());
-//
-//
-//        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-//
-//        mAuth.signInWithCredential(credential)
-//                    .addOnCompleteListener(this, task -> {
-//                        if (task.isSuccessful()) {
-//                            // Sign in success, update UI with the signed-in user's information
-//                            Log.d("EAG_MAIN_ACTIVITY", "signInWithCredential:success");
-//                            FirebaseUser user = mAuth.getCurrentUser();
-//                            updateUserProfile(true);
-//                        } else {
-//                            // If sign in fails, display a message to the user.
-//                            Log.w("EAG_MAIN_ACTIVITY", "signInWithCredential:failure", task.getException());
-//                        }
-//
-//                    });
-//    }
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+
+        mAuth.signInWithCredential(credential)
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("EAG_MAIN_ACTIVITY", "signInWithCredential:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            updateUserProfile(true);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("EAG_MAIN_ACTIVITY", "signInWithCredential:failure", task.getException());
+                        }
+
+                    });
+    }
+
+}
