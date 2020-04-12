@@ -32,7 +32,7 @@
                 android:id="@+id/profilePictureview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
+                android:scaleType="fitCenter"
                 app:srcCompat="@drawable/user_avatar_default" />
 
         </androidx.cardview.widget.CardView>
