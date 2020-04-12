@@ -56,7 +56,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="0dp"
             android:fontFamily="@font/bangers"
-            android:text="UserName_420"
+            android:text="ANONYMOUS USER"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
             android:textSize="36sp" />
@@ -117,13 +117,14 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/NameHolder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:id="@+id/NameIcon"
+                    android:id="@+id/firstNameIcon"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center_vertical"
@@ -136,20 +137,36 @@
                     app:srcCompat="@drawable/profile_name" />
 
                 <EditText
-                    android:id="@+id/NameEditText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/firstNameEditText"
+                    android:layout_width="140dp"
+                    android:layout_height="0dp"
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="32dp"
+                    android:layout_marginEnd="8dp"
                     android:backgroundTint="#846FF5"
                     android:ems="10"
                     android:fontFamily="@font/roboto"
                     android:hint="First name"
                     android:inputType="textPersonName"
                     android:textSize="20sp"
+                    app:layout_constraintEnd_toStartOf="@+id/lastNameEditText"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/firstNameIcon"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/lastNameEditText"
+                    android:layout_width="140dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="32dp"
+                    android:backgroundTint="#846FF5"
+                    android:ems="10"
+                    android:fontFamily="@font/roboto"
+                    android:hint="Last Name"
+                    android:inputType="textPersonName"
+                    android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/NameIcon"
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -182,7 +199,7 @@
                     android:ems="10"
                     android:fontFamily="@font/roboto"
                     android:hint="Enter mobile number"
-                    android:inputType="textPersonName"
+                    android:inputType="phone"
                     android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/phoneIcon"
@@ -203,6 +220,8 @@
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="16dp"
                     android:layout_weight="1"
+                    android:backgroundTint="#FFAB00"
+                    android:backgroundTintMode="add"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
