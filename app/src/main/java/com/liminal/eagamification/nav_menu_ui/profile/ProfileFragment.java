@@ -192,13 +192,14 @@ public class ProfileFragment extends Fragment {
                     // username is unique
                     if (!dataSnapshot.exists()) {
                         // Update user profile
-                        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("email").setValue(userName);
+                        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("userName").setValue(userName);
                         userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("firstName").setValue(firstName);
                         userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("lastName").setValue(lastName);
                         userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("DOB").setValue(DOB);
                         userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("mobileNo").setValue(mobileNo);
                         // Update usernames table
                         userNameDatabaseReference.child(sharedPreferences.getString("id", "")).child("userName").setValue(userName);
+                        Toast.makeText(getActivity(), "Updated successfully", Toast.LENGTH_SHORT).show();
                     }
                     else
                         Toast.makeText(getActivity(), "Username already exists", Toast.LENGTH_SHORT).show();
