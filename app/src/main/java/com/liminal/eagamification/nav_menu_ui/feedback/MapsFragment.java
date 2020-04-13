@@ -1,8 +1,11 @@
 package com.liminal.eagamification.nav_menu_ui.feedback;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -37,12 +40,15 @@ import com.liminal.eagamification.MenuActivity;
 import com.liminal.eagamification.R;
 
 import java.util.Objects;
-import java.util.concurrent.Executor;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+
+import static android.content.Context.LOCATION_SERVICE;
+
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback, LocationListener, GoogleMap.OnMarkerClickListener {
 
@@ -73,6 +79,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     //To start Scan Activity
     private EasyAugmentHelper easyAugmentHelper;
 
+    private LocationManager locationManager;
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.activity_google_maps, container, false);
         databaseReference = FirebaseDatabase.getInstance().getReference().child("gamesTable");
@@ -86,15 +94,46 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
         }
 
+        locationManager = (LocationManager) Objects.requireNonNull(getContext()).getSystemService(LOCATION_SERVICE);
+        assert locationManager != null;
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+            alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
+                    .setCancelable(false)
+                    .setPositiveButton("Goto Settings Page To Enable GPS",
+                            (dialog, id) -> {
+                                Intent callGPSSettingIntent = new Intent(
+                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(callGPSSettingIntent);
+                            });
+            alertDialogBuilder.setNegativeButton("Cancel",
+                    (dialog, id) -> dialog.cancel());
+            AlertDialog alert = alertDialogBuilder.create();
+            alert.show();
+        }
+        else {
+            // Build the map.
+            SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
+                    .findFragmentById(R.id.map);
+            assert mapFragment != null;
+            mapFragment.getMapAsync(this);
+        }
+
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
-
-        // Build the map.
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
-                .findFragmentById(R.id.map);
-        assert mapFragment != null;
-        mapFragment.getMapAsync(this);
         return root;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            // Build the map.
+            SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
+                    .findFragmentById(R.id.map);
+            assert mapFragment != null;
+            mapFragment.getMapAsync(this);
+        }
     }
 
     @Override
