@@ -115,7 +115,7 @@ public class ProfileFragment extends Fragment {
         // Set Text fields for all Edit texts
         if(userName != null)
         {
-            userNameTextView.setText(userName);
+            userNameTextView.setText(userName + " ");
             userNameEditText.setText(userName);
         }
 
@@ -128,7 +128,7 @@ public class ProfileFragment extends Fragment {
         if(mobileNo != null)
             phoneNoEditText.setText(mobileNo);
 
-        Glide.with(getActivity()).load(Uri.parse(photo_url)).into(profilePictureView);
+        Glide.with(getActivity().getApplicationContext()).load(Uri.parse(photo_url)).into(profilePictureView);
 
         Log.d("EAG_EDIT_PROFILE", "Username : " + userName + " First Name : " + firstName + " Last Name : " + lastName +  " DOB : " + dob + " Mobile No : " + mobileNo);
     }
