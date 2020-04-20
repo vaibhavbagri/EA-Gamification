@@ -1,10 +1,14 @@
 package com.liminal.eagamification.nav_menu_ui.feedback;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,12 +22,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
@@ -38,6 +42,7 @@ import com.liminal.eagamification.ARGame;
 import com.liminal.eagamification.EasyAugmentHelper;
 import com.liminal.eagamification.MenuActivity;
 import com.liminal.eagamification.R;
+import com.unity3d.player.UnityPlayerActivity;
 
 import java.util.Objects;
 
@@ -80,13 +85,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
     private EasyAugmentHelper easyAugmentHelper;
 
     private LocationManager locationManager;
+    private int flag = 0;
 
+    @SuppressLint("MissingPermission")
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.activity_google_maps, container, false);
+        Log.d("EAG_MAPS","Maps creating");
         databaseReference = FirebaseDatabase.getInstance().getReference().child("gamesTable");
 
         //Setup Easy Augment Helper
-        easyAugmentHelper = new EasyAugmentHelper("101", Objects.requireNonNull(getActivity()), MenuActivity.class.getName());
+        easyAugmentHelper = new EasyAugmentHelper("101", Objects.requireNonNull(getActivity()), UnityPlayerActivity.class.getName());
         easyAugmentHelper.loadMarkerImages();
 
         // Retrieve location and camera position from saved instance state.
@@ -97,48 +105,73 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
         locationManager = (LocationManager) Objects.requireNonNull(getContext()).getSystemService(LOCATION_SERVICE);
         assert locationManager != null;
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-            alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
-                    .setCancelable(false)
-                    .setPositiveButton("Goto Settings Page To Enable GPS",
-                            (dialog, id) -> {
-                                Intent callGPSSettingIntent = new Intent(
-                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                startActivity(callGPSSettingIntent);
-                            });
-            alertDialogBuilder.setNegativeButton("Cancel",
-                    (dialog, id) -> dialog.cancel());
-            AlertDialog alert = alertDialogBuilder.create();
-            alert.show();
+            enableGPS();
         }
-        else {
-            // Build the map.
-            SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
-                    .findFragmentById(R.id.map);
-            assert mapFragment != null;
-            mapFragment.getMapAsync(this);
-        }
+        // Build the map.
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
+                .findFragmentById(R.id.map);
+        assert mapFragment != null;
+        mapFragment.getMapAsync(this);
+
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
 
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
         return root;
     }
 
+    private void enableGPS(){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getContext()));
+        alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Goto Settings Page To Enable GPS",
+                        (dialog, id) -> {
+                            Intent callGPSSettingIntent = new Intent(
+                                    android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(callGPSSettingIntent);
+                        });
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
+    }
+
     @Override
     public void onResume() {
         super.onResume();
+        Log.d("EAG_MAPS","Maps resuming");
         if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            // Build the map.
-            SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
-                    .findFragmentById(R.id.map);
-            assert mapFragment != null;
-            mapFragment.getMapAsync(this);
+            getDeviceLocation();
         }
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        getDeviceLocation();
+        Log.d("EAG_MAPS","Location changed");
+        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            mLastKnownLocation = location;
+            if(flag == 0) {
+                flag = 1;
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                        new LatLng(location.getLatitude(),
+                                location.getLongitude()), DEFAULT_ZOOM));
+            }
+        }
+        else
+            enableGPS();
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+
     }
 
     @Override
@@ -190,6 +223,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
         mMap.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(
                         Objects.requireNonNull(getContext()), R.raw.style));
+        mMap.getUiSettings().setMapToolbarEnabled(false);
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
@@ -203,6 +237,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
                     long rewardPoints = (long) game.child("rewardPoints").getValue();
                     Marker newMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(latitude,longitude)).title(name));
                     newMarker.setTag(new ARGame(name,description,latitude,longitude,rewardPoints));
+                    newMarker.setIcon(BitmapDescriptorFactory.fromBitmap(
+                            Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ar_explore_logo),
+                                    100, 100,false)));
+//                    newMarker.setFlat(true);
                 }
             }
             @Override
@@ -232,21 +270,24 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
          * Get the best and most recent location of the device, which may be null in rare
          * cases when a location is not available.
          */
+        Log.d("EAG_MAPS","Device location requested");
         try {
             if (mLocationPermissionGranted) {
                 Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
                 locationResult.addOnCompleteListener(Objects.requireNonNull(getActivity()), task -> {
                     if (task.isSuccessful()) {
                         // Set the map's camera position to the current location of the device.
+                        Log.d("EAG_MAPS","Location extracted successfully");
                         mLastKnownLocation = task.getResult();
                         if (mLastKnownLocation != null) {
+                            Log.d("EAG_MAPS", String.valueOf(mLastKnownLocation.getLatitude()));
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(mLastKnownLocation.getLatitude(),
                                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
                         }
                     } else {
-                        Log.d(TAG, "Current location is null. Using defaults.");
-                        Log.e(TAG, "Exception: %s", task.getException());
+                        Log.d("EAG_MAPS", "Current location is null. Using defaults.");
+                        Log.e("EAG_MAPS", "Exception: %s", task.getException());
                         mMap.moveCamera(CameraUpdateFactory
                                 .newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
                         mMap.getUiSettings().setMyLocationButtonEnabled(false);
