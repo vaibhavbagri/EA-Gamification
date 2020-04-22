@@ -38,9 +38,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.liminal.eagamification.ARGame;
+import com.liminal.eagamification.MenuActivity;
 import com.liminal.eagamification.easyaugment.EasyAugmentHelper;
 import com.liminal.eagamification.R;
-import com.unity3d.player.UnityPlayerActivity;
 
 import java.util.Objects;
 
@@ -92,7 +92,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Locati
         databaseReference = FirebaseDatabase.getInstance().getReference().child("gamesTable");
 
         //Setup Easy Augment Helper
-        easyAugmentHelper = new EasyAugmentHelper("101", Objects.requireNonNull(getActivity()), UnityPlayerActivity.class.getName());
+        easyAugmentHelper = new EasyAugmentHelper("101", Objects.requireNonNull(getActivity()), MenuActivity.class.getName());
         easyAugmentHelper.loadMarkerImages();
 
         // Retrieve location and camera position from saved instance state.

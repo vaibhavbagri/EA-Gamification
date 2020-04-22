@@ -20,10 +20,8 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.liminal.eagamification.ChartsSelectActivity;
 import com.liminal.eagamification.easyaugment.EasyAugmentHelper;
-import com.liminal.eagamification.GoogleMapsActivity;
 import com.liminal.eagamification.MenuActivity;
 import com.liminal.eagamification.R;
-import com.unity3d.player.UnityPlayerActivity;
 
 import java.util.Objects;
 
@@ -48,19 +46,19 @@ public class HomeFragment extends Fragment {
 
         client = LocationServices.getFusedLocationProviderClient(Objects.requireNonNull(getContext()));
 
-        gmapsButton.setOnClickListener(v -> {
-            AlphaAnimation buttonClick = new AlphaAnimation(1f, 0.5f);
-            buttonClick.setDuration(100);
-            v.startAnimation(buttonClick);
-            client.getLastLocation().addOnSuccessListener(getActivity(), location -> {
-                if(location!=null)
-                    Log.d("EAG_LOCATION",location.toString());
-            });
-            new Handler().postDelayed(() -> {
-                Intent unityIntent = new Intent(getActivity(), GoogleMapsActivity.class);
-                startActivity(unityIntent);
-            },100);
-        });
+//        gmapsButton.setOnClickListener(v -> {
+//            AlphaAnimation buttonClick = new AlphaAnimation(1f, 0.5f);
+//            buttonClick.setDuration(100);
+//            v.startAnimation(buttonClick);
+//            client.getLastLocation().addOnSuccessListener(getActivity(), location -> {
+//                if(location!=null)
+//                    Log.d("EAG_LOCATION",location.toString());
+//            });
+//            new Handler().postDelayed(() -> {
+//                Intent unityIntent = new Intent(getActivity(), GoogleMapsActivity.class);
+//                startActivity(unityIntent);
+//            },100);
+//        });
 
         chartButton.setOnClickListener(v -> {
             AlphaAnimation buttonClick = new AlphaAnimation(1f, 0.5f);
@@ -88,15 +86,15 @@ public class HomeFragment extends Fragment {
             new Handler().postDelayed(easyAugmentHelper::activateScanner,100);
         });
 
-        driveButton.setOnClickListener(v -> {
-            AlphaAnimation buttonClick = new AlphaAnimation(1f, 0.5f);
-            buttonClick.setDuration(100);
-            v.startAnimation(buttonClick);
-            new Handler().postDelayed(() -> {
-                Intent unityIntent = new Intent(getActivity(), UnityPlayerActivity.class);
-                startActivity(unityIntent);
-            },100);
-        });
+//        driveButton.setOnClickListener(v -> {
+//            AlphaAnimation buttonClick = new AlphaAnimation(1f, 0.5f);
+//            buttonClick.setDuration(100);
+//            v.startAnimation(buttonClick);
+//            new Handler().postDelayed(() -> {
+//                Intent unityIntent = new Intent(getActivity(), UnityPlayerActivity.class);
+//                startActivity(unityIntent);
+//            },100);
+//        });
 
         return root;
     }
