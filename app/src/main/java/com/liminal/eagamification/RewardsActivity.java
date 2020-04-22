@@ -7,8 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.google.android.gms.common.api.CommonStatusCodes;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -87,7 +85,7 @@ public class RewardsActivity extends AppCompatActivity {
             public void onClick(View view, int position) {
                 RewardDetails rewardDetails = rewardDetailsList.get(position);
                 final Dialog inputTextDialog = new Dialog(RewardsActivity.this);
-                inputTextDialog.setContentView(R.layout.dialog_reward_claim);
+                inputTextDialog.setContentView(R.layout.dialog_box_reward_claim);
 
                 Button cancelButton = inputTextDialog.findViewById(R.id.cancelButton);
                 Button buyButton = inputTextDialog.findViewById(R.id.buyButton);

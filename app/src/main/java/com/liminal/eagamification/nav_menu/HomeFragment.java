@@ -12,11 +12,14 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -118,7 +121,47 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
             startActivity(intent);
         });
 
+        // Implement button to show missions
+        FloatingActionButton missionsButton = root.findViewById(R.id.missionsButton);
+        missionsButton.setOnClickListener(view -> manageMissionsPopup(root, inflater));
+
+        // Implement button to show live updates
+        FloatingActionButton liveUpdatesButton = root.findViewById(R.id.socialButton);
+        liveUpdatesButton.setOnClickListener(view -> manageLiveUpdatesPopup(root, inflater));
+
         return root;
+    }
+
+    // Function to manage missions popup window
+    private void manageMissionsPopup(View view, LayoutInflater inflater)
+    {
+        // Inflate the popup window layout
+        View popupMissionsView = inflater.inflate(R.layout.popup_missions, null);
+        // Setup popup window
+        final PopupWindow popupWindow = new PopupWindow(popupMissionsView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
+        // Show popup view at the center
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0,0);
+
+        // Button to dismiss popup
+        Button button = popupMissionsView.findViewById(R.id.quitMissionsPopupButton);
+        button.setOnClickListener(v -> popupWindow.dismiss());
+    }
+
+
+
+    // Function to manage missions popup window
+    private void manageLiveUpdatesPopup(View view, LayoutInflater inflater)
+    {
+        // Inflate the popup window layout
+        View popupMissionsView = inflater.inflate(R.layout.popup_live_updates, null);
+        // Setup popup window
+        final PopupWindow popupWindow = new PopupWindow(popupMissionsView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
+        // Show popup view at the center
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0,0);
+
+        // Button to dismiss popup
+        Button button = popupMissionsView.findViewById(R.id.quitLiveUpdatesPopupButton);
+        button.setOnClickListener(v -> popupWindow.dismiss());
     }
 
 
@@ -187,41 +230,38 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        LocationBasedGame gameObject = (LocationBasedGame) marker.getTag();
-        final Dialog gameDialog = new Dialog(Objects.requireNonNull(getContext()));
-        gameDialog.setContentView(R.layout.dialog_play_game);
+        LocationBasedGame game = (LocationBasedGame) marker.getTag();
+        final Dialog playGameDialogBox = new Dialog(Objects.requireNonNull(getContext()));
+        playGameDialogBox.setContentView(R.layout.dialog_box_play_game);
 
-        Button cancelButton = gameDialog.findViewById(R.id.cancelButton);
-        Button playButton = gameDialog.findViewById(R.id.playButton);
+        Button cancelButton = playGameDialogBox.findViewById(R.id.dialogBoxCancelButton);
+        Button playButton = playGameDialogBox.findViewById(R.id.dialogBoxPlayButton);
 
-        TextView name = gameDialog.findViewById(R.id.name);
-        TextView description = gameDialog.findViewById(R.id.description);
-        TextView rewardPoints = gameDialog.findViewById(R.id.rewardPoints);
-
+        TextView titleTextView = playGameDialogBox.findViewById(R.id.dialogBoxGameTitleTextView);
+        TextView descriptionTextView = playGameDialogBox.findViewById(R.id.dialogBoxGameDescriptionTextView);
+        
         double user_latitude = mLastKnownLocation.getLatitude();
         double user_longitude = mLastKnownLocation.getLongitude();
-        assert gameObject != null;
-        double game_latitude = gameObject.latitude;
-        double game_longitude = gameObject.longitude;
+        double game_latitude = game.latitude;
+        double game_longitude = game.longitude;
         double latitude_diff = user_latitude - game_latitude;
         double longitude_diff = user_longitude - game_longitude;
         if(latitude_diff < 1 && latitude_diff > -1 && longitude_diff < 1 && longitude_diff > -1)
             playButton.setEnabled(true);
 
-        name.setText(gameObject.name);
-        description.setText(gameObject.description);
-        rewardPoints.setText(String.valueOf(gameObject.assetBundleLink));
-        cancelButton.setOnClickListener(v -> gameDialog.dismiss());
+        titleTextView.setText(game.name);
+        descriptionTextView.setText(game.description);
+        cancelButton.setOnClickListener(v -> playGameDialogBox.dismiss());
         playButton.setOnClickListener(v -> {
             AlphaAnimation buttonClick = new AlphaAnimation(1f, 0.5f);
             buttonClick.setDuration(100);
             v.startAnimation(buttonClick);
             Toast.makeText(getContext(), "Database is setting up, please wait.", Toast.LENGTH_LONG).show();
             new Handler().postDelayed(easyAugmentHelper::activateScanner,100);
-            gameDialog.dismiss();
+            playGameDialogBox.dismiss();
         });
 
-        gameDialog.show();
+        playGameDialogBox.show();
         return false;
     }
 

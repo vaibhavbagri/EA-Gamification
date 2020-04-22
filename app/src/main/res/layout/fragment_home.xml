@@ -11,8 +11,7 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:ignore="FragmentTagUsage">
-    </fragment>
+        tools:ignore="FragmentTagUsage"></fragment>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/claimRewardsButton"

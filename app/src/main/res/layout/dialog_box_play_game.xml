@@ -13,70 +13,60 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <TextView
+                android:id="@+id/dialogBoxGameTitleTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="@font/bangers"
+                android:text="Haiku! "
+                android:textAlignment="viewStart"
+                android:textSize="36sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/name"
-                android:layout_width="wrap_content"
+                android:id="@+id/dialogBoxGameDescriptionTextView"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:ems="14"
-                android:hint="Title"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="@font/bangers"
+                android:text="Game Description"
+                android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.505"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.238" />
-
-            <TextView
-                android:id="@+id/description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="14"
-                android:hint="Description"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.505"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/name" />
-
-            <TextView
-                android:id="@+id/rewardPoints"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="14"
-                android:hint="Reward Points"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.505"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/description" />
+                app:layout_constraintTop_toBottomOf="@+id/dialogBoxGameTitleTextView" />
 
             <Button
-                android:id="@+id/playButton"
+                android:id="@+id/dialogBoxPlayButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:background="#00FFFFFF"
+                android:fontFamily="@font/bangers"
                 android:text="PLAY"
                 android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
-                android:enabled="false"
-                app:layout_constraintEnd_toStartOf="@+id/cancelButton"
-                app:layout_constraintTop_toBottomOf="@id/rewardPoints" />
+                android:textSize="24sp"
+                app:layout_constraintEnd_toStartOf="@+id/dialogBoxCancelButton"
+                app:layout_constraintTop_toBottomOf="@+id/dialogBoxGameDescriptionTextView" />
 
             <Button
-                android:id="@+id/cancelButton"
+                android:id="@+id/dialogBoxCancelButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:background="#00FFFFFF"
-                android:text="Cancel"
+                android:fontFamily="@font/bangers"
+                android:text="@string/__arcore_cancel"
                 android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
+                android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rewardPoints" />
-
+                app:layout_constraintTop_toTopOf="@+id/dialogBoxPlayButton" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </FrameLayout>

@@ -51,7 +51,7 @@ class AugmentedViewManager {
     {
         // Dialog for taking text input
         final Dialog inputTextDialog = new Dialog(context);
-        inputTextDialog.setContentView(R.layout.dialog_text_input);
+        inputTextDialog.setContentView(R.layout.dialog_box_text_input);
 
         Button cancelButton = inputTextDialog.findViewById(R.id.dialogInputTextCancelButton);
         Button uploadButton = inputTextDialog.findViewById(R.id.dialogInputTextUploadButton);
