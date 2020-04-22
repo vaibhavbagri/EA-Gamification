@@ -1,4 +1,4 @@
-package com.liminal.eagamification.nav_menu_ui.home;
+package com.liminal.eagamification.nav_menu_ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,7 +19,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.liminal.eagamification.ChartsSelectActivity;
-import com.liminal.eagamification.EasyAugmentHelper;
+import com.liminal.eagamification.easyaugment.EasyAugmentHelper;
 import com.liminal.eagamification.GoogleMapsActivity;
 import com.liminal.eagamification.MenuActivity;
 import com.liminal.eagamification.R;

@@ -1,4 +1,4 @@
-package com.liminal.eagamification.nav_menu_ui.profile;
+package com.liminal.eagamification.nav_menu_ui;
 
 
 import androidx.fragment.app.Fragment;

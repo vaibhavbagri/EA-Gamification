@@ -1,4 +1,4 @@
-package com.liminal.eagamification;
+package com.liminal.eagamification.easyaugment;
 
 import android.content.Context;
 import android.util.Log;
@@ -11,9 +11,8 @@ import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.FixedWidthViewSizer;
 import com.google.ar.sceneform.rendering.ViewRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
-import com.google.ar.sceneform.ux.BaseTransformableNode;
-import com.google.ar.sceneform.ux.SelectionVisualizer;
 import com.google.ar.sceneform.ux.TransformableNode;
+import com.liminal.eagamification.BaseSelectionVisualizer;
 
 import java.util.Objects;
 

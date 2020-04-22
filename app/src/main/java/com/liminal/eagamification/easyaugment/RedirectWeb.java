@@ -1,10 +1,12 @@
-package com.liminal.eagamification;
+package com.liminal.eagamification.easyaugment;
 
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.liminal.eagamification.R;
 
 public class RedirectWeb extends AppCompatActivity {
 

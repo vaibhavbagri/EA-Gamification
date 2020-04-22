@@ -1,4 +1,4 @@
-package com.liminal.eagamification;
+package com.liminal.eagamification.easyaugment;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +17,7 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.liminal.eagamification.R;
 
 public class RedirectVideo extends AppCompatActivity implements Player.EventListener{
 

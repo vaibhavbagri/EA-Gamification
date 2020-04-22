@@ -1,4 +1,4 @@
-package com.liminal.eagamification;
+package com.liminal.eagamification.easyaugment;
 
 class ImageDetails {
 

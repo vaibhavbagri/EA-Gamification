@@ -67,12 +67,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RedirectVideo" />
-        <activity android:name=".RedirectWeb" />
-        <activity android:name=".ScanActivity" />
+        <activity android:name=".easyaugment.RedirectVideo" />
+        <activity android:name=".easyaugment.RedirectWeb" />
+        <activity android:name=".easyaugment.ScanActivity" />
 
         <service
-            android:name=".MarkerDownloadService"
+            android:name=".easyaugment.MarkerDownloadService"
             android:permission="android.permission.BIND_JOB_SERVICE" /> <!-- <meta-data -->
         <!-- android:name="com.google.ar.core" -->
         <!-- android:value="optional" /> -->

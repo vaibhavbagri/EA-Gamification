@@ -1,4 +1,4 @@
-package com.liminal.eagamification;
+package com.liminal.eagamification.easyaugment;
 
 import android.content.Context;
 import android.net.Uri;
@@ -15,6 +15,7 @@ import com.google.ar.sceneform.Scene;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ExternalTexture;
 import com.google.ar.sceneform.rendering.ModelRenderable;
+import com.liminal.eagamification.R;
 
 import java.util.Objects;
 

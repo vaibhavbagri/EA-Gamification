@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".nav_menu_ui.about_us.AboutUsFragment">
+    tools:context=".nav_menu_ui.AboutUsFragment">
     <WebView
             android:id="@+id/aboutUsWebView"
             android:layout_width="match_parent"

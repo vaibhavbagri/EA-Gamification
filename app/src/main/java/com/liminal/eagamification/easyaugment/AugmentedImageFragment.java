@@ -1,10 +1,9 @@
-package com.liminal.eagamification;
+package com.liminal.eagamification.easyaugment;
 
 // Import statements
 import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,7 +22,6 @@ import com.google.ar.sceneform.ux.ArFragment;
 
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 
 // Extend the ArFragment to customize the ARCore session configuration to include Augmented Images.
 public class AugmentedImageFragment extends ArFragment {

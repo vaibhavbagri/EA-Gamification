@@ -1,4 +1,4 @@
-package com.liminal.eagamification;
+package com.liminal.eagamification.easyaugment;
 
 // Import statements
 import android.content.ComponentName;
@@ -18,15 +18,13 @@ import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.ar.core.AugmentedImage;
 import com.google.ar.core.Frame;
 import com.bumptech.glide.Glide;
 import com.google.ar.core.TrackingState;
 import com.google.ar.sceneform.FrameTime;
 import com.google.ar.sceneform.Scene;
-import com.google.ar.sceneform.ux.ArFragment;
+import com.liminal.eagamification.R;
 
 import java.util.ArrayList;
 import java.util.Objects;

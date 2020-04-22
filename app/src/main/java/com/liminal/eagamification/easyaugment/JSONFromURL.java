@@ -1,4 +1,4 @@
-package com.liminal.eagamification;
+package com.liminal.eagamification.easyaugment;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -9,50 +9,45 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-class Verifier extends AsyncTask<String, Void, String> {
+class JSONFromURL extends AsyncTask<String, Void, String> {
 
-    private String link;
-
-    Verifier(String devKey) {
-        link = "https://liminal.in/verifyUser.php?uid=" + devKey;
-    }
-
-    // Post execute returns if the user is verified
+    // Post execute returns text obtained from the script
     @Override
     protected void onPostExecute(String text) {
         super.onPostExecute(text);
     }
 
-    //Function to verify developer
+    //Function to read JSON from PHP link
     @Override
     protected String doInBackground(String... params) {
         try {
+            String link = params[0];
             java.net.URL url = new URL(link);
 
             // Set up connection via GET method
-            Log.d("PHP_connect", "Trying to establish PHP connection for Developer verification");
+            Log.d("PHP_connect", "Trying to establish PHP connection");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
 
             // Check if connection is established
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                Log.d("PHP_connect", "Connection established for Developer verification");
+                Log.d("PHP_connect", "Connection established");
 
                 // Read data from the PHP connection
                 InputStream inputStream = connection.getInputStream();
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String str = bufferedReader.readLine();
 
-                // Log to let the developer know if incorrect key is entered
-                if (str.equals("TRUE"))
-                    Log.d("DEV_VERIFY", "Developer is verified");
-                else
-                    Log.d("DEV_VERIFY", "Illegal Developer key");
+                String str;
+                StringBuilder sb = new StringBuilder();
 
-                return str;
+                while ((str = bufferedReader.readLine()) != null) {
+                    Log.d("PHP_connect", "Read line : " + str);
+                    sb.append(str).append("\n");
+                }
+                return sb.toString().trim();
             } else {
-                Log.d("PHP_connect", "Failed to establish PHP connection for Developer verification");
+                Log.d("PHP_connect", "Failed to establish PHP connection");
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,8 +1,7 @@
-package com.liminal.eagamification.nav_menu_ui.feedback;
+package com.liminal.eagamification.nav_menu_ui;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -39,8 +38,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.liminal.eagamification.ARGame;
-import com.liminal.eagamification.EasyAugmentHelper;
-import com.liminal.eagamification.MenuActivity;
+import com.liminal.eagamification.easyaugment.EasyAugmentHelper;
 import com.liminal.eagamification.R;
 import com.unity3d.player.UnityPlayerActivity;
 

@@ -5,14 +5,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ScanActivity">
+    tools:context=".easyaugment.ScanActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/fragment_container">
 
-        <fragment android:name="com.liminal.eagamification.AugmentedImageFragment"
+        <fragment android:name="com.liminal.eagamification.easyaugment.AugmentedImageFragment"
             android:id="@+id/ux_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
