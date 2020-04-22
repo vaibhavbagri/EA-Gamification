@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.liminal.eagamification">
-    <!--
-         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
-         Google Maps Android API v2, but you must specify either coarse or fine
-         location permissions for the 'MyLocation' functionality.
-    -->
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <uses-feature
@@ -30,58 +26,58 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <!--
-             The API key for Google Maps-based APIs is defined as a string resource.
-             (See the file "res/values/google_maps_api.xml").
-             Note that the API key is linked to the encryption key used to sign the APK.
-             You need a different API key for each encryption key, including the release key that is used to
-             sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/.
-        -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+        <activity
+            android:name=".SignInActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
-<!--        <activity-->
-<!--            android:name=".GoogleMapsActivity"-->
-<!--            android:label="@string/title_activity_google_maps" />-->
         <activity android:name=".MapsActivity" />
+
         <activity android:name=".CircularGaugeActivity" />
+
         <activity android:name=".PieChartActivity" />
+
         <activity android:name=".ChartsSelectActivity" />
+
         <activity android:name=".QRScannerActivity" />
+
         <activity
             android:name=".RewardsActivity"
             android:label="@string/title_activity_rewards"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".MenuActivity"
-            android:label="@string/title_activity_menu"
-            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".MainActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:label="Main Activity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".easyaugment.RedirectVideo" />
-        <activity android:name=".easyaugment.RedirectWeb" />
-        <activity android:name=".easyaugment.ScanActivity" />
+        <activity android:name=".easy_augment.RedirectVideo" />
+
+        <activity android:name=".easy_augment.RedirectWeb" />
+
+        <activity android:name=".easy_augment.ScanActivity" />
 
         <service
-            android:name=".easyaugment.MarkerDownloadService"
-            android:permission="android.permission.BIND_JOB_SERVICE" /> <!-- <meta-data -->
-        <!-- android:name="com.google.ar.core" -->
-        <!-- android:value="optional" /> -->
+            android:name=".easy_augment.MarkerDownloadService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <meta-data
+            android:name="com.google.ar.core"
+            android:value="optional" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
     </application>
 
 </manifest>

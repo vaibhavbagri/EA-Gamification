@@ -1,10 +1,9 @@
-package com.liminal.eagamification.easyaugment;
+package com.liminal.eagamification.easy_augment;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 import com.google.ar.core.AugmentedImage;
 import com.google.ar.sceneform.AnchorNode;
-import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.google.ar.sceneform.ux.TransformableNode;

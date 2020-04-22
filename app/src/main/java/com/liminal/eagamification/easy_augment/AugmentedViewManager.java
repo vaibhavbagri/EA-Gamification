@@ -1,4 +1,4 @@
-package com.liminal.eagamification.easyaugment;
+package com.liminal.eagamification.easy_augment;
 
 import android.app.Dialog;
 import android.content.Context;

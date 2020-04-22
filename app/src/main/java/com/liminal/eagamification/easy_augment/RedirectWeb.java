@@ -1,4 +1,4 @@
-package com.liminal.eagamification.easyaugment;
+package com.liminal.eagamification.easy_augment;
 
 import android.os.Bundle;
 import android.webkit.WebView;

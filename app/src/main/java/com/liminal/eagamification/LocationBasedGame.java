@@ -1,17 +1,17 @@
 package com.liminal.eagamification;
 
-public class ARGame {
+public class LocationBasedGame {
     public String name;
     public String description;
     public double latitude;
     public double longitude;
-    public long rewardPoints;
+    public String assetBundleLink;
 
-    public ARGame(String name, String description, double latitude, double longitude, long rewardPoints){
+    public LocationBasedGame(String name, String description, double latitude, double longitude, String assetBundleLink){
         this.name = name;
         this.description = description;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.rewardPoints = rewardPoints;
+        this.assetBundleLink = assetBundleLink;
     }
 }
