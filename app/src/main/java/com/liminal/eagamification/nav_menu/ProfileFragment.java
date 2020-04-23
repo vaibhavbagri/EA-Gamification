@@ -1,9 +1,11 @@
 package com.liminal.eagamification.nav_menu;
 
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -63,7 +65,8 @@ public class ProfileFragment extends Fragment {
         profilePictureView = root.findViewById(R.id.profilePictureview);
 
         Button changePicButton = root.findViewById(R.id.addPicButton);
-        Button updateProfileButton = root.findViewById(R.id.updateProfileButton);
+        CardView updateProfileButton = root.findViewById(R.id.updateProfileCardView);
+        CardView inviteFriendsButton = root.findViewById(R.id.inviteFriendsCardView);
 
         userProfileReference = FirebaseDatabase.getInstance().getReference().child("userProfileTable");
         profilePictureRef = FirebaseStorage.getInstance().getReference().child(sharedPreferences.getString("id","")).child("ProfilePicture");
@@ -93,8 +96,23 @@ public class ProfileFragment extends Fragment {
         changePicButton.setOnClickListener(v -> chooseNewImage());
         // Update profile information
         updateProfileButton.setOnClickListener(v -> updateUserProfile());
+        // Invite friends to the application
+        inviteFriendsButton.setOnClickListener(v -> shareApp());
 
         return root;
+    }
+
+
+
+    // Function to allow user to share the application link
+    private void shareApp()
+    {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "Join me in AR Explore ! \n\n https://play.google.com/store/apps/details?id=io.gartic.Gartic");
+        sendIntent.setType("text/plain");
+        Intent shareIntent = Intent.createChooser(sendIntent, null);
+        startActivity(shareIntent);
     }
 
 

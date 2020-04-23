@@ -139,12 +139,20 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         View popupMissionsView = inflater.inflate(R.layout.popup_missions, null);
         // Setup popup window
         final PopupWindow popupWindow = new PopupWindow(popupMissionsView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
-        // Show popup view at the center
-        popupWindow.showAtLocation(view, Gravity.CENTER, 0,0);
+        // Allow touch input outside the popup window
+        popupWindow.setOutsideTouchable(true);
 
-        // Button to dismiss popup
-        Button button = popupMissionsView.findViewById(R.id.quitMissionsPopupButton);
-        button.setOnClickListener(v -> popupWindow.dismiss());
+        if(popupWindow.isShowing())
+            popupWindow.dismiss();
+        else
+        {
+            // Show popup view at the center
+            popupWindow.showAtLocation(view, Gravity.CENTER, 0,0);
+
+            // Button to dismiss popup
+            Button button = popupMissionsView.findViewById(R.id.quitMissionsPopupButton);
+            button.setOnClickListener(v -> popupWindow.dismiss());
+        }
     }
 
 
@@ -169,9 +177,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     // Function to show alert box to ask user to enable GPS
     private void enableGPS(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getContext()));
-        alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
+        alertDialogBuilder.setMessage("GPS is disabled in your device. Enable GPS to continue.")
                 .setCancelable(false)
-                .setPositiveButton("Goto Settings Page To Enable GPS",
+                .setPositiveButton("Enable GPS",
                         (dialog, id) -> {
                             Intent callGPSSettingIntent = new Intent(
                                     android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -274,7 +282,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         // Setup and Customize the map
         mMap = googleMap;
         mMap.setOnMarkerClickListener(this);
-        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(Objects.requireNonNull(getContext()), R.raw.style));
+        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(Objects.requireNonNull(getContext()), R.raw.ar_explore_custom_map));
         mMap.getUiSettings().setMapToolbarEnabled(false);
 
         ValueEventListener eventListener = new ValueEventListener() {
@@ -286,14 +294,26 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                     String name = game.child("name").getValue().toString();
                     String description = game.child("description").getValue().toString();
                     String assetBundleLink = game.child("assetBundleLink").getValue().toString();
+                    String category = game.child("category").getValue().toString();
                     double latitude = (double) game.child("latitude").getValue();
                     double longitude = (double) game.child("longitude").getValue();
 
                     Marker newMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(latitude,longitude)).title(name));
                     newMarker.setTitle(null);
-                    newMarker.setTag(new LocationBasedGame(name,description,latitude,longitude,assetBundleLink));
-                    newMarker.setIcon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.event_marker),100, 100,false)));
-//                    newMarker.setFlat(true);
+                    newMarker.setTag(new LocationBasedGame(name, description, latitude, longitude, assetBundleLink));
+
+                    switch (category)
+                    {
+                        case "event" :
+                            newMarker.setIcon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.event_marker),100, 100,false)));
+                            break;
+                        case "game" :
+                            newMarker.setIcon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.game_marker),100, 100,false)));
+                            break;
+                        case "scan" :
+                            newMarker.setIcon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.scan_marker),100, 100,false)));
+                            break;
+                    }
                 }
             }
             @Override
@@ -334,7 +354,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
                         if (mLastKnownLocation != null)
                         {
-                            Log.d(TAG, "User's location is : " + String.valueOf(mLastKnownLocation.getLatitude()));
+                            Log.d(TAG, "User's location is : " + mLastKnownLocation.getLatitude());
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
                         }
                     }

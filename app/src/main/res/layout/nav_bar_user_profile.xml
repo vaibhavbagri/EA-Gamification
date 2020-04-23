@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/userProfileLayout"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_header_height"
@@ -58,10 +57,39 @@
             android:layout_gravity="center_vertical"
             android:layout_marginTop="4dp"
             android:layout_weight="1"
+            android:contentDescription="@string/coins"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/coin_icon" />
+
+        <TextView
+            android:id="@+id/ticketPointsView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:fontFamily="@font/bangers"
+            android:text="@string/default_coin_value"
+            android:textSize="30sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ticketIcon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.333" />
+
+        <ImageView
+            android:id="@+id/ticketIcon"
+            android:layout_width="50dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="12dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/tickets"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/rewardPointsView"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/ticket_icon" />
 
         <TextView
             android:id="@+id/rewardPointsView"

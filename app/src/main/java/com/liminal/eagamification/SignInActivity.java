@@ -86,6 +86,8 @@ public class SignInActivity extends AppCompatActivity {
             Log.d("EAG_USER_LOGIN","User logged in with account : " + account.getEmail());
             // Start the application
             startActivity(new Intent(this, MainActivity.class));
+            // Finish sign-in activity
+            finish();
         }
         // User hasn't already signed in
         else
@@ -141,6 +143,8 @@ public class SignInActivity extends AppCompatActivity {
                         }
                         // Start the application
                         startActivity(new Intent(SignInActivity.this, MainActivity.class));
+                        // Finish sign-in activity
+                        finish();
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {

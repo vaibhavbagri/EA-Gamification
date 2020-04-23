@@ -21,9 +21,29 @@
     <string name="hello_siree">HELLO SIREE!</string>
     <string name="about_us">About us</string>
     <string name="feedback">Feedback</string>
-    <string name="default_coin_value">0</string>
+    <string name="default_coin_value">"0 "</string>
     <string name="placeholder_greeting">Hi !</string>
 
     <string name="game_view_content_description">Game view</string>
     <string name="title_activity_google_maps">Map</string>
+    <string name="game">GAME!</string>
+    <string name="game_description">Game Description</string>
+    <string name="play">PLAY</string>
+    <string name="coins">coins</string>
+    <string name="tickets">tickets</string>
+    <string name="weekly_challenges">Weekly Challenges</string>
+    <string name="profile_picture">profile picture</string>
+    <string name="default_username">ANONYMOUS USER</string>
+    <string name="username">username</string>
+    <string name="enter_new_username">Enter new Username</string>
+    <string name="name">name</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last Name</string>
+    <string name="enter_mobile_number">Enter mobile number</string>
+    <string name="dd_mm_yyyy">dd/mm/yyyy</string>
+    <string name="bio">bio</string>
+    <string name="date_of_birth">date of birth</string>
+    <string name="i_am_interested_in">I am interested in ...</string>
+    <string name="update_profile">Update Profile</string>
+    <string name="invite_friends">Invite Friends</string>
 </resources>

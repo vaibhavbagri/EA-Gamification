@@ -11,8 +11,7 @@
         android:id="@+id/ProfilePreviewHolder"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:background="#846FF5"
-        android:elevation="10dp"
+        android:background="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,13 +25,14 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             app:cardCornerRadius="100dp"
-            app:cardElevation="0dp">
+            app:cardElevation="2dp">
 
             <ImageView
                 android:id="@+id/profilePictureview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
+                android:contentDescription="@string/profile_picture"
                 app:srcCompat="@drawable/user_avatar_default" />
 
         </androidx.cardview.widget.CardView>
@@ -56,7 +56,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="0dp"
             android:fontFamily="@font/bangers"
-            android:text="ANONYMOUS USER "
+            android:text="@string/default_username"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
             android:textSize="36sp" />
@@ -68,9 +68,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
         android:fillViewport="true"
-        app:layout_constraintBottom_toTopOf="@+id/updateProfileButton"
+        app:layout_constraintBottom_toTopOf="@+id/updateProfileCardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ProfilePreviewHolder">
@@ -94,6 +94,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_weight="1"
                     android:background="#FFFFFF"
+                    android:contentDescription="@string/username"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -106,12 +107,13 @@
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="32dp"
-                    android:backgroundTint="#846FF5"
+                    android:backgroundTint="@color/colorPrimary"
                     android:ems="10"
-                    android:fontFamily="@font/roboto"
-                    android:hint="Enter new Username"
+                    android:fontFamily="sans-serif"
+                    android:hint="@string/enter_new_username"
                     android:inputType="textPersonName"
                     android:textSize="20sp"
+                    android:typeface="normal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/userNameIcon"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -131,6 +133,7 @@
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="16dp"
                     android:layout_weight="1"
+                    android:contentDescription="@string/name"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -143,10 +146,10 @@
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="8dp"
-                    android:backgroundTint="#846FF5"
+                    android:backgroundTint="@color/colorPrimary"
                     android:ems="10"
-                    android:fontFamily="@font/roboto"
-                    android:hint="First name"
+                    android:fontFamily="sans-serif"
+                    android:hint="@string/first_name"
                     android:inputType="textPersonName"
                     android:textSize="20sp"
                     app:layout_constraintEnd_toStartOf="@+id/lastNameEditText"
@@ -160,10 +163,10 @@
                     android:layout_height="0dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="32dp"
-                    android:backgroundTint="#846FF5"
+                    android:backgroundTint="@color/colorPrimary"
                     android:ems="10"
-                    android:fontFamily="@font/roboto"
-                    android:hint="Last Name"
+                    android:fontFamily="sans-serif"
+                    android:hint="@string/last_name"
                     android:inputType="textPersonName"
                     android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -182,6 +185,7 @@
                     android:layout_height="30dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="32dp"
+                    android:layout_marginTop="16dp"
                     android:layout_weight="1"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -195,10 +199,10 @@
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="32dp"
-                    android:backgroundTint="#846FF5"
+                    android:backgroundTint="@color/colorPrimary"
                     android:ems="10"
-                    android:fontFamily="@font/roboto"
-                    android:hint="Enter mobile number"
+                    android:fontFamily="sans-serif"
+                    android:hint="@string/enter_mobile_number"
                     android:inputType="phone"
                     android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -212,6 +216,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <EditText
+                    android:id="@+id/dobEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="32dp"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:ems="10"
+                    android:fontFamily="sans-serif"
+                    android:hint="@string/dd_mm_yyyy"
+                    android:inputType="date"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/dobIcon"
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <ImageView
                     android:id="@+id/dobIcon"
                     android:layout_width="30dp"
@@ -222,26 +243,49 @@
                     android:layout_weight="1"
                     android:backgroundTint="#FFAB00"
                     android:backgroundTintMode="add"
+                    android:contentDescription="@string/date_of_birth"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/profile_dob" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/bioHolder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/bioIcon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#FFAB00"
+                    android:backgroundTintMode="add"
+                    android:contentDescription="@string/bio"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/profile_bio" />
 
                 <EditText
-                    android:id="@+id/dobEditText"
+                    android:id="@+id/bioEditText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="32dp"
-                    android:backgroundTint="#846FF5"
+                    android:backgroundTint="@color/colorPrimary"
                     android:ems="10"
-                    android:fontFamily="@font/roboto"
-                    android:hint="dd/mm/yyyy"
-                    android:inputType="date"
+                    android:fontFamily="sans-serif"
+                    android:hint="@string/i_am_interested_in"
+                    android:inputType="textLongMessage"
                     android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/dobIcon"
+                    app:layout_constraintStart_toEndOf="@+id/bioIcon"
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -250,21 +294,51 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <Button
-        android:id="@+id/updateProfileButton"
-        android:layout_width="0dp"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/updateProfileCardView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="64dp"
-        android:layout_marginEnd="64dp"
+        android:layout_marginStart="32dp"
         android:layout_marginBottom="24dp"
-        android:background="#846FF5"
-        android:elevation="10dp"
-        android:fontFamily="@font/roboto"
-        android:text="Update Profile"
-        android:textColor="@color/ic_launcher_background"
-        android:textSize="24sp"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/bangers"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp"
+            android:text="@string/update_profile"
+            android:textAllCaps="true"
+            android:textColor="@color/ic_launcher_background"
+            android:textSize="24sp" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/inviteFriendsCardView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="24dp"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/bangers"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp"
+            android:text="@string/invite_friends"
+            android:textColor="@color/ic_launcher_background"
+            android:textSize="24sp" />
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
