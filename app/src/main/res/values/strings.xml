@@ -24,6 +24,9 @@
     <string name="default_coin_value">"0 "</string>
     <string name="placeholder_greeting">Hi !</string>
 
+    <string name="tab_text_1">Experiences</string>
+    <string name="tab_text_2">Collection</string>
+
     <string name="game_view_content_description">Game view</string>
     <string name="title_activity_google_maps">Map</string>
     <string name="game">GAME!</string>
@@ -44,6 +47,6 @@
     <string name="bio">bio</string>
     <string name="date_of_birth">date of birth</string>
     <string name="i_am_interested_in">I am interested in ...</string>
-    <string name="update_profile">Update Profile</string>
-    <string name="invite_friends">Invite Friends</string>
+    <string name="update_profile">"Update Profile "</string>
+    <string name="invite_friends">"Invite Friends "</string>
 </resources>

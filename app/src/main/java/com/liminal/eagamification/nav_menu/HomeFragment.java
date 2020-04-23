@@ -49,6 +49,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.liminal.eagamification.LocationBasedGame;
 import com.liminal.eagamification.RewardsActivity;
+import com.liminal.eagamification.ar_camp.CampActivity;
 import com.liminal.eagamification.easy_augment.EasyAugmentHelper;
 import com.liminal.eagamification.MainActivity;
 import com.liminal.eagamification.R;
@@ -128,6 +129,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         // Implement button to show live updates
         FloatingActionButton liveUpdatesButton = root.findViewById(R.id.socialButton);
         liveUpdatesButton.setOnClickListener(view -> manageLiveUpdatesPopup(root, inflater));
+
+        // Implement button to show AR camp
+        FloatingActionButton campButton = root.findViewById(R.id.campButton);
+        campButton.setOnClickListener(v -> {
+            Intent campIntent = new Intent(getActivity(), CampActivity.class);
+            startActivity(campIntent);
+        });
 
         return root;
     }

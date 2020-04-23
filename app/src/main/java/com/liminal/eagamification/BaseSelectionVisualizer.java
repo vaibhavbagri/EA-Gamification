@@ -5,12 +5,8 @@ import com.google.ar.sceneform.ux.SelectionVisualizer;
 
 public class BaseSelectionVisualizer implements SelectionVisualizer {
     @Override
-    public void applySelectionVisual(BaseTransformableNode node) {
-
-    }
+    public void applySelectionVisual(BaseTransformableNode node) { }
 
     @Override
-    public void removeSelectionVisual(BaseTransformableNode node) {
-
-    }
+    public void removeSelectionVisual(BaseTransformableNode node) { }
 }
