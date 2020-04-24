@@ -332,9 +332,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         };
         locationBasedGamesTableReference.addValueEventListener(eventListener);
 
-        // Prompt the user for permission.
-        getLocationPermission();
-
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
 
@@ -385,23 +382,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
 
 
-    // Prompts the user for permission to use the device location.
-    private void getLocationPermission()
-    {
-        if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()).getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-        {
-            Log.d(TAG, "Location permission already granted");
-            mLocationPermissionGranted = true;
-        }
-        else
-        {
-            Log.d(TAG, "Requesting location permission");
-        }
-            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-    }
-
-
-
     // Handles the result of the request for location permissions.
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
@@ -433,7 +413,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                     mMap.setMyLocationEnabled(false);
                     mMap.getUiSettings().setMyLocationButtonEnabled(false);
                     mLastKnownLocation = null;
-                    getLocationPermission();
                 }
             }
             catch (SecurityException e)
