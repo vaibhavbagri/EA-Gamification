@@ -3,10 +3,13 @@ package com.liminal.eagamification;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -49,6 +52,9 @@ public class SignInActivity extends AppCompatActivity {
     // Shared preferences to store user details
     SharedPreferences sharedPreferences;
 
+    // Constants
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,12 +68,26 @@ public class SignInActivity extends AppCompatActivity {
         // Get reference to User Profile table
         userProfileReference = FirebaseDatabase.getInstance().getReference().child("userProfileTable");
 
+        // Request location permission
+        requestLocationPermission();
+
         // Show a loader on the splash screen
         ImageView loaderView = findViewById(R.id.loadingGifView);
         Glide.with(this).asGif().load(R.drawable.loading_cube).into(loaderView);
 
         // Authenticate users after a delay
         new Handler().postDelayed(this::authenticateUser, splashScreenTime);
+    }
+
+
+
+    // Function to request user location
+    private void requestLocationPermission()
+    {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
     }
 
 
@@ -180,8 +200,15 @@ public class SignInActivity extends AppCompatActivity {
         userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("lastName").setValue(account.getFamilyName());
         userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("photoURL").setValue(String.valueOf(account.getPhotoUrl()));
 
-        // Set reward points to 0
-        userProfileReference.child(sharedPreferences.getString("id","")).child("rewardDetails").child("rewardPoints").setValue(0);
+        // Setup user currency
+        userProfileReference.child(sharedPreferences.getString("id","")).child("rewardDetails").child("coins").setValue(0);
+        userProfileReference.child(sharedPreferences.getString("id","")).child("rewardDetails").child("tickets").setValue(0);
+
+        // Setup user statistics
+        userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("general").child("campExperiences").setValue(0);
+        userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("general").child("markersScanned").setValue(0);
+        userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("general").child("itemsCollected").setValue(0);
+        userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("general").child("rewardsClaimed").setValue(0);
     }
 
 

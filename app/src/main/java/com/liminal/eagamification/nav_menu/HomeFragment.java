@@ -389,8 +389,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     private void getLocationPermission()
     {
         if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()).getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+        {
+            Log.d(TAG, "Location permission already granted");
             mLocationPermissionGranted = true;
+        }
         else
+        {
+            Log.d(TAG, "Requesting location permission");
+        }
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
     }
 

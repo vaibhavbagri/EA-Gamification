@@ -15,7 +15,6 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -71,7 +70,8 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Read data from firebase
                 updateUserProfileLayout(
-                        (Long) dataSnapshot.child("rewardDetails").child("rewardPoints").getValue(),
+                        (long) dataSnapshot.child("rewardDetails").child("coins").getValue(),
+                        (long) dataSnapshot.child("rewardDetails").child("tickets").getValue(),
                         (String) dataSnapshot.child("personalDetails").child("firstName").getValue(),
                         (String) dataSnapshot.child("personalDetails").child("photoURL").getValue());
             }
@@ -90,21 +90,23 @@ public class MainActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
-    void updateUserProfileLayout(long rewardPoints, String userName, String photoURL)
+    void updateUserProfileLayout(long coins, long tickets, String userName, String photoURL)
     {
         // Update username
         TextView userNameView = findViewById(R.id.userNameView);
         userNameView.setText("Hi " + userName + "!");
 
-        // Update reward points
-        TextView rewardPointsView = findViewById(R.id.rewardPointsView);
-        rewardPointsView.setText(rewardPoints + " ");
+        // Update coins and tickets
+        TextView coinsView = findViewById(R.id.coinPointsView);
+        coinsView.setText(coins + " ");
+        TextView ticketsView = findViewById(R.id.ticketPointsView);
+        coinsView.setText(tickets + " ");
 
         // Update profile picture
         ImageView profilePictureView = findViewById(R.id.profilePictureview);
         Glide.with(this).load(Uri.parse(photoURL)).into(profilePictureView);
 
-        Log.d("EAG_UPDATE_PROFILE", "Username : " + userName + " Reward Points : " + rewardPoints);
+        Log.d("EAG_UPDATE_PROFILE", "Username : " + userName + " Coins : " + coins + " Tickets : " + tickets);
     }
 
     @Override
