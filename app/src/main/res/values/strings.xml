@@ -36,7 +36,7 @@
     <string name="tickets">tickets</string>
     <string name="weekly_challenges">Weekly Challenges</string>
     <string name="profile_picture">profile picture</string>
-    <string name="default_username">ANONYMOUS USER</string>
+    <string name="default_username">"ANONYMOUS USER "</string>
     <string name="username">username</string>
     <string name="enter_new_username">Enter new Username</string>
     <string name="name">name</string>

@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         TextView coinsView = findViewById(R.id.coinPointsView);
         coinsView.setText(coins + " ");
         TextView ticketsView = findViewById(R.id.ticketPointsView);
-        coinsView.setText(tickets + " ");
+        ticketsView.setText(tickets + " ");
 
         // Update profile picture
         ImageView profilePictureView = findViewById(R.id.profilePictureview);

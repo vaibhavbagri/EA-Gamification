@@ -68,26 +68,35 @@ public class SignInActivity extends AppCompatActivity {
         // Get reference to User Profile table
         userProfileReference = FirebaseDatabase.getInstance().getReference().child("userProfileTable");
 
-        // Request location permission
-        requestLocationPermission();
-
         // Show a loader on the splash screen
         ImageView loaderView = findViewById(R.id.loadingGifView);
         Glide.with(this).asGif().load(R.drawable.loading_cube).into(loaderView);
 
-        // Authenticate users after a delay
-        new Handler().postDelayed(this::authenticateUser, splashScreenTime);
+        // Request location permission
+        new Handler().postDelayed(this::requestLocationPermission, splashScreenTime);
     }
 
 
+
+    // Function is called when location permission is granted
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if(requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION &&  grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+        {
+            // Authenticate user when location permission is granted
+            authenticateUser();
+        }
+    }
 
     // Function to request user location
     private void requestLocationPermission()
     {
         if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-        {
+            // Request permission if not granted
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
+        else
+            // Authenticate user when location permission is granted
+            authenticateUser();
     }
 
 

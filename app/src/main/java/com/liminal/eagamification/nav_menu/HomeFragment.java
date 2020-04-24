@@ -73,7 +73,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private boolean mLocationPermissionGranted;
     private Location mLastKnownLocation;
     private boolean isMapOpened = false;
 
@@ -346,74 +345,43 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     private void getDeviceLocation() {
         Log.d(TAG,"Device location requested");
         try {
-            // Location permission granted
-            if (mLocationPermissionGranted)
-            {
-                Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(Objects.requireNonNull(getActivity()), task -> {
-                    if (task.isSuccessful())
+            Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
+            locationResult.addOnCompleteListener(Objects.requireNonNull(getActivity()), task -> {
+                if (task.isSuccessful())
+                {
+                    // Set the map's camera position to the current location of the device.
+                    Log.d(TAG,"Location obtained");
+                    mLastKnownLocation = task.getResult();
+
+                    if (mLastKnownLocation != null)
                     {
-                        // Set the map's camera position to the current location of the device.
-                        Log.d(TAG,"Location obtained");
-                        mLastKnownLocation = task.getResult();
-
-                        if (mLastKnownLocation != null)
-                        {
-                            Log.d(TAG, "User's location is : " + mLastKnownLocation.getLatitude());
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-                        }
+                        Log.d(TAG, "User's location is : " + mLastKnownLocation.getLatitude());
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
                     }
-                    else
-                        {
-                        Log.d(TAG, "Unable to retrieve location. Using default location instead.");
-                        Log.e(TAG, "Exception: %s", task.getException());
+                }
+                else
+                    {
+                    Log.d(TAG, "Unable to retrieve location. Using default location instead.");
+                    Log.e(TAG, "Exception: %s", task.getException());
 
-                        // Set the map's camera position to the default location.
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
-                        mMap.getUiSettings().setMyLocationButtonEnabled(false);
-                        }
-                });
-            }
+                    // Set the map's camera position to the default location.
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
+                    mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                    }
+            });
         }
         catch (SecurityException e)  {
             Log.e("Exception: %s", e.getMessage());
         }
     }
 
-
-
-    // Handles the result of the request for location permissions.
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
-    {
-        mLocationPermissionGranted = false;
-        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {// If request is cancelled, the result arrays are empty.
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                mLocationPermissionGranted = true;
-            }
-        }
-        updateLocationUI();
-    }
-
-
-
     // Updates the map's UI settings based on whether the user has granted location permission.
     private void updateLocationUI() {
         if (mMap != null) {
             try
             {
-                if (mLocationPermissionGranted)
-                {
-                    mMap.setMyLocationEnabled(true);
-                    mMap.getUiSettings().setMyLocationButtonEnabled(true);
-                }
-                else
-                {
-                    mMap.setMyLocationEnabled(false);
-                    mMap.getUiSettings().setMyLocationButtonEnabled(false);
-                    mLastKnownLocation = null;
-                }
+                mMap.setMyLocationEnabled(true);
+                mMap.getUiSettings().setMyLocationButtonEnabled(true);
             }
             catch (SecurityException e)
             {
@@ -425,120 +393,3 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
 
 }
-
-//public class HomeFragment extends Fragment {
-//
-//    //Location services
-//    private FusedLocationProviderClient client;
-//
-//    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//        View root = inflater.inflate(R.layout.fragment_temp, container, false);
-//
-//        ImageView loaderView = root.findViewById(R.id.menuAdvertisementImageView);
-//        Glide.with(this).asGif().load(R.drawable.scenery).into(loaderView);
-//
-//        EasyAugmentHelper easyAugmentHelper = new EasyAugmentHelper("101", Objects.requireNonNull(getActivity()), MainActivity.class.getName());
-//        easyAugmentHelper.loadMarkerImages();
-//
-//        Button haikuButton = root.findViewById(R.id.gameStartButton1);
-//        Button driveButton = root.findViewById(R.id.gameStartButton2);
-//        Button chartButton = root.findViewById(R.id.gameStartButton3);
-//        Button gmapsButton = root.findViewById(R.id.gameStartButton4);
-//
-//        client = LocationServices.getFusedLocationProviderClient(Objects.requireNonNull(getContext()));
-//
-////        gmapsButton.setOnClickListener(v -> {
-////            AlphaAnimation buttonClick = new AlphaAnimation(1f, 0.5f);
-////            buttonClick.setDuration(100);
-////            v.startAnimation(buttonClick);
-////            client.getLastLocation().addOnSuccessListener(getActivity(), location -> {
-////                if(location!=null)
-////                    Log.d("EAG_LOCATION",location.toString());
-////            });
-////            new Handler().postDelayed(() -> {
-////                Intent unityIntent = new Intent(getActivity(), GoogleMapsActivity.class);
-////                startActivity(unityIntent);
-////            },100);
-////        });
-//
-//        chartButton.setOnClickListener(v -> {
-//            AlphaAnimation buttonClick = new AlphaAnimation(1f, 0.5f);
-//            buttonClick.setDuration(100);
-//            v.startAnimation(buttonClick);
-//            client.getLastLocation().addOnSuccessListener(getActivity(), location -> {
-//                if(location!=null)
-//                    Log.d("EAG_LOCATION",location.toString());
-//            });
-//            new Handler().postDelayed(() -> {
-//                Intent unityIntent = new Intent(getActivity(), ChartsSelectActivity.class);
-//                startActivity(unityIntent);
-//            },100);
-//        });
-//
-//        haikuButton.setOnClickListener(v -> {
-//            AlphaAnimation buttonClick = new AlphaAnimation(1f, 0.5f);
-//            buttonClick.setDuration(100);
-//            v.startAnimation(buttonClick);
-//            client.getLastLocation().addOnSuccessListener(getActivity(), location -> {
-//                if(location!=null)
-//                    Log.d("EAG_LOCATION",location.toString());
-//            });
-//            Toast.makeText(getContext(), "Database is setting up, please wait.", Toast.LENGTH_LONG).show();
-//            new Handler().postDelayed(easyAugmentHelper::activateScanner,100);
-//        });
-//
-////        driveButton.setOnClickListener(v -> {
-////            AlphaAnimation buttonClick = new AlphaAnimation(1f, 0.5f);
-////            buttonClick.setDuration(100);
-////            v.startAnimation(buttonClick);
-////            new Handler().postDelayed(() -> {
-////                Intent unityIntent = new Intent(getActivity(), UnityPlayerActivity.class);
-////                startActivity(unityIntent);
-////            },100);
-////        });
-//
-//        return root;
-//    }
-//
-////    void chooseNewImage() {
-////        android.content.Intent intent = new android.content.Intent(android.content.Intent.ACTION_GET_CONTENT);
-////        intent.addCategory(android.content.Intent.CATEGORY_OPENABLE);
-////        intent.setType("image/*");
-////        startActivityForResult(android.content.Intent.createChooser(intent, "Select target augmented image"),1);
-////    }
-////
-////
-////    @Override
-////    public void onActivityResult(int requestCode, int resultCode, android.content.Intent data) {
-////        super.onActivityResult(requestCode, resultCode, data);
-////        try {
-////            if (resultCode == android.app.Activity.RESULT_OK) {
-////                if (requestCode == 1)
-////                {
-////                    Uri imagePath = data.getData();
-//////                    File file = new File(imagePath.getPath());
-////                    StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("stor.jpg");
-////
-////                    storageReference.putFile(imagePath)
-////                            .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-////                                @Override
-////                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-////                                    // Get a URL to the uploaded content
-////
-//////                                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
-////                                }
-////                            })
-////                            .addOnFailureListener(new OnFailureListener() {
-////                                @Override
-////                                public void onFailure(@NonNull Exception exception) {
-////                                    // Handle unsuccessful uploads
-////                                    // ...
-////                                }
-////                            });
-////                }
-////            }
-////        } catch (Exception e) {
-////            Log.e("EAG", "onActivityResult - target image selection error ", e);
-////        }
-////    }
-//}
