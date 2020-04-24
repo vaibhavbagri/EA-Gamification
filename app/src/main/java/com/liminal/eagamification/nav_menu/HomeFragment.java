@@ -25,8 +25,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -72,7 +70,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     private LocationManager locationManager;
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient mFusedLocationProviderClient;
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private Location mLastKnownLocation;
     private boolean isMapOpened = false;
 
@@ -355,7 +352,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
                     if (mLastKnownLocation != null)
                     {
-                        Log.d(TAG, "User's location is : " + mLastKnownLocation.getLatitude());
+                        Log.d(TAG, "User's location is : " + mLastKnownLocation.getLatitude() + " " + mLastKnownLocation.getLongitude() );
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
                     }
                 }

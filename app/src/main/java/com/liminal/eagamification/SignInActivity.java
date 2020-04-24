@@ -38,7 +38,7 @@ import java.util.Objects;
 public class SignInActivity extends AppCompatActivity {
 
     // Time for which splash screen should be shown
-    private int splashScreenTime = 2000;
+    private int splashScreenTime = 1500;
 
     // Account that stores user details
     private GoogleSignInAccount account;
@@ -86,7 +86,15 @@ public class SignInActivity extends AppCompatActivity {
             // Authenticate user when location permission is granted
             authenticateUser();
         }
+        else
+        {
+            // Exit application if permission is denied
+            Toast.makeText(this, "AR Explore needs access to user location to function. Please allow access to continue.", Toast.LENGTH_LONG).show();
+            new Handler().postDelayed(this::finish, splashScreenTime);
+        }
     }
+
+
 
     // Function to request user location
     private void requestLocationPermission()

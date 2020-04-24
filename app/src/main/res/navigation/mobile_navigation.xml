@@ -19,6 +19,12 @@
         tools:layout="@layout/fragment_about_us" />
 
     <fragment
+        android:id="@+id/nav_dashboard"
+        android:name="com.liminal.eagamification.nav_menu.DashboardFragment"
+        android:label="Dashboard"
+        tools:layout="@layout/fragment_dashboard" />
+
+    <fragment
         android:id="@+id/nav_about_us"
         android:name="com.liminal.eagamification.nav_menu.AboutUsFragment"
         android:label="@string/about_us"

@@ -13,11 +13,15 @@
             android:icon="@drawable/profile_logo"
             android:title="Profile" />
         <item
+            android:id="@+id/nav_dashboard"
+            android:icon="@drawable/dashboard_logo"
+            android:title="Dashboard" />
+        <item
             android:id="@+id/nav_about_us"
             android:icon="@drawable/about_us_logo"
             android:title="About us" />
         <item
-            android:icon="@drawable/ar_explore_logo"
-            android:title="Version 1.420.69" />
+            android:icon="@drawable/version_logo"
+            android:title="Version 9.4.1999" />
     </group>
 </menu>
