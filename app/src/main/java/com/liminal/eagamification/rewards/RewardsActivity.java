@@ -1,8 +1,4 @@
-package com.liminal.eagamification.ar_camp;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager.widget.ViewPager;
+package com.liminal.eagamification.rewards;
 
 import android.os.Bundle;
 
@@ -11,12 +7,16 @@ import com.liminal.eagamification.R;
 
 import java.util.Objects;
 
-public class CampActivity extends AppCompatActivity {
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class RewardsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_camp);
+        setContentView(R.layout.activity_rewards);
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);

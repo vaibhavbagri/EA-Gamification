@@ -9,14 +9,13 @@
         android:id="@+id/nav_home"
         android:name="com.liminal.eagamification.nav_menu.HomeFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_temp">
-    </fragment>
+        tools:layout="@layout/fragment_home"/>
 
     <fragment
         android:id="@+id/nav_profile"
         android:name="com.liminal.eagamification.nav_menu.ProfileFragment"
         android:label="Profile"
-        tools:layout="@layout/fragment_about_us" />
+        tools:layout="@layout/fragment_profile" />
 
     <fragment
         android:id="@+id/nav_dashboard"

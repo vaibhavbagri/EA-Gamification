@@ -1,16 +1,18 @@
-package com.liminal.eagamification;
+package com.liminal.eagamification.rewards;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.liminal.eagamification.R;
+
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class RewardsAdapter extends RecyclerView.Adapter<RewardsAdapter.MyViewHolder> {
+public class ClaimRewardsAdapter extends RecyclerView.Adapter<ClaimRewardsAdapter.MyViewHolder> {
 
     private List<RewardDetails> rewardDetailsList;
 
@@ -18,7 +20,7 @@ public class RewardsAdapter extends RecyclerView.Adapter<RewardsAdapter.MyViewHo
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.reward_list_row, parent, false);
+                .inflate(R.layout.claim_reward_list_row, parent, false);
 
         return new MyViewHolder(itemView);
     }
@@ -26,10 +28,10 @@ public class RewardsAdapter extends RecyclerView.Adapter<RewardsAdapter.MyViewHo
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         RewardDetails rewardDetails = rewardDetailsList.get(position);
-        holder.title.setText(rewardDetails.getTitle());
-        holder.description.setText(rewardDetails.getDescription());
-        holder.cost.setText(String.valueOf(rewardDetails.getCost()));
-        holder.quantity.setText(String.valueOf(rewardDetails.getQuantity()));
+        holder.title.setText(rewardDetails.title);
+        holder.description.setText(rewardDetails.description);
+        holder.cost.setText(String.valueOf(rewardDetails.cost));
+        holder.quantity.setText(String.valueOf(rewardDetails.quantity));
     }
 
     @Override
@@ -50,7 +52,7 @@ public class RewardsAdapter extends RecyclerView.Adapter<RewardsAdapter.MyViewHo
         }
     }
 
-    RewardsAdapter(List<RewardDetails> rewardDetailsList){
+    ClaimRewardsAdapter(List<RewardDetails> rewardDetailsList){
         this.rewardDetailsList = rewardDetailsList;
     }
 }

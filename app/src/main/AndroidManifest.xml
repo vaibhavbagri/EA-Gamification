@@ -26,8 +26,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".ar_camp.CampActivity"
-            android:theme="@style/AppTheme.OnlyStatusBar"></activity>
+        <activity
+            android:name=".ar_camp.CampActivity"
+            android:label="@string/title_activity_camp"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".rewards.RewardsActivity"
+            android:label="@string/title_activity_rewards"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SignInActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
@@ -41,11 +47,7 @@
         <activity android:name=".CircularGaugeActivity" />
         <activity android:name=".PieChartActivity" />
         <activity android:name=".ChartsSelectActivity" />
-        <activity android:name=".QRScannerActivity" />
-        <activity
-            android:name=".RewardsActivity"
-            android:label="@string/title_activity_rewards"
-            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".rewards.QRScannerActivity" />
         <activity
             android:name=".MainActivity"
             android:label="Main Activity"

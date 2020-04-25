@@ -20,6 +20,7 @@
             android:id="@+id/nav_about_us"
             android:icon="@drawable/about_us_logo"
             android:title="About us" />
+
         <item
             android:icon="@drawable/version_logo"
             android:title="Version 9.4.1999" />

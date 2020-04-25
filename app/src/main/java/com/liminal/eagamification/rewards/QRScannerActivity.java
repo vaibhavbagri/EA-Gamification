@@ -1,4 +1,4 @@
-package com.liminal.eagamification;
+package com.liminal.eagamification.rewards;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -7,18 +7,16 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+import com.liminal.eagamification.R;
 
 import java.io.IOException;
 
@@ -97,6 +95,11 @@ public class QRScannerActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        setResult(CommonStatusCodes.ERROR, new Intent());
+        finish();
+    }
 
     @Override
     protected void onPause() {

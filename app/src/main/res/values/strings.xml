@@ -14,7 +14,8 @@
     <string name="menu_slideshow">Slideshow</string>
 
     <string name="home_second">Home Second</string>
-    <string name="title_activity_rewards">Claim Rewards</string>
+    <string name="title_activity_rewards">Rewards</string>
+    <string name="title_activity_camp">AR Camp</string>
 
     <string name="fit_image_to_scan">Fit image to scan</string>
     <string name="ok_boomer">OK BOOMER</string>
@@ -49,4 +50,7 @@
     <string name="i_am_interested_in">I am interested in ...</string>
     <string name="update_profile">"Update Profile "</string>
     <string name="invite_friends">"Invite Friends "</string>
+
+    <string name="rewards_tab_text_1">Claim Rewards</string>
+    <string name="rewards_tab_text_2">My Rewards</string>
 </resources>
