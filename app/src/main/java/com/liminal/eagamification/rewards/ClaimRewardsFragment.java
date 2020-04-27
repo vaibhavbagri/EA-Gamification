@@ -78,7 +78,7 @@ public class ClaimRewardsFragment extends Fragment {
             public void onClick(View view, int position) {
                 RewardDetails rewardDetails = rewardDetailsList.get(position);
                 final Dialog inputTextDialog = new Dialog(Objects.requireNonNull(getContext()));
-                inputTextDialog.setContentView(R.layout.dialog_box_reward_claim);
+                inputTextDialog.setContentView(R.layout.dialog_box_claim_reward);
 
                 Button cancelButton = inputTextDialog.findViewById(R.id.cancelButton);
                 Button buyButton = inputTextDialog.findViewById(R.id.buyButton);

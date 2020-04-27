@@ -1,4 +1,4 @@
-package com.liminal.eagamification.rewards;
+package com.liminal.eagamification.ar_camp;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,47 +12,45 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class ClaimRewardsAdapter extends RecyclerView.Adapter<ClaimRewardsAdapter.MyViewHolder> {
+public class ExperiencesAdapter extends RecyclerView.Adapter<ExperiencesAdapter.MyViewHolder> {
 
-    private List<RewardDetails> rewardDetailsList;
+    private List<ARExperiences> arExperiencesList;
 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_row_claim_reward, parent, false);
+                .inflate(R.layout.list_row_ar_experience, parent, false);
 
         return new MyViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        RewardDetails rewardDetails = rewardDetailsList.get(position);
-        holder.title.setText(rewardDetails.title);
-        holder.description.setText(rewardDetails.description);
-        holder.cost.setText(String.valueOf(rewardDetails.cost));
-        holder.quantity.setText(String.valueOf(rewardDetails.quantity));
+        ARExperiences arExperiences = arExperiencesList.get(position);
+        holder.title.setText(arExperiences.title);
+        holder.description.setText(arExperiences.description);
+        holder.rewards.setText(arExperiences.rewards);
     }
 
     @Override
     public int getItemCount() {
-        return rewardDetailsList.size();
+        return arExperiencesList.size();
     }
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView title, description, cost, quantity;
+        TextView title, description, rewards;
 
         MyViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title);
             description = itemView.findViewById(R.id.description);
-            cost = itemView.findViewById(R.id.cost);
-            quantity = itemView.findViewById(R.id.quantity);
+            rewards = itemView.findViewById(R.id.rewards);
         }
     }
 
-    ClaimRewardsAdapter(List<RewardDetails> rewardDetailsList){
-        this.rewardDetailsList = rewardDetailsList;
+    ExperiencesAdapter(List<ARExperiences> arExperiencesList){
+        this.arExperiencesList = arExperiencesList;
     }
 }

@@ -20,7 +20,7 @@ public class MyRewardsAdapter extends RecyclerView.Adapter<MyRewardsAdapter.MyVi
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.my_reward_list_row, parent, false);
+                .inflate(R.layout.list_row_my_reward, parent, false);
 
         return new MyViewHolder(itemView);
     }
