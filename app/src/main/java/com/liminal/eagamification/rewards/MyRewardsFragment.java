@@ -107,6 +107,7 @@ public class MyRewardsFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        Log.d("REWARDS_FRAGMENT",data.toString()+requestCode+resultCode);
         if(requestCode == QRCODE_CAPTURE){
             if(resultCode == CommonStatusCodes.SUCCESS){
                 userRewardsReference.child(claimedReward.rid).removeValue();
