@@ -160,8 +160,10 @@ public class SignInActivity extends AppCompatActivity {
                 // Firebase authentication
                 firebaseAuthWithGoogle(account);
 
-                // Add account ID to shared preferences
+                // Add account ID, first name and last name to shared preferences
                 sharedPreferences.edit().putString("id", account.getId()).apply();
+                sharedPreferences.edit().putString("firstName", account.getGivenName()).apply();
+                sharedPreferences.edit().putString("lastName", account.getFamilyName()).apply();
 
                 // Check if account ID exists in the database
                 ValueEventListener idListener = new ValueEventListener() {
@@ -212,6 +214,9 @@ public class SignInActivity extends AppCompatActivity {
         Log.d("EAG_USER_PROFILE", "Adding new User to Database \nEmail : " + account.getEmail() + " Name : " + account.getGivenName() + " " + account.getFamilyName() + " Photo URL : " + account.getPhotoUrl());
 
         // Add profile to User Profile table
+        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("username").setValue("Anon");
+        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("DOB").setValue("NA");
+        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("mobileNo").setValue("NA");
         userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("email").setValue(account.getEmail());
         userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("firstName").setValue(account.getGivenName());
         userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("lastName").setValue(account.getFamilyName());

@@ -1,9 +1,15 @@
 package com.liminal.eagamification.nav_menu;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,6 +34,12 @@ import com.anychart.graphics.vector.Fill;
 import com.anychart.graphics.vector.SolidFill;
 import com.anychart.graphics.vector.text.HAlign;
 import com.anychart.graphics.vector.text.VAlign;
+import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.liminal.eagamification.R;
 
 import java.util.ArrayList;
@@ -35,12 +47,68 @@ import java.util.List;
 
 public class DashboardFragment extends Fragment{
 
-
-
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
-        AnyChartView anyChartView = root.findViewById(R.id.any_chart_view);
+        // Get user details stored in shared preferences
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("User_Details", Context.MODE_PRIVATE);
+
+        // Get Username, Profile picture, Coins and Tickets from Firebase
+        DatabaseReference userProfileReference = FirebaseDatabase.getInstance().getReference().child("userProfileTable");
+
+        // Add a listener to update UI when User Profile is updated
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Read data from firebase
+                updateUserProfileLayout( root,
+                        (long) dataSnapshot.child("rewardDetails").child("coins").getValue(),
+                        (long) dataSnapshot.child("rewardDetails").child("tickets").getValue(),
+                        (String) dataSnapshot.child("personalDetails").child("username").getValue(),
+                        (String) dataSnapshot.child("personalDetails").child("photoURL").getValue());
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Read failed
+                Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
+            }
+        };
+        userProfileReference.child(sharedPreferences.getString("id","")).addValueEventListener(eventListener);
+
+        generatePieChart(root);
+        generateCircularGaugeChart(root);
+
+        return root;
+    }
+
+
+
+    // Function to load user details into UI
+    private void updateUserProfileLayout(View view, long coins, long tickets, String userName, String photoURL)
+    {
+        // Update username
+        TextView userNameView = view.findViewById(R.id.usernameTextView);
+        userNameView.setText(userName + " ");
+
+        // Update coins and tickets
+        TextView coinsView = view.findViewById(R.id.coinsTextView);
+        coinsView.setText(coins + " ");
+        TextView ticketsView = view.findViewById(R.id.ticketsTextView);
+        ticketsView.setText(tickets + " ");
+
+        // Update profile picture
+        ImageView profilePictureView = view.findViewById(R.id.profilePictureView);
+        Glide.with(getActivity().getApplicationContext()).load(Uri.parse(photoURL)).into(profilePictureView);
+
+        Log.d("EAG_UPDATE_PROFILE", "Username : " + userName + " Coins : " + coins + " Tickets : " + tickets);
+    }
+
+
+
+    // Function to create a Pie Chart
+    private void generatePieChart(View view)
+    {
+        AnyChartView anyChartView = view.findViewById(R.id.any_chart_view);
         APIlib.getInstance().setActiveAnyChartView(anyChartView);
 
 
@@ -64,7 +132,6 @@ public class DashboardFragment extends Fragment{
         pie.title("Time spent on AR explore (Hours)");
 
         pie.labels().position("outside");
-
         pie.legend().title().enabled(false);
 
         pie.legend()
@@ -73,8 +140,14 @@ public class DashboardFragment extends Fragment{
                 .align(Align.CENTER);
 
         anyChartView.setChart(pie);
+    }
 
-        AnyChartView anyChartView2 = root.findViewById(R.id.any_chart_view_2);
+
+
+    // Function to create a Circular Gauge Chart
+    private void generateCircularGaugeChart(View view)
+    {
+        AnyChartView anyChartView2 = view.findViewById(R.id.any_chart_view_2);
         APIlib.getInstance().setActiveAnyChartView(anyChartView2);
 
         CircularGauge circularGauge = AnyChart.circular();
@@ -203,7 +276,7 @@ public class DashboardFragment extends Fragment{
         bar103.stroke("1 #e5e4e4");
         bar103.zIndex(4d);
 
-        circularGauge.margin(50d, 50d, 50d, 50d);
+        circularGauge.margin(20d, 0d, 0d, 20d);
         circularGauge.title()
                 .text("Minigame progression' +\n" +
                         "    '<br/><span style=\"color:#929292; font-size: 12px;\">(Games maybe updated)</span>")
@@ -215,7 +288,5 @@ public class DashboardFragment extends Fragment{
                 .margin(0d, 0d, 20d, 0d);
 
         anyChartView2.setChart(circularGauge);
-
-        return root;
     }
 }
