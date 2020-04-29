@@ -7,6 +7,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -25,12 +26,15 @@ public class QRScannerActivity extends AppCompatActivity {
     SurfaceView surfaceView;
     private CameraSource cameraSource;
     private static final int REQUEST_CAMERA_PERMISSION = 201;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_q_r_scanner);
         surfaceView = findViewById(R.id.surfaceView);
+        intent = new Intent();
+        Log.d("REWARDS_FRAGMENT","On create");
     }
 
     private void initialiseDetectorsAndSources() {
@@ -97,6 +101,7 @@ public class QRScannerActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        Log.d("REWARDS_FRAGMENT","Back pressed");
         setResult(CommonStatusCodes.ERROR, new Intent());
         finish();
     }
@@ -104,12 +109,14 @@ public class QRScannerActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d("REWARDS_FRAGMENT","On pause");
         cameraSource.release();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d("REWARDS_FRAGMENT","On resume");
         initialiseDetectorsAndSources();
     }
 }
