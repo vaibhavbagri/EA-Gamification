@@ -46,12 +46,15 @@ public class ProfileFragment extends Fragment {
     private EditText lastNameEditText;
     private EditText phoneNoEditText;
     private EditText DOBEditText;
+    private EditText bioEditText;
 
     private ImageView profilePictureView;
 
     private SharedPreferences sharedPreferences;
     private StorageReference profilePictureRef;
     private DatabaseReference userProfileReference;
+
+    private String currUsername;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_profile, container, false);
@@ -67,6 +70,7 @@ public class ProfileFragment extends Fragment {
         lastNameEditText = root.findViewById(R.id.lastNameEditText);
         phoneNoEditText = root.findViewById(R.id.phoneEditText);
         DOBEditText = root.findViewById(R.id.dobEditText);
+        bioEditText = root.findViewById(R.id.bioEditText);
 
         profilePictureView = root.findViewById(R.id.profilePictureview);
 
@@ -82,14 +86,18 @@ public class ProfileFragment extends Fragment {
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                // Store current username in a temporary variable
+                currUsername = (String) dataSnapshot.child("personalDetails").child("username").getValue();
+
                 // Read data from firebase and update EditProfile layout
                 updateUserProfileLayout(
-                        (String) dataSnapshot.child("personalDetails").child("username").getValue(),
+                        currUsername,
                         (String) dataSnapshot.child("personalDetails").child("firstName").getValue(),
                         (String) dataSnapshot.child("personalDetails").child("lastName").getValue(),
                         (String) dataSnapshot.child("personalDetails").child("DOB").getValue(),
                         (String) dataSnapshot.child("personalDetails").child("mobileNo").getValue(),
-                        (String) dataSnapshot.child("personalDetails").child("photoURL").getValue());
+                        (String) dataSnapshot.child("personalDetails").child("photoURL").getValue(),
+                        (String) dataSnapshot.child("personalDetails").child("bio").getValue());
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -142,7 +150,7 @@ public class ProfileFragment extends Fragment {
 
 
     // Function to update Edit Profile Layout with current field values
-    private void updateUserProfileLayout(String username, String firstName, String lastName, String dob, String mobileNo, String photo_url)
+    private void updateUserProfileLayout(String username, String firstName, String lastName, String dob, String mobileNo, String photo_url, String bio)
     {
         // Set Text fields for all Edit texts
         if(!username.equals("Anon"))
@@ -154,6 +162,8 @@ public class ProfileFragment extends Fragment {
             DOBEditText.setText(dob);
         if(!mobileNo.equals("NA"))
             phoneNoEditText.setText(mobileNo);
+        if(!bio.equals("NA"))
+            bioEditText.setText(bio);
 
         firstNameEditText.setText(firstName);
         lastNameEditText.setText(lastName);
@@ -208,6 +218,7 @@ public class ProfileFragment extends Fragment {
         String lastName = String.valueOf(lastNameEditText.getText()).equals("")? sharedPreferences.getString("firstName","Doe") : String.valueOf(lastNameEditText.getText());
         String DOB = String.valueOf(DOBEditText.getText()).equals("") ? "NA" : String.valueOf(DOBEditText.getText());
         String mobileNumber = String.valueOf(phoneNoEditText.getText()).equals("") ? "NA" : String.valueOf(phoneNoEditText.getText());
+        String bio = String.valueOf(bioEditText.getText()).equals("") ? "NA" : String.valueOf(bioEditText.getText());
 
         if(isUsernameValid(username) && isNameValid(firstName) && isNameValid(lastName) && isMobileNumberValid(mobileNumber))
         {
@@ -218,8 +229,10 @@ public class ProfileFragment extends Fragment {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             // username is unique
-                            if (!dataSnapshot.exists())
+                            if (!dataSnapshot.exists() || username.equals(currUsername))
                             {
+                                Log.d("EAG_PROFILE", "Updating user profile");
+                                // If username is not set, donot modify the username table
                                 if(username != "Anon")
                                     // Update usernames table
                                     userNameDatabaseReference.child(sharedPreferences.getString("id", "")).child("username").setValue(username);
@@ -230,6 +243,7 @@ public class ProfileFragment extends Fragment {
                                 userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("lastName").setValue(lastName);
                                 userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("DOB").setValue(DOB);
                                 userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("mobileNo").setValue(mobileNumber);
+                                userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("bio").setValue(bio);
                             }
                             else
                                 Toast.makeText(getActivity(), "Username already exists", Toast.LENGTH_SHORT).show();

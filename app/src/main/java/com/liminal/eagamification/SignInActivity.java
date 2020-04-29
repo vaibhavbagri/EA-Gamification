@@ -217,6 +217,7 @@ public class SignInActivity extends AppCompatActivity {
         userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("username").setValue("Anon");
         userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("DOB").setValue("NA");
         userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("mobileNo").setValue("NA");
+        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("bio").setValue("NA");
         userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("email").setValue(account.getEmail());
         userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("firstName").setValue(account.getGivenName());
         userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("lastName").setValue(account.getFamilyName());
