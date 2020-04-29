@@ -112,6 +112,7 @@
                     android:fontFamily="sans-serif"
                     android:hint="@string/enter_new_username"
                     android:inputType="textPersonName"
+                    android:textColor="#666666"
                     android:textSize="20sp"
                     android:typeface="normal"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -151,6 +152,7 @@
                     android:fontFamily="sans-serif"
                     android:hint="@string/first_name"
                     android:inputType="textPersonName"
+                    android:textColor="#666666"
                     android:textSize="20sp"
                     app:layout_constraintEnd_toStartOf="@+id/lastNameEditText"
                     app:layout_constraintHorizontal_bias="0.0"
@@ -168,6 +170,7 @@
                     android:fontFamily="sans-serif"
                     android:hint="@string/last_name"
                     android:inputType="textPersonName"
+                    android:textColor="#666666"
                     android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -204,6 +207,7 @@
                     android:fontFamily="sans-serif"
                     android:hint="@string/enter_mobile_number"
                     android:inputType="phone"
+                    android:textColor="#666666"
                     android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/phoneIcon"
@@ -218,20 +222,49 @@
 
                 <EditText
                     android:id="@+id/dobEditText"
-                    android:layout_width="0dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="32dp"
                     android:backgroundTint="@color/colorPrimary"
+                    android:clickable="false"
+                    android:cursorVisible="false"
+                    android:editable="false"
                     android:ems="10"
+                    android:enabled="true"
+                    android:focusable="false"
                     android:fontFamily="sans-serif"
                     android:hint="@string/dd_mm_yyyy"
                     android:inputType="date"
+                    android:textColor="#666666"
                     android:textSize="20sp"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/dobIcon"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="32dp"
+                    app:cardCornerRadius="5dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/dobEditText"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <Button
+                        android:id="@+id/selectDOBButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorAccent"
+                        android:fontFamily="sans-serif"
+                        android:text="Calender"
+                        android:textAllCaps="false"
+                        android:textColor="@color/ic_launcher_background"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                </androidx.cardview.widget.CardView>
 
                 <ImageView
                     android:id="@+id/dobIcon"
@@ -283,6 +316,7 @@
                     android:fontFamily="sans-serif"
                     android:hint="@string/i_am_interested_in"
                     android:inputType="textLongMessage"
+                    android:textColor="#666666"
                     android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/bioIcon"

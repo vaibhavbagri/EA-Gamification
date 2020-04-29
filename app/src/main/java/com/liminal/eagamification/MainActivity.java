@@ -37,11 +37,14 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private GoogleSignInClient mGoogleSignInClient;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Get user details stored in shared preferences
         SharedPreferences sharedPreferences = getSharedPreferences("User_Details", Context.MODE_PRIVATE);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -63,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("userProfileTable");
+        DatabaseReference userProfileReference = FirebaseDatabase.getInstance().getReference().child("userProfileTable");
 
         // Add a listener to update UI when User Profile is updated
         ValueEventListener eventListener = new ValueEventListener() {
@@ -82,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
             }
         };
-        databaseReference.child(sharedPreferences.getString("id","")).addValueEventListener(eventListener);
+        userProfileReference.child(sharedPreferences.getString("id","")).addValueEventListener(eventListener);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -91,7 +94,10 @@ public class MainActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
-    void updateUserProfileLayout(long coins, long tickets, String userName, String photoURL)
+
+
+    // Function to load user details into UI
+    private void updateUserProfileLayout(long coins, long tickets, String userName, String photoURL)
     {
         // Update username
         TextView userNameView = findViewById(R.id.userNameView);
@@ -110,12 +116,16 @@ public class MainActivity extends AppCompatActivity {
         Log.d("EAG_UPDATE_PROFILE", "Username : " + userName + " Coins : " + coins + " Tickets : " + tickets);
     }
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -128,6 +138,8 @@ public class MainActivity extends AppCompatActivity {
             return super.onOptionsItemSelected(item);
     }
 
+
+
     private void signOut() {
         FirebaseAuth.getInstance().signOut();
         mGoogleSignInClient.signOut()
@@ -136,6 +148,8 @@ public class MainActivity extends AppCompatActivity {
                     finish();
                 });
     }
+
+
 
     @Override
     public boolean onSupportNavigateUp() {

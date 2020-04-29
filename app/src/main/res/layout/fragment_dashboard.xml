@@ -22,7 +22,8 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                app:cardCornerRadius="5dp">
+                app:cardCornerRadius="5dp"
+                app:cardElevation="10dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -32,45 +33,38 @@
                         android:id="@+id/linearLayout"
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="32dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         app:layout_constraintStart_toEndOf="@+id/cardView"
                         app:layout_constraintTop_toBottomOf="@+id/usernameTextView">
-
-                        <ImageView
-                            android:id="@+id/coinsIconImageView"
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
-                            android:scaleType="fitCenter"
-                            app:srcCompat="@drawable/coin_icon" />
 
                         <TextView
                             android:id="@+id/coinsTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/bangers"
-                            android:paddingStart="8dp"
                             android:text="3200 "
                             android:textSize="30sp" />
+
+                        <ImageView
+                            android:id="@+id/coinsIconImageView"
+                            android:layout_width="37dp"
+                            android:layout_height="37dp"
+                            android:paddingStart="4dp"
+                            android:scaleType="fitCenter"
+                            app:srcCompat="@drawable/coin_icon" />
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
+                        android:layout_marginEnd="32dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/usernameTextView">
-
-                        <ImageView
-                            android:id="@+id/ticketsIconImageView"
-                            android:layout_width="50dp"
-                            android:layout_height="35dp"
-                            android:scaleType="fitCenter"
-                            app:srcCompat="@drawable/ticket_icon" />
 
                         <TextView
                             android:id="@+id/ticketsTextView"
@@ -80,6 +74,14 @@
                             android:paddingStart="8dp"
                             android:text="15 "
                             android:textSize="30sp" />
+
+                        <ImageView
+                            android:id="@+id/ticketsIconImageView"
+                            android:layout_width="50dp"
+                            android:layout_height="37dp"
+                            android:paddingStart="4dp"
+                            android:scaleType="fitCenter"
+                            app:srcCompat="@drawable/ticket_icon" />
                     </LinearLayout>
 
                     <TextView
@@ -109,7 +111,7 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <ImageView
-                            android:id="@+id/imageView"
+                            android:id="@+id/profilePictureView"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
                             android:scaleType="centerCrop"
@@ -241,7 +243,8 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:paddingTop="16dp"
-                app:cardCornerRadius="5dp">
+                app:cardCornerRadius="5dp"
+                app:cardElevation="10dp">
 
                 <com.anychart.AnyChartView
                     android:id="@+id/any_chart_view_2"
