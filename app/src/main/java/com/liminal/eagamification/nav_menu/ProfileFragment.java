@@ -80,7 +80,7 @@ public class ProfileFragment extends Fragment {
         CardView inviteFriendsButton = root.findViewById(R.id.inviteFriendsCardView);
 
         userProfileReference = FirebaseDatabase.getInstance().getReference().child("userProfileTable");
-        profilePictureRef = FirebaseStorage.getInstance().getReference().child(sharedPreferences.getString("id","")).child("ProfilePicture");
+        profilePictureRef = FirebaseStorage.getInstance().getReference().child("ProfilePicture").child(sharedPreferences.getString("id",""));
 
         // Add a listener to update UI when User Profile is updated
         ValueEventListener eventListener = new ValueEventListener() {

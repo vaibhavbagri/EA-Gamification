@@ -66,12 +66,6 @@ public class AugmentedImageFragment extends ArFragment {
         if (!setupAugmentedImageDatabase(config, session)) {
             Log.e(TAG, "Could not setup augmented image database");
         }
-//        AsyncDatabaseSetup asyncDatabaseSetup = new AsyncDatabaseSetup(config,session);
-//        try {
-//            config = asyncDatabaseSetup.execute().get();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
         return config;
     }
 

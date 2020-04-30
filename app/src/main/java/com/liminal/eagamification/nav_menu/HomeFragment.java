@@ -2,7 +2,9 @@ package com.liminal.eagamification.nav_menu;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -17,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -24,6 +27,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -45,6 +49,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.liminal.eagamification.LocationBasedGame;
+import com.liminal.eagamification.easy_augment.ScanMarkerActivity;
 import com.liminal.eagamification.rewards.RewardsActivity;
 import com.liminal.eagamification.ar_camp.CampActivity;
 import com.liminal.eagamification.easy_augment.EasyAugmentHelper;
@@ -89,8 +94,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
         locationBasedGamesTableReference = FirebaseDatabase.getInstance().getReference().child("locationBasedGamesTable");
 
-        easyAugmentHelper = new EasyAugmentHelper("101", Objects.requireNonNull(getActivity()), MainActivity.class.getName());
-        easyAugmentHelper.loadMarkerImages();
+//        easyAugmentHelper = new EasyAugmentHelper("101", Objects.requireNonNull(getActivity()), MainActivity.class.getName());
+//        easyAugmentHelper.loadMarkerImages();
 
         // Retrieve location from saved instance state.
         if (savedInstanceState != null) {
@@ -257,6 +262,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         double game_longitude = game.longitude;
         double latitude_diff = user_latitude - game_latitude;
         double longitude_diff = user_longitude - game_longitude;
+
+        // Check if user is at the location of the marker
         if(latitude_diff < 1 && latitude_diff > -1 && longitude_diff < 1 && longitude_diff > -1)
             playButton.setEnabled(true);
 
@@ -264,12 +271,22 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         descriptionTextView.setText(game.description);
         cancelButton.setOnClickListener(v -> playGameDialogBox.dismiss());
         playButton.setOnClickListener(v -> {
-            AlphaAnimation buttonClick = new AlphaAnimation(1f, 0.5f);
-            buttonClick.setDuration(100);
-            v.startAnimation(buttonClick);
-            Toast.makeText(getContext(), "Database is setting up, please wait.", Toast.LENGTH_LONG).show();
-            new Handler().postDelayed(easyAugmentHelper::activateScanner,100);
+            // Update current marker details in shared preferences
+            SharedPreferences sharedPreferencesMarker = getActivity().getSharedPreferences("Current_Marker_Details", Context.MODE_PRIVATE);
+            sharedPreferencesMarker.edit().putString("asset_bundle_link", game.assetBundleLink).apply();
+            sharedPreferencesMarker.edit().putString("marker_link", game.markerLink).apply();
+
+            // Dismiss dialog box
             playGameDialogBox.dismiss();
+
+            // Start scanner
+            Intent intent = new Intent(getActivity(), ScanMarkerActivity.class);
+            startActivity(intent);
+//            AlphaAnimation buttonClick = new AlphaAnimation(1f, 0.5f);
+//            buttonClick.setDuration(100);
+//            v.startAnimation(buttonClick);
+//            Toast.makeText(getContext(), "Database is setting up, please wait.", Toast.LENGTH_LONG).show();
+//            new Handler().postDelayed(easyAugmentHelper::activateScanner,100);
         });
 
         playGameDialogBox.show();
@@ -297,13 +314,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                     String name = game.child("name").getValue().toString();
                     String description = game.child("description").getValue().toString();
                     String assetBundleLink = game.child("assetBundleLink").getValue().toString();
+                    String markerLink = game.child("markerLink").getValue().toString();
                     String category = game.child("category").getValue().toString();
                     double latitude = (double) game.child("latitude").getValue();
                     double longitude = (double) game.child("longitude").getValue();
 
                     Marker newMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(latitude,longitude)).title(name));
                     newMarker.setTitle(null);
-                    newMarker.setTag(new LocationBasedGame(name, description, latitude, longitude, assetBundleLink));
+                    newMarker.setTag(new LocationBasedGame(name, description, latitude, longitude, assetBundleLink, markerLink));
 
                     switch (category)
                     {

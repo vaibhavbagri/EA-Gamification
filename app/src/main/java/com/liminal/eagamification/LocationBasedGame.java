@@ -6,12 +6,14 @@ public class LocationBasedGame {
     public double latitude;
     public double longitude;
     public String assetBundleLink;
+    public String markerLink;
 
-    public LocationBasedGame(String name, String description, double latitude, double longitude, String assetBundleLink){
+    public LocationBasedGame(String name, String description, double latitude, double longitude, String assetBundleLink, String markerLink){
         this.name = name;
         this.description = description;
         this.latitude = latitude;
         this.longitude = longitude;
         this.assetBundleLink = assetBundleLink;
+        this.markerLink = markerLink;
     }
 }

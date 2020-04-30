@@ -65,7 +65,11 @@ public class DashboardFragment extends Fragment{
                         (long) dataSnapshot.child("rewardDetails").child("coins").getValue(),
                         (long) dataSnapshot.child("rewardDetails").child("tickets").getValue(),
                         (String) dataSnapshot.child("personalDetails").child("username").getValue(),
-                        (String) dataSnapshot.child("personalDetails").child("photoURL").getValue());
+                        (String) dataSnapshot.child("personalDetails").child("photoURL").getValue(),
+                        (long) dataSnapshot.child("statistics").child("general").child("campExperiences").getValue(),
+                        (long) dataSnapshot.child("statistics").child("general").child("itemsCollected").getValue(),
+                        (long) dataSnapshot.child("statistics").child("general").child("markersScanned").getValue(),
+                        (long) dataSnapshot.child("statistics").child("general").child("rewardsClaimed").getValue());
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -84,17 +88,27 @@ public class DashboardFragment extends Fragment{
 
 
     // Function to load user details into UI
-    private void updateUserProfileLayout(View view, long coins, long tickets, String userName, String photoURL)
+    private void updateUserProfileLayout(View view, long coins, long tickets, String userName, String photoURL, long campExperiences, long itemsCollected, long markersScanned, long rewardsClaimed)
     {
         // Update username
-        TextView userNameView = view.findViewById(R.id.usernameTextView);
-        userNameView.setText(userName + " ");
+        TextView userNameTextView = view.findViewById(R.id.usernameTextView);
+        userNameTextView.setText(userName + " ");
 
         // Update coins and tickets
-        TextView coinsView = view.findViewById(R.id.coinsTextView);
-        coinsView.setText(coins + " ");
-        TextView ticketsView = view.findViewById(R.id.ticketsTextView);
-        ticketsView.setText(tickets + " ");
+        TextView coinsTextView = view.findViewById(R.id.coinsTextView);
+        coinsTextView.setText(coins + " ");
+        TextView ticketsTextView = view.findViewById(R.id.ticketsTextView);
+        ticketsTextView.setText(tickets + " ");
+
+        // Update common statistics
+        TextView campExperiencesTextView = view.findViewById(R.id.campsExperiencedCountTextView);
+        campExperiencesTextView.setText(campExperiences + " ");
+        TextView itemsCollectedTextView = view.findViewById(R.id.itemsCollectedCountTextView);
+        itemsCollectedTextView.setText(itemsCollected + " ");
+        TextView markersScannedTextView = view.findViewById(R.id.markersScannedCountTextView);
+        markersScannedTextView.setText(markersScanned + " ");
+        TextView rewardsClaimedTextView = view.findViewById(R.id.rewardsClaimedCountTextView);
+        rewardsClaimedTextView.setText(rewardsClaimed + " ");
 
         // Update profile picture
         ImageView profilePictureView = view.findViewById(R.id.profilePictureView);

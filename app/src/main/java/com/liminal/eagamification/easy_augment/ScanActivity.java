@@ -78,8 +78,6 @@ public class ScanActivity extends AppCompatActivity {
 
         // Load Augmented Image Fragment
         arFragment = (AugmentedImageFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
-//        arFragment = new AugmentedImageFragment();
-//        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, arFragment).commit();
         scannerView = findViewById(R.id.scanner_view);
 
         //Initialize Augment Video player

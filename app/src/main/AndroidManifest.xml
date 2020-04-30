@@ -25,7 +25,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity android:name=".easy_augment.ScanMarkerActivity"></activity>
         <activity
             android:name=".ar_camp.CampActivity"
             android:label="@string/title_activity_camp"
@@ -43,10 +43,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MapsActivity" />
-        <activity android:name=".CircularGaugeActivity" />
-        <activity android:name=".PieChartActivity" />
-        <activity android:name=".ChartsSelectActivity" />
         <activity android:name=".rewards.QRScannerActivity" />
         <activity
             android:name=".MainActivity"

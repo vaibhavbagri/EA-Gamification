@@ -143,7 +143,7 @@
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/bangers"
                                 android:text="Markers scanned : "
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/markersScannedCountTextView"
@@ -152,7 +152,7 @@
                                 android:layout_marginStart="8dp"
                                 android:fontFamily="@font/bangers"
                                 android:text="0 "
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -169,7 +169,7 @@
                                 android:fontFamily="@font/bangers"
                                 android:paddingStart="8dp"
                                 android:text="Games Played : "
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/campsExperiencedCountTextView"
@@ -179,7 +179,7 @@
                                 android:layout_weight="1"
                                 android:fontFamily="@font/bangers"
                                 android:text="0 "
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -208,7 +208,7 @@
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/bangers"
                                 android:text="Rewards Claimed : "
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/rewardsClaimedCountTextView"
@@ -217,7 +217,7 @@
                                 android:layout_marginStart="8dp"
                                 android:fontFamily="@font/bangers"
                                 android:text="0 "
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -234,17 +234,17 @@
                                 android:fontFamily="@font/bangers"
                                 android:paddingStart="8dp"
                                 android:text="Items Collected : "
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
-                                android:id="@+id/itemsCollectedTextViewCountTextView"
+                                android:id="@+id/itemsCollectedCountTextView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="8dp"
                                 android:layout_weight="1"
                                 android:fontFamily="@font/bangers"
                                 android:text="0 "
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
                         </LinearLayout>
 
                     </LinearLayout>
