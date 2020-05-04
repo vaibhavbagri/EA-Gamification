@@ -29,6 +29,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -56,6 +58,8 @@ import com.liminal.eagamification.easy_augment.EasyAugmentHelper;
 import com.liminal.eagamification.MainActivity;
 import com.liminal.eagamification.R;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static android.content.Context.LOCATION_SERVICE;
@@ -174,6 +178,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     {
         // Inflate the popup window layout
         View popupMissionsView = inflater.inflate(R.layout.popup_live_updates, null);
+        //Setup recycler view within popup window
+        List<LiveUpdate> liveUpdateList = new ArrayList<>();
+        RecyclerView liveUpdatesRecyclerView = popupMissionsView.findViewById(R.id.recycler_view);
+        LiveUpdatesAdapter liveUpdatesAdapter = new LiveUpdatesAdapter(liveUpdateList, position -> {
+            Toast.makeText(getContext(),liveUpdateList.get(position).update,Toast.LENGTH_SHORT).show();
+        });
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+        liveUpdatesRecyclerView.setLayoutManager(mLayoutManager);
+        liveUpdatesRecyclerView.setAdapter(liveUpdatesAdapter);
         // Setup popup window
         final PopupWindow popupWindow = new PopupWindow(popupMissionsView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
         // Show popup view at the center
@@ -182,6 +195,29 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         // Button to dismiss popup
         Button button = popupMissionsView.findViewById(R.id.quitLiveUpdatesPopupButton);
         button.setOnClickListener(v -> popupWindow.dismiss());
+
+        //Listen for values on Firebase
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Read data from firebase
+                liveUpdateList.clear();
+                for (DataSnapshot updateID : dataSnapshot.getChildren()) {
+                    String update = Objects.requireNonNull(updateID.child("update").getValue()).toString();
+                    LiveUpdate liveUpdate = new LiveUpdate(update);
+                    liveUpdateList.add(liveUpdate);
+                }
+                liveUpdatesAdapter.notifyDataSetChanged();
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Read failed
+                Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
+            }
+        };
+
+        FirebaseDatabase.getInstance().getReference().child("liveUpdatesTable").addValueEventListener(eventListener);
     }
 
 
@@ -415,6 +451,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         }
     }
 
-
-
+    //Needed to handle button on clicks within recycler view
+    public interface ClickListener {
+        void onPositionClicked(int position);
+    }
 }
