@@ -72,6 +72,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
     // Access to the system location services.
     private LocationManager locationManager;
+
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private Location mLastKnownLocation;
@@ -85,6 +86,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
     // Initialize Easy Augment
     private EasyAugmentHelper easyAugmentHelper;
+
+    //Enable GPS alert dialog box
+    private AlertDialog alert;
 
     @SuppressLint("MissingPermission")
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -193,7 +197,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                                     android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                             startActivity(callGPSSettingIntent);
                         });
-        AlertDialog alert = alertDialogBuilder.create();
+        alert = alertDialogBuilder.create();
         alert.show();
     }
 
@@ -208,6 +212,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
             Log.d(TAG,"GPS enabled by user");
             getDeviceLocation();
         }
+        else
+            enableGPS();
     }
 
 
@@ -235,12 +241,17 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
 
     @Override
-    public void onProviderEnabled(String s) { }
+    public void onProviderEnabled(String s) {
+        alert.dismiss();
+        getDeviceLocation();
+    }
 
 
 
     @Override
-    public void onProviderDisabled(String s) { }
+    public void onProviderDisabled(String s) {
+        enableGPS();
+    }
 
 
 
