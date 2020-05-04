@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -22,14 +23,19 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -69,6 +75,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     private final LatLng mDefaultLocation = new LatLng(19.0760, 72.8777);
     // Default zoom
     private static final int DEFAULT_ZOOM = 17;
+    // Marker radius
+    private final int MARKER_RADIUS = 1;
+
 
     // Access to the system location services.
     private LocationManager locationManager;
@@ -255,7 +264,16 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
         TextView titleTextView = playGameDialogBox.findViewById(R.id.dialogBoxGameTitleTextView);
         TextView descriptionTextView = playGameDialogBox.findViewById(R.id.dialogBoxGameDescriptionTextView);
-        
+
+        ProgressBar downloadProgressBar = playGameDialogBox.findViewById(R.id.progressBar);
+
+        // Update current marker details in shared preferences
+        SharedPreferences sharedPreferencesMarker = getActivity().getSharedPreferences("Current_Marker_Details", Context.MODE_PRIVATE);
+        sharedPreferencesMarker.edit().putString("asset_bundle_link", game.assetBundleLink).apply();
+
+        // Create intent to begin scanner
+        Intent scannerIntent = new Intent(getActivity(), ScanMarkerActivity.class);
+
         double user_latitude = mLastKnownLocation.getLatitude();
         double user_longitude = mLastKnownLocation.getLongitude();
         double game_latitude = game.latitude;
@@ -263,30 +281,47 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         double latitude_diff = user_latitude - game_latitude;
         double longitude_diff = user_longitude - game_longitude;
 
-        // Check if user is at the location of the marker
-        if(latitude_diff < 1 && latitude_diff > -1 && longitude_diff < 1 && longitude_diff > -1)
-            playButton.setEnabled(true);
+        // Download marker from firebase
+        Glide.with(getActivity())
+                .asBitmap()
+                .load(game.markerLink)
+                .into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        Log.d("EAG_MARKER_DOWNLOAD", "Marker loaded from URL");
+
+                        // Enable play button when marker is done downloading
+                        playButton.setEnabled(true);
+                        playButton.setTextColor(getResources().getColor(R.color.colorPrimary, null));
+
+                        // Disable progress bar to indicate downlaod has finished
+                        downloadProgressBar.setVisibility(View.GONE);
+
+                        // Add bitmap to scanner intent
+                        scannerIntent.putExtra("marker", resource);
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
+                });
 
         titleTextView.setText(game.name);
         descriptionTextView.setText(game.description);
+
         cancelButton.setOnClickListener(v -> playGameDialogBox.dismiss());
         playButton.setOnClickListener(v -> {
-            // Update current marker details in shared preferences
-            SharedPreferences sharedPreferencesMarker = getActivity().getSharedPreferences("Current_Marker_Details", Context.MODE_PRIVATE);
-            sharedPreferencesMarker.edit().putString("asset_bundle_link", game.assetBundleLink).apply();
-            sharedPreferencesMarker.edit().putString("marker_link", game.markerLink).apply();
-
-            // Dismiss dialog box
-            playGameDialogBox.dismiss();
-
-            // Start scanner
-            Intent intent = new Intent(getActivity(), ScanMarkerActivity.class);
-            startActivity(intent);
-//            AlphaAnimation buttonClick = new AlphaAnimation(1f, 0.5f);
-//            buttonClick.setDuration(100);
-//            v.startAnimation(buttonClick);
-//            Toast.makeText(getContext(), "Database is setting up, please wait.", Toast.LENGTH_LONG).show();
-//            new Handler().postDelayed(easyAugmentHelper::activateScanner,100);
+            // Check if user is at the marker location
+            if(latitude_diff < MARKER_RADIUS && latitude_diff > -MARKER_RADIUS && longitude_diff < MARKER_RADIUS && longitude_diff > -MARKER_RADIUS) {
+                // Dismiss dialog box
+                playGameDialogBox.dismiss();
+                // Start scanner
+                startActivity(scannerIntent);
+            }
+            else
+            {
+                Toast.makeText(getActivity(), "Proceed to the location of AR marker to begin.", Toast.LENGTH_LONG);
+            }
         });
 
         playGameDialogBox.show();
