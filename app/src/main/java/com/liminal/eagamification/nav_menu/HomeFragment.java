@@ -89,6 +89,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private Location mLastKnownLocation;
+    private Location mLastSavedLocation;
     private boolean isMapOpened = false;
 
     // Keys for storing activity state.
@@ -96,6 +97,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
     // Firebase connectivity
     private DatabaseReference locationBasedGamesTableReference;
+    private DatabaseReference userDatabaseReference;
 
     // Initialize Easy Augment
     private EasyAugmentHelper easyAugmentHelper;
@@ -109,7 +111,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         Log.d(TAG,"Generating Map");
 
+        SharedPreferences sharedPreferences = Objects.requireNonNull(getActivity()).getSharedPreferences("User_Details", Context.MODE_PRIVATE);
+
         locationBasedGamesTableReference = FirebaseDatabase.getInstance().getReference().child("locationBasedGamesTable");
+        //Used to calculate values in live missions
+        userDatabaseReference = FirebaseDatabase.getInstance().getReference()
+                .child("userProfileTable")
+                .child(sharedPreferences.getString("id",""))
+                .child("statistics");
 
 //        easyAugmentHelper = new EasyAugmentHelper("101", Objects.requireNonNull(getActivity()), MainActivity.class.getName());
 //        easyAugmentHelper.loadMarkerImages();
@@ -120,8 +129,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         }
 
         locationManager = (LocationManager) Objects.requireNonNull(getContext()).getSystemService(LOCATION_SERVICE);
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
-            enableGPS();
+//        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+//            enableGPS();
 
         // Build the map.
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
@@ -162,6 +171,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     {
         // Inflate the popup window layout
         View popupMissionsView = inflater.inflate(R.layout.popup_missions, null);
+        //Setup recycler view within popup window
+        List<Challenge> challengeList = new ArrayList<>();
+        RecyclerView challengesRecyclerView = popupMissionsView.findViewById(R.id.recycler_view);
+        ChallengesAdapter challengesAdapter = new ChallengesAdapter(challengeList, position -> {
+            Toast.makeText(getContext(),challengeList.get(position).description,Toast.LENGTH_SHORT).show();
+        });
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+        challengesRecyclerView.setLayoutManager(mLayoutManager);
+        challengesRecyclerView.setAdapter(challengesAdapter);
         // Setup popup window
         final PopupWindow popupWindow = new PopupWindow(popupMissionsView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
         // Allow touch input outside the popup window
@@ -178,6 +196,47 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
             Button button = popupMissionsView.findViewById(R.id.quitMissionsPopupButton);
             button.setOnClickListener(v -> popupWindow.dismiss());
         }
+
+        //Listen for values on Firebase
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Read data from firebase
+                challengeList.clear();
+                for (DataSnapshot challengeID : dataSnapshot.getChildren()) {
+                    String description = challengeID.child("description").getValue().toString();
+                    String rewardPoints = challengeID.child("rewardPoints").getValue().toString();
+                    String game = challengeID.child("game").getValue().toString();
+                    String stat = challengeID.child("stat").getValue().toString();
+                    long target = (long) challengeID.child("target").getValue();
+                    long challengePosition = (long) challengeID.child("challengePosition").getValue();
+                    //Check the current stat value and stored stat value at the start of the week to calculate progress
+                    userDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            long stat_value = (long) dataSnapshot.child("activityBased").child(game).child(stat).getValue();
+                            long stored_value = (long) dataSnapshot.child("challenges").child(String.valueOf(challengePosition)).getValue();
+                            long progress = stat_value - stored_value ;
+                            Challenge challenge = new Challenge(progress,description,rewardPoints,game,target,stat);
+                            challengeList.add(challenge);
+                            challengesAdapter.notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Read failed
+                Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
+            }
+        };
+
+        FirebaseDatabase.getInstance().getReference().child("challengesTable").addValueEventListener(eventListener);
     }
 
 
@@ -234,6 +293,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     // Function to show alert box to ask user to enable GPS
     private void enableGPS(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getContext()));
+
         alertDialogBuilder.setMessage("GPS is disabled in your device. Enable GPS to continue.")
                 .setCancelable(false)
                 .setPositiveButton("Enable GPS",
@@ -265,17 +325,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d("EAG_MAPS","Location changed");
-        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            mLastKnownLocation = location;
-            if(!isMapOpened) {
-                isMapOpened = true;
-                // Move camera to new user location
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), DEFAULT_ZOOM));
-            }
+        Log.d(TAG,"Location changed");
+        mLastKnownLocation = location;
+        if(!isMapOpened) {
+            isMapOpened = true;
+            // Move camera to new user location
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), DEFAULT_ZOOM));
         }
-        else
-            enableGPS();
     }
 
 
@@ -287,15 +343,24 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
     @Override
     public void onProviderEnabled(String s) {
+        Toast.makeText(getContext(),"GPS Enabled", Toast.LENGTH_SHORT).show();
         alert.dismiss();
-        getDeviceLocation();
+        if(mLastSavedLocation == null)
+            getDeviceLocation();
+        else
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom
+                    (new LatLng(mLastSavedLocation.getLatitude(), mLastSavedLocation.getLongitude()), DEFAULT_ZOOM));
+
     }
 
 
 
     @Override
     public void onProviderDisabled(String s) {
-        enableGPS();
+        Toast.makeText(getContext(),"GPS Disabled", Toast.LENGTH_SHORT).show();
+        mLastSavedLocation = mLastKnownLocation;
+        if(alert==null || !alert.isShowing())
+            enableGPS();
     }
 
 
@@ -367,7 +432,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
             }
             else
             {
-                Toast.makeText(getActivity(), "Proceed to the location of AR marker to begin.", Toast.LENGTH_LONG);
+                Toast.makeText(getActivity(), "Proceed to the location of AR marker to begin.", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -386,6 +451,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         mMap.setOnMarkerClickListener(this);
         mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(Objects.requireNonNull(getContext()), R.raw.ar_explore_custom_map));
         mMap.getUiSettings().setMapToolbarEnabled(false);
+
+        // Turn on the My Location layer and the related control on the map.
+        updateLocationUI();
+
+        // Get the current location of the device and set the position of the map.
+        getDeviceLocation();
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
@@ -426,13 +497,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
             }
         };
         locationBasedGamesTableReference.addValueEventListener(eventListener);
-
-        // Turn on the My Location layer and the related control on the map.
-        updateLocationUI();
-
-        // Get the current location of the device and set the position of the map.
-        getDeviceLocation();
-
     }
 
 
@@ -453,6 +517,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                     {
                         Log.d(TAG, "User's location is : " + mLastKnownLocation.getLatitude() + " " + mLastKnownLocation.getLongitude() );
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                    }
+                    else {
+                        Log.d(TAG, "Last known location is null");
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, 10));
+                        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                            getDeviceLocation();
                     }
                 }
                 else

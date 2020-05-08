@@ -55,6 +55,16 @@
                     android:backgroundTint="@color/colorAccent"
                     app:layout_constraintEnd_toStartOf="@+id/textView"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textView"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="305dp" />
+
             </RelativeLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
