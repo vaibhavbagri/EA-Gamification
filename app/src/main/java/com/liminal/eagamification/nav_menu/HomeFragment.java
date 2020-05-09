@@ -246,15 +246,18 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     {
         // Inflate the popup window layout
         View popupMissionsView = inflater.inflate(R.layout.popup_live_updates, null);
+
         //Setup recycler view within popup window
         List<LiveUpdate> liveUpdateList = new ArrayList<>();
         RecyclerView liveUpdatesRecyclerView = popupMissionsView.findViewById(R.id.recycler_view);
         LiveUpdatesAdapter liveUpdatesAdapter = new LiveUpdatesAdapter(liveUpdateList, position -> {
-            Toast.makeText(getContext(),liveUpdateList.get(position).update,Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(),liveUpdateList.get(position).description,Toast.LENGTH_SHORT).show();
         });
+
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         liveUpdatesRecyclerView.setLayoutManager(mLayoutManager);
         liveUpdatesRecyclerView.setAdapter(liveUpdatesAdapter);
+
         // Setup popup window
         final PopupWindow popupWindow = new PopupWindow(popupMissionsView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
         // Show popup view at the center
@@ -271,8 +274,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                 // Read data from firebase
                 liveUpdateList.clear();
                 for (DataSnapshot updateID : dataSnapshot.getChildren()) {
-                    String update = Objects.requireNonNull(updateID.child("update").getValue()).toString();
-                    LiveUpdate liveUpdate = new LiveUpdate(update);
+                    String description = updateID.child("description").getValue().toString();
+                    String activityName = updateID.child("activityID").getValue().toString();
+                    LiveUpdate liveUpdate = new LiveUpdate(description, activityName);
                     liveUpdateList.add(liveUpdate);
                 }
                 liveUpdatesAdapter.notifyDataSetChanged();

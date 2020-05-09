@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,7 +33,8 @@ public class LiveUpdatesAdapter extends RecyclerView.Adapter<LiveUpdatesAdapter.
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         LiveUpdate liveUpdate = liveUpdateList.get(position);
-        holder.update.setText(liveUpdate.update);
+        holder.challengeDescription.setText(liveUpdate.description);
+
     }
 
     @Override
@@ -42,23 +44,23 @@ public class LiveUpdatesAdapter extends RecyclerView.Adapter<LiveUpdatesAdapter.
 
     static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        TextView update;
-        Button button;
+        TextView challengeDescription;
+        Button acceptButton;
+        ImageView icon;
+
         private WeakReference<HomeFragment.ClickListener> listenerRef;
 
         MyViewHolder(@NonNull View itemView, HomeFragment.ClickListener listener) {
             super(itemView);
             listenerRef = new WeakReference<>(listener);
-            update = itemView.findViewById(R.id.update);
-            button = itemView.findViewById(R.id.liveUpdateButton);
+            challengeDescription = itemView.findViewById(R.id.update);
+            acceptButton = itemView.findViewById(R.id.liveUpdateButton);
 
-            button.setOnClickListener(this);
+            acceptButton.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
-//            if(view.getId() == button.getId())
-//                Toast.makeText(view.getContext(),update.getText(),Toast.LENGTH_SHORT).show();
             listenerRef.get().onPositionClicked(getAdapterPosition());
         }
     }

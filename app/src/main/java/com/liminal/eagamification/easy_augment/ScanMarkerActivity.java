@@ -9,23 +9,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.google.ar.core.AugmentedImage;
 import com.google.ar.core.Frame;
 import com.google.ar.core.TrackingState;
-import com.google.ar.core.exceptions.ImageInsufficientQualityException;
 import com.google.ar.sceneform.FrameTime;
 import com.google.ar.sceneform.Scene;
 import com.liminal.eagamification.R;
 
-import java.io.ByteArrayOutputStream;
 
 public class ScanMarkerActivity extends AppCompatActivity {
 
@@ -50,17 +43,8 @@ public class ScanMarkerActivity extends AppCompatActivity {
         Intent intent = getIntent();
         marker = intent.getParcelableExtra("marker");
 
-//        // Convert bitmap into byte array and send it via a bundle
-//        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//        marker.compress(Bitmap.CompressFormat.PNG, 100, stream);
-//        byte[] markerByteArray = stream.toByteArray();
-//
-//        Bundle markerBundle = new Bundle();
-//        markerBundle.putByteArray("marker", markerByteArray);
-
         // Load AR Fragment
         fastARFragment = (FastARFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
-//        fastARFragment.setArguments(markerBundle);
 
         // Get current AR scene
         if (fastARFragment != null) {

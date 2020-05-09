@@ -1,10 +1,13 @@
 package com.liminal.eagamification.nav_menu;
 
 public class LiveUpdate {
-    public String update;
 
-    LiveUpdate(String update)
+    public String description;
+    public String activityName;
+
+    LiveUpdate(String description, String activityName)
     {
-        this.update = update;
+        this.activityName = activityName;
+        this.description = description;
     }
 }

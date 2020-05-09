@@ -1,11 +1,5 @@
 package com.liminal.eagamification.easy_augment;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,9 +24,6 @@ public class FastARFragment extends ArFragment {
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
         Log.d(TAG,"Fast AR fragment initialized");
-
-//        byte[] markerByteArray = getArguments().getByteArray("marker");
-//        marker = BitmapFactory.decodeByteArray(markerByteArray, 0, markerByteArray.length);
 
         // Turn off the plane discovery since we're only looking for images
         getPlaneDiscoveryController().hide();
