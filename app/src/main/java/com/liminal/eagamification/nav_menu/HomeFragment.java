@@ -96,7 +96,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     private static final String KEY_LOCATION = "location";
 
     // Firebase connectivity
-    private DatabaseReference locationBasedGamesTableReference;
+    private DatabaseReference locationBasedActivityTableReference;
     private DatabaseReference userDatabaseReference;
 
     // Initialize Easy Augment
@@ -113,7 +113,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
         SharedPreferences sharedPreferences = Objects.requireNonNull(getActivity()).getSharedPreferences("User_Details", Context.MODE_PRIVATE);
 
-        locationBasedGamesTableReference = FirebaseDatabase.getInstance().getReference().child("locationBasedGamesTable");
+        locationBasedActivityTableReference = FirebaseDatabase.getInstance().getReference().child("locationBasedActivityTable");
         //Used to calculate values in live missions
         userDatabaseReference = FirebaseDatabase.getInstance().getReference()
                 .child("userProfileTable")
@@ -206,7 +206,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                 for (DataSnapshot challengeID : dataSnapshot.getChildren()) {
                     String description = challengeID.child("description").getValue().toString();
                     String rewardPoints = challengeID.child("rewardPoints").getValue().toString();
-                    String game = challengeID.child("game").getValue().toString();
+                    String activityName = challengeID.child("activityID").getValue().toString();
                     String stat = challengeID.child("stat").getValue().toString();
                     long target = (long) challengeID.child("target").getValue();
                     long challengePosition = (long) challengeID.child("challengePosition").getValue();
@@ -214,10 +214,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                     userDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            long stat_value = (long) dataSnapshot.child("activityBased").child(game).child(stat).getValue();
+                            long stat_value = (long) dataSnapshot.child("activityBased").child(activityName).child(stat).getValue();
                             long stored_value = (long) dataSnapshot.child("challenges").child(String.valueOf(challengePosition)).getValue();
                             long progress = stat_value - stored_value ;
-                            Challenge challenge = new Challenge(progress,description,rewardPoints,game,target,stat);
+                            Challenge challenge = new Challenge(progress,description,rewardPoints,activityName,target,stat);
                             challengeList.add(challenge);
                             challengesAdapter.notifyDataSetChanged();
                         }
@@ -500,7 +500,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                 Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
             }
         };
-        locationBasedGamesTableReference.addValueEventListener(eventListener);
+        locationBasedActivityTableReference.addValueEventListener(eventListener);
     }
 
 

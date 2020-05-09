@@ -1,5 +1,8 @@
 package com.liminal.eagamification.nav_menu;
 
+import android.content.Context;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,7 +10,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.liminal.eagamification.R;
 
 import java.lang.ref.WeakReference;
@@ -20,6 +30,8 @@ public class ChallengesAdapter extends RecyclerView.Adapter<ChallengesAdapter.My
 
     private List<Challenge> challengeList;
     private HomeFragment.ClickListener clickListener;
+    private DatabaseReference locationBasedActivityTableReference;
+    private Context context;
 
     @NonNull
     @Override
@@ -27,8 +39,13 @@ public class ChallengesAdapter extends RecyclerView.Adapter<ChallengesAdapter.My
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_row_challenge, parent, false);
 
+        context = parent.getContext();
+        locationBasedActivityTableReference = FirebaseDatabase.getInstance().getReference().child("locationBasedActivityTable");
+
         return new MyViewHolder(itemView, clickListener);
     }
+
+
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
@@ -42,8 +59,32 @@ public class ChallengesAdapter extends RecyclerView.Adapter<ChallengesAdapter.My
         else{
             holder.progress.setVisibility(View.GONE);
             holder.progressBar.setVisibility(View.GONE);
-            holder.button.setVisibility(View.VISIBLE);
+            holder.activityIcon.setVisibility(View.VISIBLE);
         }
+
+        ValueEventListener iconLinkListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String iconLink =  dataSnapshot.child(challenge.activityName).child("iconLink").getValue().toString();
+                String assetBundleLink = dataSnapshot.child(challenge.activityName).child("assetBundleLink").getValue().toString();
+
+                Log.d("EAG_FIREBASE_DB", "Activity : " + challenge.activityName + "\nIcon link : " + iconLink + "\nAsset Bundle link : " + assetBundleLink);
+
+                // set activity icon
+                Glide.with(context).load(Uri.parse(iconLink)).into(holder.activityIcon);
+
+                // send asset bundle link to button
+                holder.claimButton.setOnClickListener(v -> Toast.makeText(context, "Asset Bundle Link : " + assetBundleLink, Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Read failed
+                Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
+            }
+        };
+        locationBasedActivityTableReference.addListenerForSingleValueEvent(iconLinkListener);
+
     }
 
     @Override
@@ -57,8 +98,8 @@ public class ChallengesAdapter extends RecyclerView.Adapter<ChallengesAdapter.My
         TextView rewardPoints;
         TextView progress;
         ProgressBar progressBar;
-        ImageView imageView;
-        Button button;
+        ImageView activityIcon;
+        Button claimButton;
         private WeakReference<HomeFragment.ClickListener> listenerRef;
 
         MyViewHolder(@NonNull View itemView, HomeFragment.ClickListener listener) {
@@ -68,10 +109,10 @@ public class ChallengesAdapter extends RecyclerView.Adapter<ChallengesAdapter.My
             rewardPoints = itemView.findViewById(R.id.rewardPoints);
             progress = itemView.findViewById(R.id.progress);
             progressBar = itemView.findViewById(R.id.progress_bar);
-            imageView = itemView.findViewById(R.id.imageView);
-            button = itemView.findViewById(R.id.redeemButton);
+            activityIcon = itemView.findViewById(R.id.activityIcon);
+            claimButton = itemView.findViewById(R.id.redeemButton);
 
-            button.setOnClickListener(this);
+            claimButton.setOnClickListener(this);
         }
 
         @Override
