@@ -66,15 +66,9 @@ public class ChallengesAdapter extends RecyclerView.Adapter<ChallengesAdapter.My
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String iconLink =  dataSnapshot.child(challenge.activityName).child("iconLink").getValue().toString();
-                String assetBundleLink = dataSnapshot.child(challenge.activityName).child("assetBundleLink").getValue().toString();
-
-                Log.d("EAG_FIREBASE_DB", "Activity : " + challenge.activityName + "\nIcon link : " + iconLink + "\nAsset Bundle link : " + assetBundleLink);
-
+                Log.d("EAG_FIREBASE_DB", "Activity : " + challenge.activityName + "\nIcon link : " + iconLink );
                 // set activity icon
                 Glide.with(context).load(Uri.parse(iconLink)).into(holder.activityIcon);
-
-                // send asset bundle link to button
-                holder.claimButton.setOnClickListener(v -> Toast.makeText(context, "Asset Bundle Link : " + assetBundleLink, Toast.LENGTH_LONG).show());
             }
 
             @Override

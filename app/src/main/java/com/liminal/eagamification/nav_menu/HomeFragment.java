@@ -12,15 +12,12 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
@@ -30,7 +27,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -60,8 +56,6 @@ import com.liminal.eagamification.LocationBasedGame;
 import com.liminal.eagamification.easy_augment.ScanMarkerActivity;
 import com.liminal.eagamification.rewards.RewardsActivity;
 import com.liminal.eagamification.ar_camp.CampActivity;
-import com.liminal.eagamification.easy_augment.EasyAugmentHelper;
-import com.liminal.eagamification.MainActivity;
 import com.liminal.eagamification.R;
 
 import java.util.ArrayList;
@@ -99,9 +93,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     private DatabaseReference locationBasedActivityTableReference;
     private DatabaseReference userDatabaseReference;
 
-    // Initialize Easy Augment
-    private EasyAugmentHelper easyAugmentHelper;
-
     //Enable GPS alert dialog box
     private AlertDialog alert;
 
@@ -120,17 +111,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                 .child(sharedPreferences.getString("id",""))
                 .child("statistics");
 
-//        easyAugmentHelper = new EasyAugmentHelper("101", Objects.requireNonNull(getActivity()), MainActivity.class.getName());
-//        easyAugmentHelper.loadMarkerImages();
-
         // Retrieve location from saved instance state.
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
         }
 
         locationManager = (LocationManager) Objects.requireNonNull(getContext()).getSystemService(LOCATION_SERVICE);
-//        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
-//            enableGPS();
 
         // Build the map.
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
@@ -273,14 +259,20 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Read data from firebase
                 liveUpdateList.clear();
-                for (DataSnapshot updateID : dataSnapshot.getChildren()) {
-                    String description = updateID.child("description").getValue().toString();
-                    String activityName = updateID.child("activityID").getValue().toString();
+
+                // Get 20 latest live updates
+                final long LIVE_UPDATE_COUNT = 20;
+                long startID = dataSnapshot.getChildrenCount() - LIVE_UPDATE_COUNT;
+
+                for(long i = startID > 1 ? startID : 1 ; i < startID + LIVE_UPDATE_COUNT ; i++)
+                {
+                    String description = dataSnapshot.child(String.valueOf(i)).child("description").getValue().toString();
+                    String activityName = dataSnapshot.child(String.valueOf(i)).child("activityID").getValue().toString();
                     LiveUpdate liveUpdate = new LiveUpdate(description, activityName);
                     liveUpdateList.add(liveUpdate);
                 }
-                liveUpdatesAdapter.notifyDataSetChanged();
 
+                liveUpdatesAdapter.notifyDataSetChanged();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -465,33 +457,36 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot game: dataSnapshot.getChildren())
-                {
-                    // Get game details from firebase
-                    String name = game.child("name").getValue().toString();
-                    String description = game.child("description").getValue().toString();
-                    String assetBundleLink = game.child("assetBundleLink").getValue().toString();
-                    String markerLink = game.child("markerLink").getValue().toString();
-                    String category = game.child("category").getValue().toString();
-                    double latitude = (double) game.child("latitude").getValue();
-                    double longitude = (double) game.child("longitude").getValue();
+                for (DataSnapshot activity : dataSnapshot.getChildren()) {
+                    // Get activity details from firebase
+                    String name = activity.child("name").getValue().toString();
+                    String description = activity.child("description").getValue().toString();
+                    String assetBundleLink = activity.child("assetBundleLink").getValue().toString();
+                    String markerLink = activity.child("markerLink").getValue().toString();
+                    String category = activity.child("category").getValue().toString();
 
-                    Marker newMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(latitude,longitude)).title(name));
-                    newMarker.setTitle(null);
-                    newMarker.setTag(new LocationBasedGame(name, description, latitude, longitude, assetBundleLink, markerLink));
+                    // Get activity locations from firebase
+                    for (int i = 1; i <= activity.child("locations").getChildrenCount(); i++) {
+                        double latitude = (double) activity.child("locations").child(String.valueOf(i)).child("latitude").getValue();
+                        double longitude = (double) activity.child("locations").child(String.valueOf(i)).child("longitude").getValue();
 
-                    switch (category)
-                    {
-                        case "event" :
-                            newMarker.setIcon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.event_marker),100, 100,false)));
-                            break;
-                        case "game" :
-                            newMarker.setIcon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.game_marker),100, 100,false)));
-                            break;
-                        case "scan" :
-                            newMarker.setIcon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.scan_marker),100, 100,false)));
-                            break;
+                        Marker newMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name));
+                        newMarker.setTitle(null);
+                        newMarker.setTag(new LocationBasedGame(name, description, latitude, longitude, assetBundleLink, markerLink));
+
+                        switch (category) {
+                            case "event":
+                                newMarker.setIcon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.event_marker), 100, 100, false)));
+                                break;
+                            case "game":
+                                newMarker.setIcon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.game_marker), 100, 100, false)));
+                                break;
+                            case "scan":
+                                newMarker.setIcon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.scan_marker), 100, 100, false)));
+                                break;
+                        }
                     }
+
                 }
             }
             @Override

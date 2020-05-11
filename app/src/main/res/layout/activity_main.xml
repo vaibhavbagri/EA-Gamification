@@ -18,6 +18,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:alpha="0.6"
+        android:background="#FFFFFF"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_bar_user_profile"
         app:menu="@menu/activity_menu_drawer" />
