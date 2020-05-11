@@ -473,8 +473,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                     String assetBundleLink = game.child("assetBundleLink").getValue().toString();
                     String markerLink = game.child("markerLink").getValue().toString();
                     String category = game.child("category").getValue().toString();
-                    double latitude = (double) game.child("latitude").getValue();
-                    double longitude = (double) game.child("longitude").getValue();
+//                    double latitude = (double) game.child("latitude").getValue();
+//                    double longitude = (double) game.child("longitude").getValue();
+                    double latitude = 75.1;
+                    double longitude = 18.1;
 
                     Marker newMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(latitude,longitude)).title(name));
                     newMarker.setTitle(null);

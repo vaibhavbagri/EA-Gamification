@@ -58,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
                 R.id.nav_home,
                 R.id.nav_profile,
                 R.id.nav_dashboard,
-                R.id.nav_about_us)
+                R.id.nav_about_us,
+                R.id.nav_sign_out)
                 .setDrawerLayout(drawer)
                 .build();
 
@@ -118,36 +119,36 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        if(item.getItemId() == R.id.sign_out) {
-            signOut();
-            return true;
-        }
-        else
-            return super.onOptionsItemSelected(item);
-    }
-
-
-
-    private void signOut() {
-        FirebaseAuth.getInstance().signOut();
-        mGoogleSignInClient.signOut()
-                .addOnCompleteListener(this, task -> {
-                    startActivity(new Intent(MainActivity.this, SignInActivity.class));
-                    finish();
-                });
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu, menu);
+//        return true;
+//    }
+//
+//
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle item selection
+//        if(item.getItemId() == R.id.sign_out) {
+//            signOut();
+//            return true;
+//        }
+//        else
+//            return super.onOptionsItemSelected(item);
+//    }
+//
+//
+//
+//    private void signOut() {
+//        FirebaseAuth.getInstance().signOut();
+//        mGoogleSignInClient.signOut()
+//                .addOnCompleteListener(this, task -> {
+//                    startActivity(new Intent(MainActivity.this, SignInActivity.class));
+//                    finish();
+//                });
+//    }
 
     @Override
     public boolean onSupportNavigateUp() {
