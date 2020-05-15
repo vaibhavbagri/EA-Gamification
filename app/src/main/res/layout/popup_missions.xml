@@ -28,7 +28,7 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/weeklyChallengesTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
@@ -43,6 +43,20 @@
                     android:textColor="@color/colorPrimary"
                     android:textSize="30sp" />
 
+                <TextView
+                    android:id="@+id/weeklyChallengesTimer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/weeklyChallengesTextView"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="16dp"
+                    android:fontFamily="@font/bangers"
+                    android:text="Time Remaining"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="20sp" />
+
                 <Button
                     android:id="@+id/quitMissionsPopupButton"
                     android:layout_width="30dp"
@@ -53,17 +67,49 @@
                     android:layout_marginEnd="16dp"
                     android:background="@drawable/exit"
                     android:backgroundTint="@color/colorAccent"
-                    app:layout_constraintEnd_toStartOf="@+id/textView"
+                    app:layout_constraintEnd_toStartOf="@+id/weeklyChallengesTextView"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_view"
+                    android:id="@+id/weeklyChallengesRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/textView"
-                    android:layout_alignParentBottom="true"
+                    android:layout_below="@+id/weeklyChallengesTimer" />
+
+
+                <TextView
+                    android:id="@+id/dailyChallengesTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/weeklyChallengesRecyclerView"
+                    android:layout_alignParentEnd="true"
                     android:layout_marginTop="0dp"
-                    android:layout_marginBottom="305dp" />
+                    android:layout_marginEnd="82dp"
+                    android:fontFamily="@font/bangers"
+                    android:text="Daily Challenges "
+                    android:textAlignment="center"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="30sp" />
+
+                <TextView
+                    android:id="@+id/dailyChallengesTimer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/dailyChallengesTextView"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="16dp"
+                    android:fontFamily="@font/bangers"
+                    android:text="Time Remaining"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="20sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/dailyChallengesRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/dailyChallengesTimer" />
 
             </RelativeLayout>
 

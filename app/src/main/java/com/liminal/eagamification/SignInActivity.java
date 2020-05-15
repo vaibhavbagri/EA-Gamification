@@ -232,6 +232,15 @@ public class SignInActivity extends AppCompatActivity {
         userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("general").child("markersScanned").setValue(0);
         userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("general").child("itemsCollected").setValue(0);
         userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("general").child("rewardsClaimed").setValue(0);
+
+        //Setup user statistics for daily and weekly challenges
+        userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("challenges").child("daily").child("1").setValue(0);
+        userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("challenges").child("daily").child("2").setValue(0);
+        userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("challenges").child("daily").child("3").setValue(0);
+        userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("challenges").child("weekly").child("1").setValue(0);
+        userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("challenges").child("weekly").child("2").setValue(0);
+        userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("challenges").child("weekly").child("3").setValue(0);
+
     }
 
 

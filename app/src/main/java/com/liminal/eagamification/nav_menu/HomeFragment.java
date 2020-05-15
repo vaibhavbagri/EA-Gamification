@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -21,6 +24,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +55,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.liminal.eagamification.LocationBasedGame;
 import com.liminal.eagamification.easy_augment.ScanMarkerActivity;
@@ -59,6 +64,7 @@ import com.liminal.eagamification.ar_camp.CampActivity;
 import com.liminal.eagamification.R;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -96,6 +102,18 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     //Enable GPS alert dialog box
     private AlertDialog alert;
 
+    //To make backgroud transparent
+    private CustomDrawable customDrawable;
+    private RelativeLayout relativeLayout;
+
+    //Missions popup
+    private ChallengesAdapter weeklyChallengesAdapter;
+    private ChallengesAdapter dailyChallengesAdapter;
+    private List<Challenge> weeklyChallengeList = new ArrayList<>();
+    private List<Challenge> dailyChallengeList = new ArrayList<>();
+    private TextView weeklyChallengesTimer;
+    private TextView dailyChallengesTimer;
+
     @SuppressLint("MissingPermission")
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -108,8 +126,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         //Used to calculate values in live missions
         userDatabaseReference = FirebaseDatabase.getInstance().getReference()
                 .child("userProfileTable")
-                .child(sharedPreferences.getString("id",""))
-                .child("statistics");
+                .child(sharedPreferences.getString("id",""));
 
         // Retrieve location from saved instance state.
         if (savedInstanceState != null) {
@@ -126,6 +143,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+
+        //Drawable to make background transparent
+        customDrawable = root.findViewById(R.id.customDrawable);
+        relativeLayout = root.findViewById(R.id.homeRelativeLayout);
 
         // Implement button to allow user to claim rewards
         FloatingActionButton claimRewardsButton = root.findViewById(R.id.claimRewardsButton);
@@ -158,84 +179,213 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         // Inflate the popup window layout
         View popupMissionsView = inflater.inflate(R.layout.popup_missions, null);
         //Setup recycler view within popup window
-        List<Challenge> challengeList = new ArrayList<>();
-        RecyclerView challengesRecyclerView = popupMissionsView.findViewById(R.id.recycler_view);
-        ChallengesAdapter challengesAdapter = new ChallengesAdapter(challengeList, position -> {
-            Toast.makeText(getContext(),challengeList.get(position).description,Toast.LENGTH_SHORT).show();
+
+        //Weekly Challenges
+        RecyclerView weeklyChallengesRecyclerView = popupMissionsView.findViewById(R.id.weeklyChallengesRecyclerView);
+        weeklyChallengesAdapter = new ChallengesAdapter(weeklyChallengeList, position -> {
+            Toast.makeText(getContext(),weeklyChallengeList.get(position).description,Toast.LENGTH_SHORT).show();
         });
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-        challengesRecyclerView.setLayoutManager(mLayoutManager);
-        challengesRecyclerView.setAdapter(challengesAdapter);
+        RecyclerView.LayoutManager weeklyLayoutManager = new LinearLayoutManager(getContext());
+        weeklyChallengesRecyclerView.setLayoutManager(weeklyLayoutManager);
+        weeklyChallengesRecyclerView.setAdapter(weeklyChallengesAdapter);
+        weeklyChallengesTimer = popupMissionsView.findViewById(R.id.weeklyChallengesTimer);
+
+        //Daily Challenges
+        RecyclerView dailyChallengesRecyclerView = popupMissionsView.findViewById(R.id.dailyChallengesRecyclerView);
+        dailyChallengesAdapter = new ChallengesAdapter(dailyChallengeList, position -> {
+            Toast.makeText(getContext(),dailyChallengeList.get(position).description,Toast.LENGTH_SHORT).show();
+        });
+        RecyclerView.LayoutManager dailyLayoutManager = new LinearLayoutManager(getContext());
+        dailyChallengesRecyclerView.setLayoutManager(dailyLayoutManager);
+        dailyChallengesRecyclerView.setAdapter(dailyChallengesAdapter);
+        dailyChallengesTimer = popupMissionsView.findViewById(R.id.dailyChallengesTimer);
+
         // Setup popup window
-        final PopupWindow popupWindow = new PopupWindow(popupMissionsView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
-        // Allow touch input outside the popup window
-        popupWindow.setOutsideTouchable(true);
+        PopupWindow popupWindow = new PopupWindow(popupMissionsView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
 
-        if(popupWindow.isShowing())
-            popupWindow.dismiss();
-        else
-        {
-            // Show popup view at the center
-            popupWindow.showAtLocation(view, Gravity.CENTER, 0,0);
+        // Show popup view at the center
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0,0);
 
-            // Button to dismiss popup
-            Button button = popupMissionsView.findViewById(R.id.quitMissionsPopupButton);
-            button.setOnClickListener(v -> popupWindow.dismiss());
-        }
+        //Make background transparent
+//        customDrawable.setVisibility(View.VISIBLE);
+//        popupWindow.setOnDismissListener(() -> customDrawable.setVisibility(View.GONE));
+//        relativeLayout.setAlpha((float) 0.1);
+//        popupWindow.setOnDismissListener(() -> relativeLayout.setAlpha(1));
 
-        //Listen for values on Firebase
-        ValueEventListener eventListener = new ValueEventListener() {
+        // Button to dismiss popup
+        Button button = popupMissionsView.findViewById(R.id.quitMissionsPopupButton);
+        button.setOnClickListener(v -> popupWindow.dismiss());
+
+        //Check if first login of the day and week
+        userDatabaseReference.child("loginDetails").child("currentTimestamp").setValue(ServerValue.TIMESTAMP);
+        userDatabaseReference.child("loginDetails").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Read data from firebase
-                challengeList.clear();
-                for (DataSnapshot challengeID : dataSnapshot.getChildren()) {
-                    String description = challengeID.child("description").getValue().toString();
-                    String rewardPoints = challengeID.child("rewardPoints").getValue().toString();
-                    String activityName = challengeID.child("activityID").getValue().toString();
-                    String stat = challengeID.child("stat").getValue().toString();
-                    long target = (long) challengeID.child("target").getValue();
-                    long challengePosition = (long) challengeID.child("challengePosition").getValue();
-                    //Check the current stat value and stored stat value at the start of the week to calculate progress
-                    userDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            long stat_value = (long) dataSnapshot.child("activityBased").child(activityName).child(stat).getValue();
-                            long stored_value = (long) dataSnapshot.child("challenges").child(String.valueOf(challengePosition)).getValue();
-                            long progress = stat_value - stored_value ;
-                            Challenge challenge = new Challenge(progress,description,rewardPoints,activityName,target,stat);
-                            challengeList.add(challenge);
-                            challengesAdapter.notifyDataSetChanged();
-                        }
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                long current_ts = (long) dataSnapshot.child("currentTimestamp").getValue();
+                long previous_ts = (long) dataSnapshot.child("previousTimestamp").getValue();
+                Calendar current_calender = Calendar.getInstance();
+                Calendar previous_calendar = Calendar.getInstance();
+                current_calender.setTimeInMillis(current_ts);
+                previous_calendar.setTimeInMillis(previous_ts);
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                if (current_calender.get(Calendar.YEAR) > previous_calendar.get(Calendar.YEAR)) {
+                    mission_setup(current_ts, true, "daily", dailyChallengesAdapter, dailyChallengeList);
+                    mission_setup(current_ts, true, "weekly", weeklyChallengesAdapter, weeklyChallengeList);
+                } else {
+                    if (current_calender.get(Calendar.DAY_OF_YEAR) > previous_calendar.get(Calendar.DAY_OF_YEAR)) {
+                        Log.d("EAG_TIME", "It's a new day");
+                        mission_setup(current_ts, true, "daily", dailyChallengesAdapter, dailyChallengeList);
+                    } else {
+                        Log.d("EAG_TIME", "You keep logging in lol");
+                        mission_setup(current_ts, false, "daily", dailyChallengesAdapter, dailyChallengeList);
+                    }
 
-                        }
-                    });
+                    if (current_calender.get(Calendar.WEEK_OF_YEAR) > previous_calendar.get(Calendar.WEEK_OF_YEAR)) {
+                        Log.d("EAG_TIME", "It's a new week");
+                        mission_setup(current_ts, true, "weekly", weeklyChallengesAdapter, weeklyChallengeList);
+                    } else {
+                        Log.d("EAG_TIME", "Meh, same week, no action");
+                        mission_setup(current_ts, false, "weekly", weeklyChallengesAdapter, weeklyChallengeList);
+                    }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Read failed
-                Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
-            }
-        };
 
-        FirebaseDatabase.getInstance().getReference().child("challengesTable").addValueEventListener(eventListener);
+            }
+        });
     }
 
+    private void mission_setup(long current_ts, boolean isFirstLogin, String challengeType, ChallengesAdapter challengesAdapter, List<Challenge> challengeList) {
+        FirebaseDatabase.getInstance().getReference().child("challengesTable").child(challengeType).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                challengeList.clear();
+                for (DataSnapshot challengeID : dataSnapshot.getChildren()) {
+                    if((long)challengeID.child("timestampStart").getValue() < current_ts && (long)challengeID.child("timestampEnd").getValue() > current_ts) {
+                        Log.d("EAG_TIME", "Challenge found");
+                        String description = challengeID.child("description").getValue().toString();
+                        String rewardPoints = challengeID.child("rewardPoints").getValue().toString();
+                        String activityName = challengeID.child("activityID").getValue().toString();
+                        String stat = challengeID.child("stat").getValue().toString();
+                        long target = (long) challengeID.child("target").getValue();
+                        long challengePosition = (long) challengeID.child("challengePosition").getValue();
+                        //Check the current stat value and stored stat value at the start to calculate progress
+                        userDatabaseReference.child("statistics").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                long stat_value = (long) dataSnapshot.child("activityBased").child(activityName).child(stat).getValue();
+                                long progress = 0;
+                                if(isFirstLogin) {
+                                    userDatabaseReference.child("statistics").child("challenges").child(challengeType).child(String.valueOf(challengePosition)).setValue(stat_value);
+                                }
+                                else {
+                                    long stored_value = (long) dataSnapshot.child("challenges").child(challengeType).child(String.valueOf(challengePosition)).getValue();
+                                    progress = stat_value - stored_value ;
+                                }
+                                Challenge challenge = new Challenge(progress, description, rewardPoints, activityName, target, stat);
+                                challengeList.add(challenge);
+                                challengesAdapter.notifyDataSetChanged();
+                            }
 
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        if(challengePosition == 1){
+                            long ts_secs = ((long)challengeID.child("timestampEnd").getValue() - current_ts)/1000;
+                            long days = ts_secs / (3600 * 24);
+                            long hours = 1 + (ts_secs / 3600) % 24;
+                            long mins = 0;
+                            if(hours == 1)
+                                mins = (ts_secs / 60) % 60;
+                            if(challengeType.equals("weekly")){
+                                if(days == 0) {
+                                    if(hours == 1)
+                                        weeklyChallengesTimer.setText(mins + " mins to go ");
+                                    else
+                                        weeklyChallengesTimer.setText(hours + " hours to go ");
+                                }
+                                else
+                                    weeklyChallengesTimer.setText(days + " days, " + hours + " hours to go ");
+                            }else{
+                                if(hours == 1)
+                                    dailyChallengesTimer.setText(mins + " mins to go ");
+                                else
+                                    dailyChallengesTimer.setText(hours + " hours to go ");
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void daily_mission_setup(long current_ts, boolean isNewDay) {
+        FirebaseDatabase.getInstance().getReference().child("challengesTable").child("daily").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                dailyChallengeList.clear();
+                for (DataSnapshot challengeID : dataSnapshot.getChildren()) {
+                    if((long)challengeID.child("timestampStart").getValue() < current_ts && (long)challengeID.child("timestampEnd").getValue() > current_ts) {
+                        Log.d("EAG_TIME", "Challenge found");
+                        String description = challengeID.child("description").getValue().toString();
+                        String rewardPoints = challengeID.child("rewardPoints").getValue().toString();
+                        String activityName = challengeID.child("activityID").getValue().toString();
+                        String stat = challengeID.child("stat").getValue().toString();
+                        long target = (long) challengeID.child("target").getValue();
+                        long challengePosition = (long) challengeID.child("challengePosition").getValue();
+                        //Check the current stat value and stored stat value at the start of the week to calculate progress
+                        userDatabaseReference.child("statistics").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                long stat_value = (long) dataSnapshot.child("activityBased").child(activityName).child(stat).getValue();
+                                long progress = 0;
+                                if(isNewDay) {
+                                    userDatabaseReference.child("statistics").child("challenges").child("daily").child(String.valueOf(challengePosition)).setValue(stat_value);
+                                }
+                                else {
+                                    long stored_value = (long) dataSnapshot.child("challenges").child("daily").child(String.valueOf(challengePosition)).getValue();
+                                    progress = stat_value - stored_value ;
+                                }
+                                Challenge challenge = new Challenge(progress, description, rewardPoints, activityName, target, stat);
+                                dailyChallengeList.add(challenge);
+                                dailyChallengesAdapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     // Function to manage missions popup window
     private void manageLiveUpdatesPopup(View view, LayoutInflater inflater)
     {
         // Inflate the popup window layout
-        View popupMissionsView = inflater.inflate(R.layout.popup_live_updates, null);
+        View popupLiveUpdatesView = inflater.inflate(R.layout.popup_live_updates, null);
 
         //Setup recycler view within popup window
         List<LiveUpdate> liveUpdateList = new ArrayList<>();
-        RecyclerView liveUpdatesRecyclerView = popupMissionsView.findViewById(R.id.recycler_view);
+        RecyclerView liveUpdatesRecyclerView = popupLiveUpdatesView.findViewById(R.id.recycler_view);
         LiveUpdatesAdapter liveUpdatesAdapter = new LiveUpdatesAdapter(liveUpdateList, position -> {
             Toast.makeText(getContext(),liveUpdateList.get(position).description,Toast.LENGTH_SHORT).show();
         });
@@ -245,12 +395,16 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         liveUpdatesRecyclerView.setAdapter(liveUpdatesAdapter);
 
         // Setup popup window
-        final PopupWindow popupWindow = new PopupWindow(popupMissionsView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
+        PopupWindow popupWindow = new PopupWindow(popupLiveUpdatesView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
         // Show popup view at the center
         popupWindow.showAtLocation(view, Gravity.CENTER, 0,0);
 
+        //Make background transparent
+//        customDrawable.setVisibility(View.VISIBLE);
+//        popupWindow.setOnDismissListener(() -> customDrawable.setVisibility(View.GONE));
+
         // Button to dismiss popup
-        Button button = popupMissionsView.findViewById(R.id.quitLiveUpdatesPopupButton);
+        Button button = popupLiveUpdatesView.findViewById(R.id.quitLiveUpdatesPopupButton);
         button.setOnClickListener(v -> popupWindow.dismiss());
 
         //Listen for values on Firebase

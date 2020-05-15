@@ -35,8 +35,6 @@ import androidx.appcompat.widget.Toolbar;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-    private GoogleSignInClient mGoogleSignInClient;
-
 
 
     @Override
@@ -87,12 +85,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         userProfileReference.child(sharedPreferences.getString("id","")).addValueEventListener(eventListener);
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
 
@@ -116,39 +108,6 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d("EAG_UPDATE_PROFILE", "Username : " + userName + " Coins : " + coins + " Tickets : " + tickets);
     }
-
-
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu, menu);
-//        return true;
-//    }
-//
-//
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle item selection
-//        if(item.getItemId() == R.id.sign_out) {
-//            signOut();
-//            return true;
-//        }
-//        else
-//            return super.onOptionsItemSelected(item);
-//    }
-//
-//
-//
-//    private void signOut() {
-//        FirebaseAuth.getInstance().signOut();
-//        mGoogleSignInClient.signOut()
-//                .addOnCompleteListener(this, task -> {
-//                    startActivity(new Intent(MainActivity.this, SignInActivity.class));
-//                    finish();
-//                });
-//    }
 
     @Override
     public boolean onSupportNavigateUp() {
