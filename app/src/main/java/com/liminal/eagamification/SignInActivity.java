@@ -212,34 +212,39 @@ public class SignInActivity extends AppCompatActivity {
     private void addUserProfile()
     {
         Log.d("EAG_USER_PROFILE", "Adding new User to Database \nEmail : " + account.getEmail() + " Name : " + account.getGivenName() + " " + account.getFamilyName() + " Photo URL : " + account.getPhotoUrl());
+        DatabaseReference userDatabaseReference = userProfileReference.child(sharedPreferences.getString("id",""));
 
         // Add profile to User Profile table
-        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("username").setValue("Anon");
-        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("DOB").setValue("NA");
-        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("mobileNo").setValue("NA");
-        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("bio").setValue("NA");
-        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("email").setValue(account.getEmail());
-        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("firstName").setValue(account.getGivenName());
-        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("lastName").setValue(account.getFamilyName());
-        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("photoURL").setValue(String.valueOf(account.getPhotoUrl()));
+        userDatabaseReference.child("personalDetails").child("username").setValue("Anon");
+        userDatabaseReference.child("personalDetails").child("DOB").setValue("NA");
+        userDatabaseReference.child("personalDetails").child("mobileNo").setValue("NA");
+        userDatabaseReference.child("personalDetails").child("bio").setValue("NA");
+        userDatabaseReference.child("personalDetails").child("email").setValue(account.getEmail());
+        userDatabaseReference.child("personalDetails").child("firstName").setValue(account.getGivenName());
+        userDatabaseReference.child("personalDetails").child("lastName").setValue(account.getFamilyName());
+        userDatabaseReference.child("personalDetails").child("photoURL").setValue(String.valueOf(account.getPhotoUrl()));
 
         // Setup user currency
-        userProfileReference.child(sharedPreferences.getString("id","")).child("rewardDetails").child("coins").setValue(0);
-        userProfileReference.child(sharedPreferences.getString("id","")).child("rewardDetails").child("tickets").setValue(0);
+        userDatabaseReference.child("rewardDetails").child("coins").setValue(0);
+        userDatabaseReference.child("rewardDetails").child("tickets").setValue(0);
 
         // Setup user statistics
-        userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("general").child("campExperiences").setValue(0);
-        userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("general").child("markersScanned").setValue(0);
-        userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("general").child("itemsCollected").setValue(0);
-        userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("general").child("rewardsClaimed").setValue(0);
+        userDatabaseReference.child("statistics").child("general").child("campExperiences").setValue(0);
+        userDatabaseReference.child("statistics").child("general").child("markersScanned").setValue(0);
+        userDatabaseReference.child("statistics").child("general").child("itemsCollected").setValue(0);
+        userDatabaseReference.child("statistics").child("general").child("rewardsClaimed").setValue(0);
 
         //Setup user statistics for daily and weekly challenges
-        userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("challenges").child("daily").child("1").setValue(0);
-        userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("challenges").child("daily").child("2").setValue(0);
-        userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("challenges").child("daily").child("3").setValue(0);
-        userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("challenges").child("weekly").child("1").setValue(0);
-        userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("challenges").child("weekly").child("2").setValue(0);
-        userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("challenges").child("weekly").child("3").setValue(0);
+        userDatabaseReference.child("statistics").child("challenges").child("daily").child("1").setValue(0);
+        userDatabaseReference.child("statistics").child("challenges").child("daily").child("2").setValue(0);
+        userDatabaseReference.child("statistics").child("challenges").child("daily").child("3").setValue(0);
+        userDatabaseReference.child("statistics").child("challenges").child("weekly").child("1").setValue(0);
+        userDatabaseReference.child("statistics").child("challenges").child("weekly").child("2").setValue(0);
+        userDatabaseReference.child("statistics").child("challenges").child("weekly").child("3").setValue(0);
+        
+        //Setup user previous and current login timestamps
+        userDatabaseReference.child("loginDetails").child("currentTimestamp").setValue(0);
+        userDatabaseReference.child("loginDetails").child("previousTimestamp").setValue(0);
 
     }
 

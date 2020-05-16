@@ -248,6 +248,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                         mission_setup(current_ts, false, "weekly", weeklyChallengesAdapter, weeklyChallengeList);
                     }
                 }
+                userDatabaseReference.child("loginDetails").child("previousTimestamp").setValue(current_ts);
             }
 
             @Override
@@ -275,14 +276,19 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                         userDatabaseReference.child("statistics").addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                long stat_value = (long) dataSnapshot.child("activityBased").child(activityName).child(stat).getValue();
-                                long progress = 0;
-                                if(isFirstLogin) {
-                                    userDatabaseReference.child("statistics").child("challenges").child(challengeType).child(String.valueOf(challengePosition)).setValue(stat_value);
+                                long stat_value = 0;
+                                if(dataSnapshot.hasChild("activityBased")) {
+                                    if (dataSnapshot.child("activityBased").hasChild(activityName))
+                                        stat_value = (long) dataSnapshot.child("activityBased").child(activityName).child(stat).getValue();
                                 }
-                                else {
+                                else
+                                    userDatabaseReference.child("statistics").child("activityBased").child(activityName).child(stat).setValue(0);
+                                long progress = 0;
+                                if (isFirstLogin) {
+                                    userDatabaseReference.child("statistics").child("challenges").child(challengeType).child(String.valueOf(challengePosition)).setValue(stat_value);
+                                } else {
                                     long stored_value = (long) dataSnapshot.child("challenges").child(challengeType).child(String.valueOf(challengePosition)).getValue();
-                                    progress = stat_value - stored_value ;
+                                    progress = stat_value - stored_value;
                                 }
                                 Challenge challenge = new Challenge(progress, description, rewardPoints, activityName, target, stat);
                                 challengeList.add(challenge);
@@ -329,55 +335,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         });
     }
 
-    private void daily_mission_setup(long current_ts, boolean isNewDay) {
-        FirebaseDatabase.getInstance().getReference().child("challengesTable").child("daily").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                dailyChallengeList.clear();
-                for (DataSnapshot challengeID : dataSnapshot.getChildren()) {
-                    if((long)challengeID.child("timestampStart").getValue() < current_ts && (long)challengeID.child("timestampEnd").getValue() > current_ts) {
-                        Log.d("EAG_TIME", "Challenge found");
-                        String description = challengeID.child("description").getValue().toString();
-                        String rewardPoints = challengeID.child("rewardPoints").getValue().toString();
-                        String activityName = challengeID.child("activityID").getValue().toString();
-                        String stat = challengeID.child("stat").getValue().toString();
-                        long target = (long) challengeID.child("target").getValue();
-                        long challengePosition = (long) challengeID.child("challengePosition").getValue();
-                        //Check the current stat value and stored stat value at the start of the week to calculate progress
-                        userDatabaseReference.child("statistics").addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                long stat_value = (long) dataSnapshot.child("activityBased").child(activityName).child(stat).getValue();
-                                long progress = 0;
-                                if(isNewDay) {
-                                    userDatabaseReference.child("statistics").child("challenges").child("daily").child(String.valueOf(challengePosition)).setValue(stat_value);
-                                }
-                                else {
-                                    long stored_value = (long) dataSnapshot.child("challenges").child("daily").child(String.valueOf(challengePosition)).getValue();
-                                    progress = stat_value - stored_value ;
-                                }
-                                Challenge challenge = new Challenge(progress, description, rewardPoints, activityName, target, stat);
-                                dailyChallengeList.add(challenge);
-                                dailyChallengesAdapter.notifyDataSetChanged();
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    // Function to manage missions popup window
+    // Function to manage live updates popup window
     private void manageLiveUpdatesPopup(View view, LayoutInflater inflater)
     {
         // Inflate the popup window layout
