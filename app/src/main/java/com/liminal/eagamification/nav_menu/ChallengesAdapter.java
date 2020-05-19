@@ -1,6 +1,7 @@
 package com.liminal.eagamification.nav_menu;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ChallengesAdapter extends RecyclerView.Adapter<ChallengesAdapter.MyViewHolder> {
@@ -38,10 +40,8 @@ public class ChallengesAdapter extends RecyclerView.Adapter<ChallengesAdapter.My
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_row_challenge, parent, false);
-
         context = parent.getContext();
         locationBasedActivityTableReference = FirebaseDatabase.getInstance().getReference().child("locationBasedActivityTable");
-
         return new MyViewHolder(itemView, clickListener);
     }
 
@@ -51,15 +51,21 @@ public class ChallengesAdapter extends RecyclerView.Adapter<ChallengesAdapter.My
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Challenge challenge = challengeList.get(position);
         holder.description.setText(challenge.description);
-        holder.rewardPoints.setText(challenge.rewardPoints);
+        holder.rewardPoints.setText(String.valueOf(challenge.rewardPoints));
+
+        if(challenge.isClaimed) {
+            holder.constraintLayout.setBackgroundColor(Color.LTGRAY);
+            holder.claimButton.setEnabled(false);
+            holder.constraintLayout.setAlpha(0.8f);
+        }
+
         if(challenge.progress < challenge.target) {
             holder.progress.setText(challenge.progress + "/" + challenge.target);
             holder.progressBar.setProgress((int) ((challenge.progress * 100) / challenge.target));
         }
-        else{
-            holder.progress.setVisibility(View.GONE);
-            holder.progressBar.setVisibility(View.GONE);
-            holder.activityIcon.setVisibility(View.VISIBLE);
+        else {
+            holder.progress.setText(challenge.target + "/" + challenge.target);
+            holder.progressBar.setProgress(100);
         }
 
         ValueEventListener iconLinkListener = new ValueEventListener() {
@@ -94,6 +100,7 @@ public class ChallengesAdapter extends RecyclerView.Adapter<ChallengesAdapter.My
         ProgressBar progressBar;
         ImageView activityIcon;
         Button claimButton;
+        ConstraintLayout constraintLayout;
         private WeakReference<HomeFragment.ClickListener> listenerRef;
 
         MyViewHolder(@NonNull View itemView, HomeFragment.ClickListener listener) {
@@ -105,6 +112,7 @@ public class ChallengesAdapter extends RecyclerView.Adapter<ChallengesAdapter.My
             progressBar = itemView.findViewById(R.id.progress_bar);
             activityIcon = itemView.findViewById(R.id.activityIcon);
             claimButton = itemView.findViewById(R.id.redeemButton);
+            constraintLayout = itemView.findViewById(R.id.challengeConstraintLayout);
 
             claimButton.setOnClickListener(this);
         }
@@ -119,6 +127,5 @@ public class ChallengesAdapter extends RecyclerView.Adapter<ChallengesAdapter.My
         this.challengeList = challengeList;
         this.clickListener = clickListener;
     }
-
 }
 

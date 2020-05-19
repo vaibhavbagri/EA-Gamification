@@ -14,7 +14,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/challengeConstraintLayout">
 
         <ImageView
             android:id="@+id/activityIcon"
@@ -104,13 +105,5 @@
             app:layout_constraintTop_toBottomOf="@+id/progress_bar"
             app:srcCompat="@drawable/coin_icon" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-
-
-    </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

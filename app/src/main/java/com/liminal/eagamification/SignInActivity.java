@@ -234,14 +234,6 @@ public class SignInActivity extends AppCompatActivity {
         userDatabaseReference.child("statistics").child("general").child("itemsCollected").setValue(0);
         userDatabaseReference.child("statistics").child("general").child("rewardsClaimed").setValue(0);
 
-        //Setup user statistics for daily and weekly challenges
-        userDatabaseReference.child("statistics").child("challenges").child("daily").child("1").setValue(0);
-        userDatabaseReference.child("statistics").child("challenges").child("daily").child("2").setValue(0);
-        userDatabaseReference.child("statistics").child("challenges").child("daily").child("3").setValue(0);
-        userDatabaseReference.child("statistics").child("challenges").child("weekly").child("1").setValue(0);
-        userDatabaseReference.child("statistics").child("challenges").child("weekly").child("2").setValue(0);
-        userDatabaseReference.child("statistics").child("challenges").child("weekly").child("3").setValue(0);
-        
         //Setup user previous and current login timestamps
         userDatabaseReference.child("loginDetails").child("currentTimestamp").setValue(0);
         userDatabaseReference.child("loginDetails").child("previousTimestamp").setValue(0);

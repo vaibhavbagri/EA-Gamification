@@ -178,12 +178,17 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     {
         // Inflate the popup window layout
         View popupMissionsView = inflater.inflate(R.layout.popup_missions, null);
-        //Setup recycler view within popup window
 
+        // Setup popup window
+        PopupWindow popupWindow = new PopupWindow(popupMissionsView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
+
+        //Setup recycler view within popup window
         //Weekly Challenges
+        weeklyChallengeList.clear();
         RecyclerView weeklyChallengesRecyclerView = popupMissionsView.findViewById(R.id.weeklyChallengesRecyclerView);
         weeklyChallengesAdapter = new ChallengesAdapter(weeklyChallengeList, position -> {
-            Toast.makeText(getContext(),weeklyChallengeList.get(position).description,Toast.LENGTH_SHORT).show();
+            if(claimReward(weeklyChallengeList.get(position)))
+                popupWindow.dismiss();
         });
         RecyclerView.LayoutManager weeklyLayoutManager = new LinearLayoutManager(getContext());
         weeklyChallengesRecyclerView.setLayoutManager(weeklyLayoutManager);
@@ -191,17 +196,16 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         weeklyChallengesTimer = popupMissionsView.findViewById(R.id.weeklyChallengesTimer);
 
         //Daily Challenges
+        dailyChallengeList.clear();
         RecyclerView dailyChallengesRecyclerView = popupMissionsView.findViewById(R.id.dailyChallengesRecyclerView);
         dailyChallengesAdapter = new ChallengesAdapter(dailyChallengeList, position -> {
-            Toast.makeText(getContext(),dailyChallengeList.get(position).description,Toast.LENGTH_SHORT).show();
+            if(claimReward(dailyChallengeList.get(position)))
+                popupWindow.dismiss();
         });
         RecyclerView.LayoutManager dailyLayoutManager = new LinearLayoutManager(getContext());
         dailyChallengesRecyclerView.setLayoutManager(dailyLayoutManager);
         dailyChallengesRecyclerView.setAdapter(dailyChallengesAdapter);
         dailyChallengesTimer = popupMissionsView.findViewById(R.id.dailyChallengesTimer);
-
-        // Setup popup window
-        PopupWindow popupWindow = new PopupWindow(popupMissionsView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
 
         // Show popup view at the center
         popupWindow.showAtLocation(view, Gravity.CENTER, 0,0);
@@ -231,7 +235,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                 if (current_calender.get(Calendar.YEAR) > previous_calendar.get(Calendar.YEAR)) {
                     mission_setup(current_ts, true, "daily", dailyChallengesAdapter, dailyChallengeList);
                     mission_setup(current_ts, true, "weekly", weeklyChallengesAdapter, weeklyChallengeList);
-                } else {
+                }
+                else {
                     if (current_calender.get(Calendar.DAY_OF_YEAR) > previous_calendar.get(Calendar.DAY_OF_YEAR)) {
                         Log.d("EAG_TIME", "It's a new day");
                         mission_setup(current_ts, true, "daily", dailyChallengesAdapter, dailyChallengeList);
@@ -258,16 +263,44 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         });
     }
 
+    private boolean claimReward(Challenge challenge) {
+        if(challenge.progress < challenge.target) {
+            Toast.makeText(getContext(), "You have not yet completed this challenge", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else {
+            userDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (!(boolean) dataSnapshot.child("statistics").child("challenges").child(challenge.challengeType).child(String.valueOf(challenge.position)).child("isClaimed").getValue()) {
+                        long currentRewardPoints = (long) dataSnapshot.child("rewardDetails").child(challenge.rewardType).getValue();
+                        currentRewardPoints += challenge.rewardPoints;
+                        userDatabaseReference.child("rewardDetails").child(challenge.rewardType).setValue(currentRewardPoints);
+                        userDatabaseReference.child("statistics").child("challenges").child(challenge.challengeType).child(String.valueOf(challenge.position)).child("isClaimed").setValue(true);
+                        Toast.makeText(getContext(), "Congratulations, reward points claimed!", Toast.LENGTH_SHORT).show();
+                    } else
+                        Toast.makeText(getContext(), "You have already claimed this reward", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+            return true;
+        }
+    }
+
     private void mission_setup(long current_ts, boolean isFirstLogin, String challengeType, ChallengesAdapter challengesAdapter, List<Challenge> challengeList) {
-        FirebaseDatabase.getInstance().getReference().child("challengesTable").child(challengeType).addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("challengesTable").child(challengeType).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                challengeList.clear();
                 for (DataSnapshot challengeID : dataSnapshot.getChildren()) {
                     if((long)challengeID.child("timestampStart").getValue() < current_ts && (long)challengeID.child("timestampEnd").getValue() > current_ts) {
-                        Log.d("EAG_TIME", "Challenge found");
                         String description = challengeID.child("description").getValue().toString();
-                        String rewardPoints = challengeID.child("rewardPoints").getValue().toString();
+                        Log.d("EAG_CHALLENGE", "Challenge found : " + description);
+                        String rewardType = challengeID.child("rewardType").getValue().toString();
+                        long rewardPoints = (long) challengeID.child("rewardPoints").getValue();
                         String activityName = challengeID.child("activityID").getValue().toString();
                         String stat = challengeID.child("stat").getValue().toString();
                         long target = (long) challengeID.child("target").getValue();
@@ -284,14 +317,18 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                                 else
                                     userDatabaseReference.child("statistics").child("activityBased").child(activityName).child(stat).setValue(0);
                                 long progress = 0;
+                                boolean isClaimed = false;
                                 if (isFirstLogin) {
-                                    userDatabaseReference.child("statistics").child("challenges").child(challengeType).child(String.valueOf(challengePosition)).setValue(stat_value);
+                                    userDatabaseReference.child("statistics").child("challenges").child(challengeType).child(String.valueOf(challengePosition)).child("value").setValue(stat_value);
+                                    userDatabaseReference.child("statistics").child("challenges").child(challengeType).child(String.valueOf(challengePosition)).child("isClaimed").setValue(isClaimed);
                                 } else {
-                                    long stored_value = (long) dataSnapshot.child("challenges").child(challengeType).child(String.valueOf(challengePosition)).getValue();
+                                    long stored_value = (long) dataSnapshot.child("challenges").child(challengeType).child(String.valueOf(challengePosition)).child("value").getValue();
+                                    isClaimed = (boolean) dataSnapshot.child("challenges").child(challengeType).child(String.valueOf(challengePosition)).child("isClaimed").getValue();
                                     progress = stat_value - stored_value;
                                 }
-                                Challenge challenge = new Challenge(progress, description, rewardPoints, activityName, target, stat);
+                                Challenge challenge = new Challenge(challengeType, progress, description, rewardType, rewardPoints, activityName, target, stat, isClaimed, challengePosition);
                                 challengeList.add(challenge);
+                                Log.d("EAG_CHALLENGE", challengeList.toString());
                                 challengesAdapter.notifyDataSetChanged();
                             }
 
