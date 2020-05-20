@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -50,6 +51,7 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -105,6 +107,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     //To make backgroud transparent
     private CustomDrawable customDrawable;
     private RelativeLayout relativeLayout;
+
+    private BottomNavigationView bottomNavigationView;
 
     //Missions popup
     private ChallengesAdapter weeklyChallengesAdapter;
@@ -168,6 +172,29 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         campButton.setOnClickListener(v -> {
             Intent campIntent = new Intent(getActivity(), CampActivity.class);
             startActivity(campIntent);
+        });
+
+        bottomNavigationView = root.findViewById(R.id.bottom_navigation);
+        bottomNavigationView.getMenu().getItem(0).setCheckable(false);
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.live_updates:
+                    item.setCheckable(true);
+                    manageLiveUpdatesPopup(root, inflater);
+                    return true;
+                case R.id.challenges:
+                    manageMissionsPopup(root, inflater);
+                    return true;
+                case R.id.ar_camp:
+                    Intent campIntent = new Intent(getActivity(), CampActivity.class);
+                    startActivity(campIntent);
+                    return true;
+                case R.id.rewards_button:
+                    Intent intent = new Intent(getActivity(), RewardsActivity.class);
+                    startActivity(intent);
+                    return true;
+            }
+            return false;
         });
 
         return root;
