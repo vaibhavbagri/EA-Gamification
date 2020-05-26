@@ -17,7 +17,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/dialogBoxGameTitleTextView"
+                android:id="@+id/dialogBoxActivityTitleTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -33,7 +33,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/dialogBoxGameDescriptionTextView"
+                android:id="@+id/dialogBoxActivityDescriptionTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -44,7 +44,7 @@
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/dialogBoxGameTitleTextView" />
+                app:layout_constraintTop_toBottomOf="@+id/dialogBoxActivityTitleTextView" />
 
             <Button
                 android:id="@+id/dialogBoxPlayButton"
@@ -58,7 +58,7 @@
                 android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/dialogBoxCancelButton"
-                app:layout_constraintTop_toBottomOf="@+id/dialogBoxGameDescriptionTextView" />
+                app:layout_constraintTop_toBottomOf="@+id/dialogBoxActivityDescriptionTextView" />
 
             <Button
                 android:id="@+id/dialogBoxCancelButton"
@@ -86,7 +86,7 @@
                 android:indeterminateTint="@color/colorPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/dialogBoxGameDescriptionTextView" />
+                app:layout_constraintTop_toBottomOf="@+id/dialogBoxActivityDescriptionTextView" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </FrameLayout>

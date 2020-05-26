@@ -7,9 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -18,20 +15,19 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -59,7 +55,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
-import com.liminal.eagamification.LocationBasedGame;
+import com.liminal.eagamification.LocationBasedActivity;
 import com.liminal.eagamification.easy_augment.ScanMarkerActivity;
 import com.liminal.eagamification.rewards.RewardsActivity;
 import com.liminal.eagamification.ar_camp.CampActivity;
@@ -104,17 +100,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     //Enable GPS alert dialog box
     private AlertDialog alert;
 
-    //To make backgroud transparent
-    private CustomDrawable customDrawable;
-    private RelativeLayout relativeLayout;
 
-    private BottomNavigationView bottomNavigationView;
-
-    //Missions popup
+    // Adapters for recycler views
     private ChallengesAdapter weeklyChallengesAdapter;
     private ChallengesAdapter dailyChallengesAdapter;
+    // Array lists for recycler views
     private List<Challenge> weeklyChallengeList = new ArrayList<>();
     private List<Challenge> dailyChallengeList = new ArrayList<>();
+    // Text view for recycler views
     private TextView weeklyChallengesTimer;
     private TextView dailyChallengesTimer;
 
@@ -122,9 +115,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-        Log.d(TAG,"Generating Map");
 
-        SharedPreferences sharedPreferences = Objects.requireNonNull(getActivity()).getSharedPreferences("User_Details", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("User_Details", Context.MODE_PRIVATE);
 
         locationBasedActivityTableReference = FirebaseDatabase.getInstance().getReference().child("locationBasedActivityTable");
         //Used to calculate values in live missions
@@ -137,7 +129,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
         }
 
-        locationManager = (LocationManager) Objects.requireNonNull(getContext()).getSystemService(LOCATION_SERVICE);
+        locationManager = (LocationManager) requireContext().getSystemService(LOCATION_SERVICE);
 
         // Build the map.
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
@@ -148,16 +140,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
-        //Drawable to make background transparent
-        customDrawable = root.findViewById(R.id.customDrawable);
-        relativeLayout = root.findViewById(R.id.homeRelativeLayout);
-
         // Implement button to allow user to claim rewards
         FloatingActionButton claimRewardsButton = root.findViewById(R.id.claimRewardsButton);
-        claimRewardsButton.setOnClickListener(view -> {
-            Intent intent = new Intent(getActivity(), RewardsActivity.class);
-            startActivity(intent);
-        });
+        claimRewardsButton.setOnClickListener(view -> startActivity(new Intent(getActivity(), RewardsActivity.class)));
 
         // Implement button to show missions
         FloatingActionButton missionsButton = root.findViewById(R.id.missionsButton);
@@ -169,12 +154,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
         // Implement button to show AR camp
         FloatingActionButton campButton = root.findViewById(R.id.campButton);
-        campButton.setOnClickListener(v -> {
-            Intent campIntent = new Intent(getActivity(), CampActivity.class);
-            startActivity(campIntent);
-        });
+        campButton.setOnClickListener(v -> startActivity(new Intent(getActivity(), CampActivity.class)));
 
-        bottomNavigationView = root.findViewById(R.id.bottom_navigation);
+        // Navigation Bar
+        BottomNavigationView bottomNavigationView = root.findViewById(R.id.bottom_navigation);
         bottomNavigationView.getMenu().getItem(0).setCheckable(false);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
@@ -186,12 +169,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                     manageMissionsPopup(root, inflater);
                     return true;
                 case R.id.ar_camp:
-                    Intent campIntent = new Intent(getActivity(), CampActivity.class);
-                    startActivity(campIntent);
+                    startActivity(new Intent(getActivity(), CampActivity.class));
                     return true;
                 case R.id.rewards_button:
-                    Intent intent = new Intent(getActivity(), RewardsActivity.class);
-                    startActivity(intent);
+                    startActivity(new Intent(getActivity(), RewardsActivity.class));
                     return true;
             }
             return false;
@@ -209,8 +190,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         // Setup popup window
         PopupWindow popupWindow = new PopupWindow(popupMissionsView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
 
-        //Setup recycler view within popup window
-        //Weekly Challenges
+        // Setup recycler view within popup window
+
+        // Weekly Challenges
         weeklyChallengeList.clear();
         RecyclerView weeklyChallengesRecyclerView = popupMissionsView.findViewById(R.id.weeklyChallengesRecyclerView);
         weeklyChallengesAdapter = new ChallengesAdapter(weeklyChallengeList, position -> {
@@ -222,7 +204,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         weeklyChallengesRecyclerView.setAdapter(weeklyChallengesAdapter);
         weeklyChallengesTimer = popupMissionsView.findViewById(R.id.weeklyChallengesTimer);
 
-        //Daily Challenges
+        // Daily Challenges
         dailyChallengeList.clear();
         RecyclerView dailyChallengesRecyclerView = popupMissionsView.findViewById(R.id.dailyChallengesRecyclerView);
         dailyChallengesAdapter = new ChallengesAdapter(dailyChallengeList, position -> {
@@ -265,18 +247,18 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                 }
                 else {
                     if (current_calender.get(Calendar.DAY_OF_YEAR) > previous_calendar.get(Calendar.DAY_OF_YEAR)) {
-                        Log.d("EAG_TIME", "It's a new day");
+                        Log.d("EAG_TIME", "First login of the day");
                         mission_setup(current_ts, true, "daily", dailyChallengesAdapter, dailyChallengeList);
                     } else {
-                        Log.d("EAG_TIME", "You keep logging in lol");
+                        Log.d("EAG_TIME", "Repeated login (daily)");
                         mission_setup(current_ts, false, "daily", dailyChallengesAdapter, dailyChallengeList);
                     }
 
                     if (current_calender.get(Calendar.WEEK_OF_YEAR) > previous_calendar.get(Calendar.WEEK_OF_YEAR)) {
-                        Log.d("EAG_TIME", "It's a new week");
+                        Log.d("EAG_TIME", "First login of the week");
                         mission_setup(current_ts, true, "weekly", weeklyChallengesAdapter, weeklyChallengeList);
                     } else {
-                        Log.d("EAG_TIME", "Meh, same week, no action");
+                        Log.d("EAG_TIME", "Repeated login (weekly)");
                         mission_setup(current_ts, false, "weekly", weeklyChallengesAdapter, weeklyChallengeList);
                     }
                 }
@@ -285,11 +267,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                // Read failed
+                Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
             }
         });
     }
 
+
+
+    // Function to allow user to claim challenge rewards
     private boolean claimReward(Challenge challenge) {
         if(challenge.progress < challenge.target) {
             Toast.makeText(getContext(), "You have not yet completed this challenge", Toast.LENGTH_SHORT).show();
@@ -308,30 +294,35 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                     } else
                         Toast.makeText(getContext(), "You have already claimed this reward", Toast.LENGTH_SHORT).show();
                 }
-
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                    // Read failed
+                    Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
                 }
             });
             return true;
         }
     }
 
+
+
+    // Function to setup daily and weekly challenges
     private void mission_setup(long current_ts, boolean isFirstLogin, String challengeType, ChallengesAdapter challengesAdapter, List<Challenge> challengeList) {
         FirebaseDatabase.getInstance().getReference().child("challengesTable").child(challengeType).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot challengeID : dataSnapshot.getChildren()) {
                     if((long)challengeID.child("timestampStart").getValue() < current_ts && (long)challengeID.child("timestampEnd").getValue() > current_ts) {
-                        String description = challengeID.child("description").getValue().toString();
+                        String description = Objects.requireNonNull(challengeID.child("description").getValue()).toString();
                         Log.d("EAG_CHALLENGE", "Challenge found : " + description);
-                        String rewardType = challengeID.child("rewardType").getValue().toString();
+
+                        String rewardType = Objects.requireNonNull(challengeID.child("rewardType").getValue()).toString();
                         long rewardPoints = (long) challengeID.child("rewardPoints").getValue();
-                        String activityName = challengeID.child("activityID").getValue().toString();
-                        String stat = challengeID.child("stat").getValue().toString();
+                        String activityName = Objects.requireNonNull(challengeID.child("activityID").getValue()).toString();
+                        String stat = Objects.requireNonNull(challengeID.child("stat").getValue()).toString();
                         long target = (long) challengeID.child("target").getValue();
                         long challengePosition = (long) challengeID.child("challengePosition").getValue();
+
                         //Check the current stat value and stored stat value at the start to calculate progress
                         userDatabaseReference.child("statistics").addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -343,8 +334,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                                 }
                                 else
                                     userDatabaseReference.child("statistics").child("activityBased").child(activityName).child(stat).setValue(0);
+
                                 long progress = 0;
                                 boolean isClaimed = false;
+
                                 if (isFirstLogin) {
                                     userDatabaseReference.child("statistics").child("challenges").child(challengeType).child(String.valueOf(challengePosition)).child("value").setValue(stat_value);
                                     userDatabaseReference.child("statistics").child("challenges").child(challengeType).child(String.valueOf(challengePosition)).child("isClaimed").setValue(isClaimed);
@@ -353,6 +346,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                                     isClaimed = (boolean) dataSnapshot.child("challenges").child(challengeType).child(String.valueOf(challengePosition)).child("isClaimed").getValue();
                                     progress = stat_value - stored_value;
                                 }
+
                                 Challenge challenge = new Challenge(challengeType, progress, description, rewardType, rewardPoints, activityName, target, stat, isClaimed, challengePosition);
                                 challengeList.add(challenge);
                                 Log.d("EAG_CHALLENGE", challengeList.toString());
@@ -394,7 +388,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                // Read failed
+                Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
             }
         });
     }
@@ -405,7 +400,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         // Inflate the popup window layout
         View popupLiveUpdatesView = inflater.inflate(R.layout.popup_live_updates, null);
 
-        //Setup recycler view within popup window
+        // Setup recycler view within popup window
         List<LiveUpdate> liveUpdateList = new ArrayList<>();
         RecyclerView liveUpdatesRecyclerView = popupLiveUpdatesView.findViewById(R.id.recycler_view);
         LiveUpdatesAdapter liveUpdatesAdapter = new LiveUpdatesAdapter(liveUpdateList, position -> {
@@ -429,7 +424,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         Button button = popupLiveUpdatesView.findViewById(R.id.quitLiveUpdatesPopupButton);
         button.setOnClickListener(v -> popupWindow.dismiss());
 
-        //Listen for values on Firebase
+
+        // Listen for values on Firebase
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -464,7 +460,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
     // Function to show alert box to ask user to enable GPS
     private void enableGPS(){
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getContext()));
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(requireContext());
 
         alertDialogBuilder.setMessage("GPS is disabled in your device. Enable GPS to continue.")
                 .setCancelable(false)
@@ -539,44 +535,44 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        LocationBasedGame game = (LocationBasedGame) marker.getTag();
-        final Dialog playGameDialogBox = new Dialog(Objects.requireNonNull(getContext()));
-        playGameDialogBox.setContentView(R.layout.dialog_box_play_game);
+        LocationBasedActivity activity = (LocationBasedActivity) marker.getTag();
+        final Dialog beginActivityDialogBox = new Dialog(requireContext());
+        beginActivityDialogBox.setContentView(R.layout.dialog_box_begin_activity);
 
-        Button cancelButton = playGameDialogBox.findViewById(R.id.dialogBoxCancelButton);
-        Button playButton = playGameDialogBox.findViewById(R.id.dialogBoxPlayButton);
+        Button cancelButton = beginActivityDialogBox.findViewById(R.id.dialogBoxCancelButton);
+        Button beginButton = beginActivityDialogBox.findViewById(R.id.dialogBoxPlayButton);
 
-        TextView titleTextView = playGameDialogBox.findViewById(R.id.dialogBoxGameTitleTextView);
-        TextView descriptionTextView = playGameDialogBox.findViewById(R.id.dialogBoxGameDescriptionTextView);
+        TextView titleTextView = beginActivityDialogBox.findViewById(R.id.dialogBoxActivityTitleTextView);
+        TextView descriptionTextView = beginActivityDialogBox.findViewById(R.id.dialogBoxActivityDescriptionTextView);
 
-        ProgressBar downloadProgressBar = playGameDialogBox.findViewById(R.id.progressBar);
+        ProgressBar downloadProgressBar = beginActivityDialogBox.findViewById(R.id.progressBar);
 
         // Update current marker details in shared preferences
-        SharedPreferences sharedPreferencesMarker = getActivity().getSharedPreferences("Current_Marker_Details", Context.MODE_PRIVATE);
-        sharedPreferencesMarker.edit().putString("asset_bundle_link", game.assetBundleLink).apply();
+        SharedPreferences sharedPreferencesMarker = requireActivity().getSharedPreferences("Current_Marker_Details", Context.MODE_PRIVATE);
+        sharedPreferencesMarker.edit().putString("asset_bundle_link", activity.assetBundleLink).apply();
 
         // Create intent to begin scanner
         Intent scannerIntent = new Intent(getActivity(), ScanMarkerActivity.class);
 
         double user_latitude = mLastKnownLocation.getLatitude();
         double user_longitude = mLastKnownLocation.getLongitude();
-        double game_latitude = game.latitude;
-        double game_longitude = game.longitude;
+        double game_latitude = activity.latitude;
+        double game_longitude = activity.longitude;
         double latitude_diff = user_latitude - game_latitude;
         double longitude_diff = user_longitude - game_longitude;
 
         // Download marker from firebase
         Glide.with(getActivity())
                 .asBitmap()
-                .load(game.markerLink)
+                .load(activity.markerLink)
                 .into(new CustomTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                         Log.d("EAG_MARKER_DOWNLOAD", "Marker loaded from URL");
 
                         // Enable play button when marker is done downloading
-                        playButton.setEnabled(true);
-                        playButton.setTextColor(getResources().getColor(R.color.colorPrimary, null));
+                        beginButton.setEnabled(true);
+                        beginButton.setTextColor(getResources().getColor(R.color.colorPrimary, null));
 
                         // Disable progress bar to indicate downlaod has finished
                         downloadProgressBar.setVisibility(View.GONE);
@@ -590,15 +586,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                     }
                 });
 
-        titleTextView.setText(game.name);
-        descriptionTextView.setText(game.description);
+        titleTextView.setText(activity.name);
+        descriptionTextView.setText(activity.description);
 
-        cancelButton.setOnClickListener(v -> playGameDialogBox.dismiss());
-        playButton.setOnClickListener(v -> {
+        cancelButton.setOnClickListener(v -> beginActivityDialogBox.dismiss());
+        beginButton.setOnClickListener(v -> {
             // Check if user is at the marker location
             if(latitude_diff < MARKER_RADIUS && latitude_diff > -MARKER_RADIUS && longitude_diff < MARKER_RADIUS && longitude_diff > -MARKER_RADIUS) {
                 // Dismiss dialog box
-                playGameDialogBox.dismiss();
+                beginActivityDialogBox.dismiss();
                 // Start scanner
                 startActivity(scannerIntent);
             }
@@ -608,7 +604,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
             }
         });
 
-        playGameDialogBox.show();
+        beginActivityDialogBox.show();
         return false;
     }
 
@@ -621,7 +617,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         // Setup and Customize the map
         mMap = googleMap;
         mMap.setOnMarkerClickListener(this);
-        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(Objects.requireNonNull(getContext()), R.raw.ar_explore_custom_map));
+        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.ar_explore_custom_map));
         mMap.getUiSettings().setMapToolbarEnabled(false);
 
         // Turn on the My Location layer and the related control on the map.
@@ -635,11 +631,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot activity : dataSnapshot.getChildren()) {
                     // Get activity details from firebase
-                    String name = activity.child("name").getValue().toString();
-                    String description = activity.child("description").getValue().toString();
-                    String assetBundleLink = activity.child("assetBundleLink").getValue().toString();
-                    String markerLink = activity.child("markerLink").getValue().toString();
-                    String category = activity.child("category").getValue().toString();
+                    String name = Objects.requireNonNull(activity.child("name").getValue()).toString();
+                    String description = Objects.requireNonNull(activity.child("description").getValue()).toString();
+                    String assetBundleLink = Objects.requireNonNull(activity.child("assetBundleLink").getValue()).toString();
+                    String markerLink = Objects.requireNonNull(activity.child("markerLink").getValue()).toString();
+                    String category = Objects.requireNonNull(activity.child("category").getValue()).toString();
 
                     // Get activity locations from firebase
                     for (int i = 1; i <= activity.child("locations").getChildrenCount(); i++) {
@@ -648,7 +644,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
                         Marker newMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name));
                         newMarker.setTitle(null);
-                        newMarker.setTag(new LocationBasedGame(name, description, latitude, longitude, assetBundleLink, markerLink));
+                        newMarker.setTag(new LocationBasedActivity(name, description, latitude, longitude, assetBundleLink, markerLink));
 
                         switch (category) {
                             case "event":
@@ -681,11 +677,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         Log.d(TAG,"Device location requested");
         try {
             Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
-            locationResult.addOnCompleteListener(Objects.requireNonNull(getActivity()), task -> {
+            locationResult.addOnCompleteListener(requireActivity(), task -> {
                 if (task.isSuccessful())
                 {
                     // Set the map's camera position to the current location of the device.
-                    Log.d(TAG,"Location obtained");
+                    Log.d(TAG,"User location obtained");
                     mLastKnownLocation = task.getResult();
 
                     if (mLastKnownLocation != null)
@@ -716,6 +712,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         }
     }
 
+
+
     // Updates the map's UI settings based on whether the user has granted location permission.
     private void updateLocationUI() {
         if (mMap != null) {
@@ -731,7 +729,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         }
     }
 
-    //Needed to handle button on clicks within recycler view
+
+
+    // Needed to handle button on clicks within recycler view
     public interface ClickListener {
         void onPositionClicked(int position);
     }
