@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home,
                 R.id.nav_profile,
+                R.id.nav_achievements,
                 R.id.nav_dashboard,
                 R.id.nav_about_us,
                 R.id.nav_sign_out)

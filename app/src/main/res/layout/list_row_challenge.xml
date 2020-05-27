@@ -18,7 +18,7 @@
         android:id="@+id/challengeConstraintLayout">
 
         <ImageView
-            android:id="@+id/activityIcon"
+            android:id="@+id/Icon"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_marginStart="8dp"
@@ -39,7 +39,7 @@
             android:text="TextView"
             android:textSize="12sp"
             app:layout_constraintEnd_toStartOf="@+id/redeemButton"
-            app:layout_constraintStart_toEndOf="@+id/activityIcon"
+            app:layout_constraintStart_toEndOf="@+id/Icon"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ProgressBar
@@ -52,7 +52,7 @@
             android:progress="25"
             android:progressTint="#6FA4FB"
             app:layout_constraintEnd_toEndOf="@+id/description"
-            app:layout_constraintStart_toEndOf="@+id/activityIcon"
+            app:layout_constraintStart_toEndOf="@+id/Icon"
             app:layout_constraintTop_toBottomOf="@+id/description" />
 
         <Button
@@ -79,7 +79,7 @@
             android:text="TextView"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/activityIcon"
+            app:layout_constraintStart_toEndOf="@+id/Icon"
             app:layout_constraintTop_toBottomOf="@+id/progress_bar" />
 
         <TextView

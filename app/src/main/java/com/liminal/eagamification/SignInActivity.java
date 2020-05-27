@@ -234,7 +234,13 @@ public class SignInActivity extends AppCompatActivity {
         userDatabaseReference.child("statistics").child("general").child("itemsCollected").setValue(0);
         userDatabaseReference.child("statistics").child("general").child("rewardsClaimed").setValue(0);
 
-        //Setup user previous and current login timestamps
+        // Setup achievements
+        userDatabaseReference.child("statistics").child("achievements").child("profileCompleteStatus").setValue("incomplete");
+        userDatabaseReference.child("statistics").child("achievements").child("appSharedStatus").setValue("incomplete");
+        userDatabaseReference.child("statistics").child("achievements").child("dashboardVisitedStatus").setValue("incomplete");
+        userDatabaseReference.child("statistics").child("achievements").child("rewardBoughtStatus").setValue("incomplete");
+
+        // Setup user previous and current login timestamps
         userDatabaseReference.child("loginDetails").child("currentTimestamp").setValue(0);
         userDatabaseReference.child("loginDetails").child("previousTimestamp").setValue(0);
 

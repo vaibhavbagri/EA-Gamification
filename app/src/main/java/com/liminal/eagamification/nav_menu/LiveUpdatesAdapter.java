@@ -1,7 +1,6 @@
 package com.liminal.eagamification.nav_menu;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,8 +17,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.liminal.eagamification.R;
 
 import java.lang.ref.WeakReference;
@@ -102,9 +99,9 @@ public class LiveUpdatesAdapter extends RecyclerView.Adapter<LiveUpdatesAdapter.
         MyViewHolder(@NonNull View itemView, HomeFragment.ClickListener listener) {
             super(itemView);
             listenerRef = new WeakReference<>(listener);
-            challengeDescription = itemView.findViewById(R.id.update);
-            acceptButton = itemView.findViewById(R.id.liveUpdateButton);
-            activityIcon = itemView.findViewById(R.id.activityIcon);
+            challengeDescription = itemView.findViewById(R.id.TextView);
+            acceptButton = itemView.findViewById(R.id.ClaimButton);
+            activityIcon = itemView.findViewById(R.id.Icon);
         }
         @Override
         public void onClick(View view) {

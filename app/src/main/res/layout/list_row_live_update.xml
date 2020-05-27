@@ -17,7 +17,7 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/activityIcon"
+            android:id="@+id/Icon"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_marginStart="8dp"
@@ -29,7 +29,7 @@
             app:srcCompat="@drawable/ar_explore_logo" />
 
         <TextView
-            android:id="@+id/update"
+            android:id="@+id/TextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -39,12 +39,12 @@
             android:text="TextView"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/liveUpdateButton"
-            app:layout_constraintStart_toEndOf="@+id/activityIcon"
+            app:layout_constraintEnd_toStartOf="@+id/ClaimButton"
+            app:layout_constraintStart_toEndOf="@+id/Icon"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/liveUpdateButton"
+            android:id="@+id/ClaimButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"

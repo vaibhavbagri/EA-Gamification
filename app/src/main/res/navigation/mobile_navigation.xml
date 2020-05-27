@@ -18,6 +18,12 @@
         tools:layout="@layout/fragment_profile" />
 
     <fragment
+        android:id="@+id/nav_achievements"
+        android:name="com.liminal.eagamification.nav_menu.AchievementsFragment"
+        android:label="Achievements"
+        tools:layout="@layout/fragment_achievements" />
+
+    <fragment
         android:id="@+id/nav_dashboard"
         android:name="com.liminal.eagamification.nav_menu.DashboardFragment"
         android:label="Dashboard"

@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
@@ -110,7 +109,7 @@ public class ChallengesAdapter extends RecyclerView.Adapter<ChallengesAdapter.My
             rewardPoints = itemView.findViewById(R.id.rewardPoints);
             progress = itemView.findViewById(R.id.progress);
             progressBar = itemView.findViewById(R.id.progress_bar);
-            activityIcon = itemView.findViewById(R.id.activityIcon);
+            activityIcon = itemView.findViewById(R.id.Icon);
             claimButton = itemView.findViewById(R.id.redeemButton);
             constraintLayout = itemView.findViewById(R.id.challengeConstraintLayout);
 

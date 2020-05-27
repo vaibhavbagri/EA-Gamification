@@ -36,6 +36,7 @@ import com.liminal.eagamification.R;
 import java.time.Year;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 public class ProfileFragment extends Fragment {
 
@@ -139,6 +140,20 @@ public class ProfileFragment extends Fragment {
     // Function to allow user to share the application link
     private void shareApp()
     {
+        // Update achievement status on firebase
+        userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("achievements").child("appSharedStatus").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue().equals("incomplete"))
+                    userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("achievements").child("appSharedStatus").setValue("completed");
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Read failed
+                Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
+            }
+        });
+
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT, "Join me in AR Explore ! \n\n https://play.google.com/store/apps/details?id=io.gartic.Gartic");
@@ -168,7 +183,7 @@ public class ProfileFragment extends Fragment {
         firstNameEditText.setText(firstName);
         lastNameEditText.setText(lastName);
 
-        Glide.with(getActivity().getApplicationContext()).load(Uri.parse(photo_url)).into(profilePictureView);
+        Glide.with(requireActivity().getApplicationContext()).load(Uri.parse(photo_url)).into(profilePictureView).clearOnDetach();
 
         Log.d("EAG_EDIT_PROFILE", "Username : " + username + " First Name : " + firstName + " Last Name : " + lastName +  " DOB : " + dob + " Mobile No : " + mobileNo);
     }
