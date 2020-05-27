@@ -108,6 +108,19 @@ public class ProfileFragment extends Fragment {
         };
         userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").addValueEventListener(eventListener);
 
+        // Use seperate listener for profile picture to avoid glide bugs
+        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("photoURL").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Glide.with(requireActivity().getApplicationContext()).load(Uri.parse(String.valueOf(dataSnapshot.getValue()))).into(profilePictureView);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Read failed
+                Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
+            }
+        });
+
         // Upload profile picture
         changePicButton.setOnClickListener(v -> chooseNewImage());
         // Update profile information
@@ -132,7 +145,7 @@ public class ProfileFragment extends Fragment {
         int currDay = c.get(Calendar.DAY_OF_MONTH);
 
         // Setup DatePicker Dialog
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), (view, year, monthOfYear, dayOfMonth) -> DOBEditText.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year), currYear, currMonth, currDay);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(requireActivity(), (view, year, monthOfYear, dayOfMonth) -> DOBEditText.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year), currYear, currMonth, currDay);
         datePickerDialog.show();
     }
 
@@ -182,8 +195,6 @@ public class ProfileFragment extends Fragment {
 
         firstNameEditText.setText(firstName);
         lastNameEditText.setText(lastName);
-
-        Glide.with(requireActivity().getApplicationContext()).load(Uri.parse(photo_url)).into(profilePictureView).clearOnDetach();
 
         Log.d("EAG_EDIT_PROFILE", "Username : " + username + " First Name : " + firstName + " Last Name : " + lastName +  " DOB : " + dob + " Mobile No : " + mobileNo);
     }
@@ -259,20 +270,6 @@ public class ProfileFragment extends Fragment {
                 }
             });
         }
-
-        // Update achievement status on firebase
-        userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("achievements").child("appSharedStatus").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue().equals("incomplete"))
-                    userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("achievements").child("appSharedStatus").setValue("completed");
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Read failed
-                Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
-            }
-        });
     }
 
     // Function to upload new user details on Firebase

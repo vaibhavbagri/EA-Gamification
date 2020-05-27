@@ -84,11 +84,11 @@ public class AchievementsFragment extends Fragment{
                     visitDashboardButton.setEnabled(true);
                     visitDashboardButton.setTextColor(getResources().getColor(R.color.colorPrimary, null));
                 }
-                else if(dataSnapshot.child("appSharedStatus").getValue().equals("claimed"))
+                else if(dataSnapshot.child("dashboardVisitedStatus").getValue().equals("claimed"))
                 {
                     Log.d("EAG_ACHIEVEMENT_STATUS", "Dashboard Visit claimed");
-                    shareAppButton.setText("Claimed");
-                    shareAppButton.setTextColor(getResources().getColor(R.color.colorAccent, null));
+                    visitDashboardButton.setText("Claimed");
+                    visitDashboardButton.setTextColor(getResources().getColor(R.color.colorAccent, null));
                 }
 
                 // Buy a reward using coins

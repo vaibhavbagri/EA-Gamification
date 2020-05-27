@@ -117,7 +117,7 @@ public class DashboardFragment extends Fragment{
 
         // Update profile picture
         ImageView profilePictureView = view.findViewById(R.id.profilePictureView);
-        Glide.with(requireActivity().getApplicationContext()).load(Uri.parse(photoURL)).into(profilePictureView).clearOnDetach();
+        Glide.with(requireActivity().getApplicationContext()).load(Uri.parse(photoURL)).into(profilePictureView);
 
         Log.d("EAG_UPDATE_PROFILE", "Username : " + userName + " Coins : " + coins + " Tickets : " + tickets);
     }
