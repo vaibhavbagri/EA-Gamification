@@ -44,6 +44,7 @@ import com.liminal.eagamification.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DashboardFragment extends Fragment{
 
@@ -51,7 +52,7 @@ public class DashboardFragment extends Fragment{
         View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
         // Get user details stored in shared preferences
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("User_Details", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("User_Details", Context.MODE_PRIVATE);
 
         // Get Username, Profile picture, Coins and Tickets from Firebase
         DatabaseReference userProfileReference = FirebaseDatabase.getInstance().getReference().child("userProfileTable");
@@ -70,6 +71,10 @@ public class DashboardFragment extends Fragment{
                         (long) dataSnapshot.child("statistics").child("general").child("itemsCollected").getValue(),
                         (long) dataSnapshot.child("statistics").child("general").child("markersScanned").getValue(),
                         (long) dataSnapshot.child("statistics").child("general").child("rewardsClaimed").getValue());
+
+                // Update dashboard achievement status
+                if(dataSnapshot.child("statistics").child("achievements").child("dashboardVisitedStatus").getValue().equals("incomplete"))
+                    userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("achievements").child("dashboardVisitedStatus").setValue("completed");
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -77,7 +82,7 @@ public class DashboardFragment extends Fragment{
                 Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
             }
         };
-        userProfileReference.child(sharedPreferences.getString("id","")).addValueEventListener(eventListener);
+        userProfileReference.child(sharedPreferences.getString("id","")).addListenerForSingleValueEvent(eventListener);
 
         generatePieChart(root);
         generateCircularGaugeChart(root);
@@ -112,7 +117,7 @@ public class DashboardFragment extends Fragment{
 
         // Update profile picture
         ImageView profilePictureView = view.findViewById(R.id.profilePictureView);
-        Glide.with(getActivity().getApplicationContext()).load(Uri.parse(photoURL)).into(profilePictureView);
+        Glide.with(requireActivity().getApplicationContext()).load(Uri.parse(photoURL)).into(profilePictureView).clearOnDetach();
 
         Log.d("EAG_UPDATE_PROFILE", "Username : " + userName + " Coins : " + coins + " Tickets : " + tickets);
     }

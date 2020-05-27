@@ -52,7 +52,7 @@ public class MyRewardsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        SharedPreferences sharedPreferences = Objects.requireNonNull(getActivity()).getSharedPreferences("User_Details", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("User_Details", Context.MODE_PRIVATE);
         userRewardsReference = FirebaseDatabase.getInstance().getReference()
                 .child("userProfileTable")
                 .child(sharedPreferences.getString("id",""))

@@ -7,15 +7,16 @@
     android:layout_rowWeight="1"
     android:layout_columnWeight="1"
     android:layout_marginStart="12dp"
-    android:layout_marginTop="6dp"
+    android:layout_marginTop="5dp"
     android:layout_marginEnd="12dp"
+    android:layout_marginBottom="5dp"
     app:cardCornerRadius="5dp"
     app:cardElevation="2dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/challengeConstraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/challengeConstraintLayout">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/Icon"

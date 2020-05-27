@@ -25,7 +25,7 @@ public class ClaimRewardsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        Objects.requireNonNull(getView()).setFocusableInTouchMode(true);
+        requireView().setFocusableInTouchMode(true);
         getView().requestFocus();
         getView().setOnKeyListener((view, i, keyEvent) -> {
             if (keyEvent.getAction() == KeyEvent.ACTION_UP && i == KeyEvent.KEYCODE_BACK && getChildFragmentManager().getBackStackEntryCount() != 0){

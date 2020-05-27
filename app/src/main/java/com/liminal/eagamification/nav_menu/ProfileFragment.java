@@ -61,7 +61,7 @@ public class ProfileFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_profile, container, false);
 
         // Get shared references for user's ID and email
-        sharedPreferences = getActivity().getSharedPreferences("User_Details", Context.MODE_PRIVATE);
+        sharedPreferences = requireActivity().getSharedPreferences("User_Details", Context.MODE_PRIVATE);
 
         // Create a reference to all profile fields
         userNameTextView = root.findViewById(R.id.userNameTextView);
@@ -88,17 +88,17 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Store current username in a temporary variable
-                currUsername = (String) dataSnapshot.child("personalDetails").child("username").getValue();
+                currUsername = (String) dataSnapshot.child("username").getValue();
 
                 // Read data from firebase and update EditProfile layout
                 updateUserProfileLayout(
                         currUsername,
-                        (String) dataSnapshot.child("personalDetails").child("firstName").getValue(),
-                        (String) dataSnapshot.child("personalDetails").child("lastName").getValue(),
-                        (String) dataSnapshot.child("personalDetails").child("DOB").getValue(),
-                        (String) dataSnapshot.child("personalDetails").child("mobileNo").getValue(),
-                        (String) dataSnapshot.child("personalDetails").child("photoURL").getValue(),
-                        (String) dataSnapshot.child("personalDetails").child("bio").getValue());
+                        (String) dataSnapshot.child("firstName").getValue(),
+                        (String) dataSnapshot.child("lastName").getValue(),
+                        (String) dataSnapshot.child("DOB").getValue(),
+                        (String) dataSnapshot.child("mobileNo").getValue(),
+                        (String) dataSnapshot.child("photoURL").getValue(),
+                        (String) dataSnapshot.child("bio").getValue());
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -106,7 +106,7 @@ public class ProfileFragment extends Fragment {
                 Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
             }
         };
-        userProfileReference.child(sharedPreferences.getString("id","")).addValueEventListener(eventListener);
+        userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").addValueEventListener(eventListener);
 
         // Upload profile picture
         changePicButton.setOnClickListener(v -> chooseNewImage());
@@ -223,11 +223,64 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    // Function to update status of Complete Profile achievement
+    private void checkProfileCompletionStatus()
+    {
+        // Counter for fields filled in
+        int fieldsFilledCounter = 0;
 
+        if(!String.valueOf(userNameEditText.getText()).equals(""))
+            fieldsFilledCounter += 1;
+        if(!String.valueOf(firstNameEditText.getText()).equals(""))
+            fieldsFilledCounter += 1;
+        if(!String.valueOf(lastNameEditText.getText()).equals(""))
+            fieldsFilledCounter += 1;
+        if(!String.valueOf(phoneNoEditText.getText()).equals(""))
+            fieldsFilledCounter += 1;
+        if(!String.valueOf(DOBEditText.getText()).equals(""))
+            fieldsFilledCounter += 1;
+        if(!String.valueOf(bioEditText.getText()).equals(""))
+            fieldsFilledCounter += 1;
+
+        Log.d("EAG_ACHIEVEMENT_STATUS", "Profile completion status : " + fieldsFilledCounter + "/6");
+        if(fieldsFilledCounter == 6)
+        {
+            // Update achievement status on firebase
+            userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("achievements").child("profileCompleteStatus").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.getValue().equals("incomplete"))
+                        userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("achievements").child("profileCompleteStatus").setValue("completed");
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Read failed
+                    Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
+                }
+            });
+        }
+
+        // Update achievement status on firebase
+        userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("achievements").child("appSharedStatus").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue().equals("incomplete"))
+                    userProfileReference.child(sharedPreferences.getString("id","")).child("statistics").child("achievements").child("appSharedStatus").setValue("completed");
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Read failed
+                Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
+            }
+        });
+    }
 
     // Function to upload new user details on Firebase
     private void updateUserProfile()
     {
+        // Update achievement status
+        checkProfileCompletionStatus();
+
         String username = String.valueOf(userNameEditText.getText()).equals("") ? "Anon" : String.valueOf(userNameEditText.getText());
         String firstName = String.valueOf(firstNameEditText.getText()).equals("")? sharedPreferences.getString("firstName","John") : String.valueOf(firstNameEditText.getText());
         String lastName = String.valueOf(lastNameEditText.getText()).equals("")? sharedPreferences.getString("firstName","Doe") : String.valueOf(lastNameEditText.getText());
@@ -248,7 +301,7 @@ public class ProfileFragment extends Fragment {
                             {
                                 Log.d("EAG_PROFILE", "Updating user profile");
                                 // If username is not set, donot modify the username table
-                                if(username != "Anon")
+                                if(!username.equals("Anon"))
                                     // Update usernames table
                                     userNameDatabaseReference.child(sharedPreferences.getString("id", "")).child("username").setValue(username);
 
