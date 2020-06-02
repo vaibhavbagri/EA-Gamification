@@ -56,6 +56,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.liminal.eagamification.LocationBasedActivity;
+import com.liminal.eagamification.MainActivity;
 import com.liminal.eagamification.easy_augment.ScanMarkerActivity;
 import com.liminal.eagamification.rewards.RewardsActivity;
 import com.liminal.eagamification.ar_camp.CampActivity;
@@ -544,15 +545,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
         TextView titleTextView = beginActivityDialogBox.findViewById(R.id.dialogBoxActivityTitleTextView);
         TextView descriptionTextView = beginActivityDialogBox.findViewById(R.id.dialogBoxActivityDescriptionTextView);
+        TextView highscorerTextView = beginActivityDialogBox.findViewById(R.id.dialogBoxActivityHighestScorerTextView);
+        TextView highscoreTextView = beginActivityDialogBox.findViewById(R.id.dialogBoxActivityHighestScoreTextView);
 
         ProgressBar downloadProgressBar = beginActivityDialogBox.findViewById(R.id.progressBar);
 
         // Update current marker details in shared preferences
         SharedPreferences sharedPreferencesMarker = requireActivity().getSharedPreferences("Current_Marker_Details", Context.MODE_PRIVATE);
         sharedPreferencesMarker.edit().putString("asset_bundle_link", activity.assetBundleLink).apply();
-
-        // Create intent to begin scanner
-        Intent scannerIntent = new Intent(getActivity(), ScanMarkerActivity.class);
 
         double user_latitude = mLastKnownLocation.getLatitude();
         double user_longitude = mLastKnownLocation.getLongitude();
@@ -561,33 +561,55 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         double latitude_diff = user_latitude - game_latitude;
         double longitude_diff = user_longitude - game_longitude;
 
-        // Download marker from firebase
-        Glide.with(getActivity())
-                .asBitmap()
-                .load(activity.markerLink)
-                .into(new CustomTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        Log.d("EAG_MARKER_DOWNLOAD", "Marker loaded from URL");
-
-                        // Enable play button when marker is done downloading
-                        beginButton.setEnabled(true);
-                        beginButton.setTextColor(getResources().getColor(R.color.colorPrimary, null));
-
-                        // Disable progress bar to indicate downlaod has finished
-                        downloadProgressBar.setVisibility(View.GONE);
-
-                        // Add bitmap to scanner intent
-                        scannerIntent.putExtra("marker", resource);
-                    }
-
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-                    }
-                });
-
         titleTextView.setText(activity.name);
         descriptionTextView.setText(activity.description);
+        highscorerTextView.setText("Highest Scorer : " + activity.highscorer);
+        highscoreTextView.setText("Highest Score : " + activity.highscore);
+
+        Intent intent;
+
+        if(activity.category.equals("scan")) {
+
+            // Create intent to begin scanner
+            intent = new Intent(getActivity(), ScanMarkerActivity.class);
+
+            // Download marker from firebase
+            Glide.with(getActivity())
+                    .asBitmap()
+                    .load(activity.markerLink)
+                    .into(new CustomTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            Log.d("EAG_MARKER_DOWNLOAD", "Marker loaded from URL");
+
+                            // Enable play button when marker is done downloading
+                            beginButton.setEnabled(true);
+                            beginButton.setTextColor(getResources().getColor(R.color.colorPrimary, null));
+
+                            // Disable progress bar to indicate downlaod has finished
+                            downloadProgressBar.setVisibility(View.GONE);
+
+                            // Add bitmap to scanner intent
+                            intent.putExtra("marker", resource);
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                        }
+                    });
+        }
+        else {
+            //Navigate to unity player activity using this intent
+            intent = new Intent(getActivity(), MainActivity.class);
+
+            // Enable play button
+            beginButton.setEnabled(true);
+            beginButton.setTextColor(getResources().getColor(R.color.colorPrimary, null));
+
+            // Disable progress bar
+            downloadProgressBar.setVisibility(View.GONE);
+            Toast.makeText(getActivity(), "Clicking play opens Unity Activity", Toast.LENGTH_LONG).show();
+        }
 
         cancelButton.setOnClickListener(v -> beginActivityDialogBox.dismiss());
         beginButton.setOnClickListener(v -> {
@@ -596,7 +618,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                 // Dismiss dialog box
                 beginActivityDialogBox.dismiss();
                 // Start scanner
-                startActivity(scannerIntent);
+                startActivity(intent);
             }
             else
             {
@@ -633,18 +655,24 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
                     // Get activity details from firebase
                     String name = Objects.requireNonNull(activity.child("name").getValue()).toString();
                     String description = Objects.requireNonNull(activity.child("description").getValue()).toString();
-                    String assetBundleLink = Objects.requireNonNull(activity.child("assetBundleLink").getValue()).toString();
-                    String markerLink = Objects.requireNonNull(activity.child("markerLink").getValue()).toString();
                     String category = Objects.requireNonNull(activity.child("category").getValue()).toString();
+                    String assetBundleLink = "";
+                    String markerLink = "";
+                    if(category.equals("scan")) {
+                        assetBundleLink = Objects.requireNonNull(activity.child("assetBundleLink").getValue()).toString();
+                        markerLink = Objects.requireNonNull(activity.child("markerLink").getValue()).toString();
+                    }
 
                     // Get activity locations from firebase
-                    for (int i = 1; i <= activity.child("locations").getChildrenCount(); i++) {
-                        double latitude = (double) activity.child("locations").child(String.valueOf(i)).child("latitude").getValue();
-                        double longitude = (double) activity.child("locations").child(String.valueOf(i)).child("longitude").getValue();
+                    for (DataSnapshot locations : activity.child("locations").getChildren()) {
+                        double latitude = (double) locations.child("latitude").getValue();
+                        double longitude = (double) locations.child("longitude").getValue();
+                        String highscorer = (String) locations.child("highscorer") .getValue();
+                        long highscore = (long) locations.child("highscore").getValue();
 
                         Marker newMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name));
                         newMarker.setTitle(null);
-                        newMarker.setTag(new LocationBasedActivity(name, description, latitude, longitude, assetBundleLink, markerLink));
+                        newMarker.setTag(new LocationBasedActivity(category, name, description, latitude, longitude, assetBundleLink, markerLink, highscorer, highscore));
 
                         switch (category) {
                             case "event":

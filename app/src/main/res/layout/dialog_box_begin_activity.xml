@@ -46,6 +46,34 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/dialogBoxActivityTitleTextView" />
 
+            <TextView
+                android:id="@+id/dialogBoxActivityHighestScorerTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="@font/roboto_condensed_regular"
+                android:text="Highest Scorer"
+                android:textAlignment="viewStart"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dialogBoxActivityDescriptionTextView" />
+
+            <TextView
+                android:id="@+id/dialogBoxActivityHighestScoreTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="@font/roboto_condensed_regular"
+                android:text="Highest Score"
+                android:textAlignment="viewStart"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dialogBoxActivityHighestScorerTextView" />
+
             <Button
                 android:id="@+id/dialogBoxPlayButton"
                 android:layout_width="wrap_content"
@@ -58,7 +86,7 @@
                 android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/dialogBoxCancelButton"
-                app:layout_constraintTop_toBottomOf="@+id/dialogBoxActivityDescriptionTextView" />
+                app:layout_constraintTop_toBottomOf="@+id/dialogBoxActivityHighestScoreTextView" />
 
             <Button
                 android:id="@+id/dialogBoxCancelButton"
@@ -86,7 +114,7 @@
                 android:indeterminateTint="@color/colorPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/dialogBoxActivityDescriptionTextView" />
+                app:layout_constraintTop_toBottomOf="@+id/dialogBoxActivityHighestScoreTextView" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </FrameLayout>
