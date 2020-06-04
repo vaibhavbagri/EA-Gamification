@@ -80,8 +80,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     private static final int DEFAULT_ZOOM = 17;
     // Marker radius
     private final int MARKER_RADIUS = 1;
-
-
+    
     // Access to the system location services.
     private LocationManager locationManager;
 
@@ -96,34 +95,17 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
     // Firebase connectivity
     private DatabaseReference locationBasedActivityTableReference;
-    private DatabaseReference userDatabaseReference;
 
     //Enable GPS alert dialog box
     private AlertDialog alert;
-
-
-    // Adapters for recycler views
-    private ChallengesAdapter weeklyChallengesAdapter;
-    private ChallengesAdapter dailyChallengesAdapter;
-    // Array lists for recycler views
-    private List<Challenge> weeklyChallengeList = new ArrayList<>();
-    private List<Challenge> dailyChallengeList = new ArrayList<>();
-    // Text view for recycler views
-    private TextView weeklyChallengesTimer;
-    private TextView dailyChallengesTimer;
 
     @SuppressLint("MissingPermission")
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("User_Details", Context.MODE_PRIVATE);
-
         locationBasedActivityTableReference = FirebaseDatabase.getInstance().getReference().child("locationBasedActivityTable");
         //Used to calculate values in live missions
-        userDatabaseReference = FirebaseDatabase.getInstance().getReference()
-                .child("userProfileTable")
-                .child(sharedPreferences.getString("id",""));
 
         // Retrieve location from saved instance state.
         if (savedInstanceState != null) {
@@ -141,33 +123,18 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
-        // Implement button to allow user to claim rewards
-        FloatingActionButton claimRewardsButton = root.findViewById(R.id.claimRewardsButton);
-        claimRewardsButton.setOnClickListener(view -> startActivity(new Intent(getActivity(), RewardsActivity.class)));
-
-        // Implement button to show missions
-        FloatingActionButton missionsButton = root.findViewById(R.id.missionsButton);
-        missionsButton.setOnClickListener(view -> manageMissionsPopup(root, inflater));
-
-        // Implement button to show live updates
-        FloatingActionButton liveUpdatesButton = root.findViewById(R.id.socialButton);
-        liveUpdatesButton.setOnClickListener(view -> manageLiveUpdatesPopup(root, inflater));
-
-        // Implement button to show AR camp
-        FloatingActionButton campButton = root.findViewById(R.id.campButton);
-        campButton.setOnClickListener(v -> startActivity(new Intent(getActivity(), CampActivity.class)));
-
         // Navigation Bar
         BottomNavigationView bottomNavigationView = root.findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setItemIconTintList(null);
         bottomNavigationView.getMenu().getItem(0).setCheckable(false);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.live_updates:
                     item.setCheckable(true);
-                    manageLiveUpdatesPopup(root, inflater);
+                    getChildFragmentManager().beginTransaction().replace(R.id.popupFrameLayout, new LiveUpdatesFragment()).commit();
                     return true;
                 case R.id.challenges:
-                    manageMissionsPopup(root, inflater);
+                    getChildFragmentManager().beginTransaction().replace(R.id.popupFrameLayout, new ChallengesFragment()).commit();
                     return true;
                 case R.id.ar_camp:
                     startActivity(new Intent(getActivity(), CampActivity.class));
@@ -181,283 +148,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
         return root;
     }
-
-    // Function to manage missions popup window
-    private void manageMissionsPopup(View view, LayoutInflater inflater)
-    {
-        // Inflate the popup window layout
-        View popupMissionsView = inflater.inflate(R.layout.popup_missions, null);
-
-        // Setup popup window
-        PopupWindow popupWindow = new PopupWindow(popupMissionsView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
-
-        // Setup recycler view within popup window
-
-        // Weekly Challenges
-        weeklyChallengeList.clear();
-        RecyclerView weeklyChallengesRecyclerView = popupMissionsView.findViewById(R.id.weeklyChallengesRecyclerView);
-        weeklyChallengesAdapter = new ChallengesAdapter(weeklyChallengeList, position -> {
-            if(claimReward(weeklyChallengeList.get(position)))
-                popupWindow.dismiss();
-        });
-        RecyclerView.LayoutManager weeklyLayoutManager = new LinearLayoutManager(getContext());
-        weeklyChallengesRecyclerView.setLayoutManager(weeklyLayoutManager);
-        weeklyChallengesRecyclerView.setAdapter(weeklyChallengesAdapter);
-        weeklyChallengesTimer = popupMissionsView.findViewById(R.id.weeklyChallengesTimer);
-
-        // Daily Challenges
-        dailyChallengeList.clear();
-        RecyclerView dailyChallengesRecyclerView = popupMissionsView.findViewById(R.id.dailyChallengesRecyclerView);
-        dailyChallengesAdapter = new ChallengesAdapter(dailyChallengeList, position -> {
-            if(claimReward(dailyChallengeList.get(position)))
-                popupWindow.dismiss();
-        });
-        RecyclerView.LayoutManager dailyLayoutManager = new LinearLayoutManager(getContext());
-        dailyChallengesRecyclerView.setLayoutManager(dailyLayoutManager);
-        dailyChallengesRecyclerView.setAdapter(dailyChallengesAdapter);
-        dailyChallengesTimer = popupMissionsView.findViewById(R.id.dailyChallengesTimer);
-
-        // Show popup view at the center
-        popupWindow.showAtLocation(view, Gravity.CENTER, 0,0);
-
-        //Make background transparent
-//        customDrawable.setVisibility(View.VISIBLE);
-//        popupWindow.setOnDismissListener(() -> customDrawable.setVisibility(View.GONE));
-//        relativeLayout.setAlpha((float) 0.1);
-//        popupWindow.setOnDismissListener(() -> relativeLayout.setAlpha(1));
-
-        // Button to dismiss popup
-        Button button = popupMissionsView.findViewById(R.id.quitMissionsPopupButton);
-        button.setOnClickListener(v -> popupWindow.dismiss());
-
-        //Check if first login of the day and week
-        userDatabaseReference.child("loginDetails").child("currentTimestamp").setValue(ServerValue.TIMESTAMP);
-        userDatabaseReference.child("loginDetails").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                long current_ts = (long) dataSnapshot.child("currentTimestamp").getValue();
-                long previous_ts = (long) dataSnapshot.child("previousTimestamp").getValue();
-                Calendar current_calender = Calendar.getInstance();
-                Calendar previous_calendar = Calendar.getInstance();
-                current_calender.setTimeInMillis(current_ts);
-                previous_calendar.setTimeInMillis(previous_ts);
-
-                if (current_calender.get(Calendar.YEAR) > previous_calendar.get(Calendar.YEAR)) {
-                    mission_setup(current_ts, true, "daily", dailyChallengesAdapter, dailyChallengeList);
-                    mission_setup(current_ts, true, "weekly", weeklyChallengesAdapter, weeklyChallengeList);
-                }
-                else {
-                    if (current_calender.get(Calendar.DAY_OF_YEAR) > previous_calendar.get(Calendar.DAY_OF_YEAR)) {
-                        Log.d("EAG_TIME", "First login of the day");
-                        mission_setup(current_ts, true, "daily", dailyChallengesAdapter, dailyChallengeList);
-                    } else {
-                        Log.d("EAG_TIME", "Repeated login (daily)");
-                        mission_setup(current_ts, false, "daily", dailyChallengesAdapter, dailyChallengeList);
-                    }
-
-                    if (current_calender.get(Calendar.WEEK_OF_YEAR) > previous_calendar.get(Calendar.WEEK_OF_YEAR)) {
-                        Log.d("EAG_TIME", "First login of the week");
-                        mission_setup(current_ts, true, "weekly", weeklyChallengesAdapter, weeklyChallengeList);
-                    } else {
-                        Log.d("EAG_TIME", "Repeated login (weekly)");
-                        mission_setup(current_ts, false, "weekly", weeklyChallengesAdapter, weeklyChallengeList);
-                    }
-                }
-                userDatabaseReference.child("loginDetails").child("previousTimestamp").setValue(current_ts);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Read failed
-                Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
-            }
-        });
-    }
-
-
-
-    // Function to allow user to claim challenge rewards
-    private boolean claimReward(Challenge challenge) {
-        if(challenge.progress < challenge.target) {
-            Toast.makeText(getContext(), "You have not yet completed this challenge", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        else {
-            userDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (!(boolean) dataSnapshot.child("statistics").child("challenges").child(challenge.challengeType).child(String.valueOf(challenge.position)).child("isClaimed").getValue()) {
-                        long currentRewardPoints = (long) dataSnapshot.child("rewardDetails").child(challenge.rewardType).getValue();
-                        currentRewardPoints += challenge.rewardPoints;
-                        userDatabaseReference.child("rewardDetails").child(challenge.rewardType).setValue(currentRewardPoints);
-                        userDatabaseReference.child("statistics").child("challenges").child(challenge.challengeType).child(String.valueOf(challenge.position)).child("isClaimed").setValue(true);
-                        Toast.makeText(getContext(), "Congratulations, reward points claimed!", Toast.LENGTH_SHORT).show();
-                    } else
-                        Toast.makeText(getContext(), "You have already claimed this reward", Toast.LENGTH_SHORT).show();
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    // Read failed
-                    Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
-                }
-            });
-            return true;
-        }
-    }
-
-
-
-    // Function to setup daily and weekly challenges
-    private void mission_setup(long current_ts, boolean isFirstLogin, String challengeType, ChallengesAdapter challengesAdapter, List<Challenge> challengeList) {
-        FirebaseDatabase.getInstance().getReference().child("challengesTable").child(challengeType).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot challengeID : dataSnapshot.getChildren()) {
-                    if((long)challengeID.child("timestampStart").getValue() < current_ts && (long)challengeID.child("timestampEnd").getValue() > current_ts) {
-                        String description = Objects.requireNonNull(challengeID.child("description").getValue()).toString();
-                        Log.d("EAG_CHALLENGE", "Challenge found : " + description);
-
-                        String rewardType = Objects.requireNonNull(challengeID.child("rewardType").getValue()).toString();
-                        long rewardPoints = (long) challengeID.child("rewardPoints").getValue();
-                        String activityName = Objects.requireNonNull(challengeID.child("activityID").getValue()).toString();
-                        String stat = Objects.requireNonNull(challengeID.child("stat").getValue()).toString();
-                        long target = (long) challengeID.child("target").getValue();
-                        long challengePosition = (long) challengeID.child("challengePosition").getValue();
-
-                        //Check the current stat value and stored stat value at the start to calculate progress
-                        userDatabaseReference.child("statistics").addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                long stat_value = 0;
-                                if(dataSnapshot.hasChild("activityBased")) {
-                                    if (dataSnapshot.child("activityBased").hasChild(activityName))
-                                        stat_value = (long) dataSnapshot.child("activityBased").child(activityName).child(stat).getValue();
-                                }
-                                else
-                                    userDatabaseReference.child("statistics").child("activityBased").child(activityName).child(stat).setValue(0);
-
-                                long progress = 0;
-                                boolean isClaimed = false;
-
-                                if (isFirstLogin) {
-                                    userDatabaseReference.child("statistics").child("challenges").child(challengeType).child(String.valueOf(challengePosition)).child("value").setValue(stat_value);
-                                    userDatabaseReference.child("statistics").child("challenges").child(challengeType).child(String.valueOf(challengePosition)).child("isClaimed").setValue(isClaimed);
-                                } else {
-                                    long stored_value = (long) dataSnapshot.child("challenges").child(challengeType).child(String.valueOf(challengePosition)).child("value").getValue();
-                                    isClaimed = (boolean) dataSnapshot.child("challenges").child(challengeType).child(String.valueOf(challengePosition)).child("isClaimed").getValue();
-                                    progress = stat_value - stored_value;
-                                }
-
-                                Challenge challenge = new Challenge(challengeType, progress, description, rewardType, rewardPoints, activityName, target, stat, isClaimed, challengePosition);
-                                challengeList.add(challenge);
-                                Log.d("EAG_CHALLENGE", challengeList.toString());
-                                challengesAdapter.notifyDataSetChanged();
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-
-                        if(challengePosition == 1){
-                            long ts_secs = ((long)challengeID.child("timestampEnd").getValue() - current_ts)/1000;
-                            long days = ts_secs / (3600 * 24);
-                            long hours = 1 + (ts_secs / 3600) % 24;
-                            long mins = 0;
-                            if(hours == 1)
-                                mins = (ts_secs / 60) % 60;
-                            if(challengeType.equals("weekly")){
-                                if(days == 0) {
-                                    if(hours == 1)
-                                        weeklyChallengesTimer.setText(mins + " mins to go ");
-                                    else
-                                        weeklyChallengesTimer.setText(hours + " hours to go ");
-                                }
-                                else
-                                    weeklyChallengesTimer.setText(days + " days, " + hours + " hours to go ");
-                            }else{
-                                if(hours == 1)
-                                    dailyChallengesTimer.setText(mins + " mins to go ");
-                                else
-                                    dailyChallengesTimer.setText(hours + " hours to go ");
-                            }
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Read failed
-                Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
-            }
-        });
-    }
-
-    // Function to manage live updates popup window
-    private void manageLiveUpdatesPopup(View view, LayoutInflater inflater)
-    {
-        // Inflate the popup window layout
-        View popupLiveUpdatesView = inflater.inflate(R.layout.popup_live_updates, null);
-
-        // Setup recycler view within popup window
-        List<LiveUpdate> liveUpdateList = new ArrayList<>();
-        RecyclerView liveUpdatesRecyclerView = popupLiveUpdatesView.findViewById(R.id.recycler_view);
-        LiveUpdatesAdapter liveUpdatesAdapter = new LiveUpdatesAdapter(liveUpdateList, position -> {
-            Toast.makeText(getContext(),liveUpdateList.get(position).description,Toast.LENGTH_SHORT).show();
-        });
-
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-        liveUpdatesRecyclerView.setLayoutManager(mLayoutManager);
-        liveUpdatesRecyclerView.setAdapter(liveUpdatesAdapter);
-
-        // Setup popup window
-        PopupWindow popupWindow = new PopupWindow(popupLiveUpdatesView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
-        // Show popup view at the center
-        popupWindow.showAtLocation(view, Gravity.CENTER, 0,0);
-
-        //Make background transparent
-//        customDrawable.setVisibility(View.VISIBLE);
-//        popupWindow.setOnDismissListener(() -> customDrawable.setVisibility(View.GONE));
-
-        // Button to dismiss popup
-        Button button = popupLiveUpdatesView.findViewById(R.id.quitLiveUpdatesPopupButton);
-        button.setOnClickListener(v -> popupWindow.dismiss());
-
-
-        // Listen for values on Firebase
-        ValueEventListener eventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Read data from firebase
-                liveUpdateList.clear();
-
-                // Get 20 latest live updates
-                final long LIVE_UPDATE_COUNT = 20;
-                long startID = dataSnapshot.getChildrenCount() - LIVE_UPDATE_COUNT;
-
-                for(long i = startID > 1 ? startID : 1 ; i < startID + LIVE_UPDATE_COUNT ; i++)
-                {
-                    String description = dataSnapshot.child(String.valueOf(i)).child("description").getValue().toString();
-                    String activityName = dataSnapshot.child(String.valueOf(i)).child("activityID").getValue().toString();
-                    LiveUpdate liveUpdate = new LiveUpdate(description, activityName);
-                    liveUpdateList.add(liveUpdate);
-                }
-
-                liveUpdatesAdapter.notifyDataSetChanged();
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Read failed
-                Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
-            }
-        };
-
-        FirebaseDatabase.getInstance().getReference().child("liveUpdatesTable").addValueEventListener(eventListener);
-    }
-
-
 
     // Function to show alert box to ask user to enable GPS
     private void enableGPS(){
@@ -474,8 +164,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         alert = alertDialogBuilder.create();
         alert.show();
     }
-
-
 
     @Override
     public void onResume()

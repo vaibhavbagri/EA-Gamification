@@ -61,7 +61,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/coin_icon" />
+            app:srcCompat="@drawable/coin_logo" />
 
         <TextView
             android:id="@+id/ticketPointsView"
@@ -89,7 +89,7 @@
             app:layout_constraintStart_toEndOf="@+id/coinPointsView"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/ticket_icon" />
+            app:srcCompat="@drawable/ticket_logo" />
 
         <TextView
             android:id="@+id/coinPointsView"

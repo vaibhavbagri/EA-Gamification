@@ -3,15 +3,15 @@
 
         <item
             android:id="@+id/live_updates"
-            android:icon="@drawable/social"
+            android:icon="@drawable/live_updates_logo"
             android:title="Live Updates" />
         <item
             android:id="@+id/challenges"
-            android:icon="@drawable/mission"
+            android:icon="@drawable/challenges_logo"
             android:title="Challenges" />
         <item
             android:id="@+id/ar_camp"
-            android:icon="@drawable/camp"
+            android:icon="@drawable/camp_logo"
             android:title="AR Camp" />
         <item
             android:id="@+id/rewards_button"
