@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="bottom_navigation">
 
         <item
             android:id="@+id/live_updates"
             android:icon="@drawable/live_updates_logo"
-            android:title="Live Updates" />
+            android:title="Live Updates"
+            android:checkable="false"/>
         <item
             android:id="@+id/challenges"
             android:icon="@drawable/challenges_logo"

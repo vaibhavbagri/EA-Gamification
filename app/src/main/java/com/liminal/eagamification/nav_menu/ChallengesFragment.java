@@ -2,10 +2,13 @@ package com.liminal.eagamification.nav_menu;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -50,6 +53,10 @@ public class ChallengesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_challenges, container, false);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
+        dividerItemDecoration.setDrawable(new ColorDrawable(Color.WHITE));
+
         // Weekly Challenges
         weeklyChallengeList.clear();
         RecyclerView weeklyChallengesRecyclerView = root.findViewById(R.id.weeklyChallengesRecyclerView);
@@ -59,6 +66,7 @@ public class ChallengesFragment extends Fragment {
         });
         RecyclerView.LayoutManager weeklyLayoutManager = new LinearLayoutManager(getContext());
         weeklyChallengesRecyclerView.setLayoutManager(weeklyLayoutManager);
+        weeklyChallengesRecyclerView.addItemDecoration(dividerItemDecoration);
         weeklyChallengesRecyclerView.setAdapter(weeklyChallengesAdapter);
         weeklyChallengesTimer = root.findViewById(R.id.weeklyChallengesTimer);
 
@@ -71,6 +79,7 @@ public class ChallengesFragment extends Fragment {
         });
         RecyclerView.LayoutManager dailyLayoutManager = new LinearLayoutManager(getContext());
         dailyChallengesRecyclerView.setLayoutManager(dailyLayoutManager);
+        dailyChallengesRecyclerView.addItemDecoration(dividerItemDecoration);
         dailyChallengesRecyclerView.setAdapter(dailyChallengesAdapter);
         dailyChallengesTimer = root.findViewById(R.id.dailyChallengesTimer);
 
@@ -82,6 +91,9 @@ public class ChallengesFragment extends Fragment {
     }
 
     private void dismissFragment() {
+        HomeFragment homeFragment = (HomeFragment) getParentFragment();
+        assert homeFragment != null;
+        homeFragment.bottomNavigationView.getMenu().getItem(1).setIcon(R.drawable.challenges_logo);
         getParentFragmentManager().beginTransaction().remove(getParentFragmentManager().findFragmentById(R.id.popupFrameLayout)).commit();
     }
 
@@ -136,9 +148,10 @@ public class ChallengesFragment extends Fragment {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 long stat_value = 0;
-                                if(dataSnapshot.hasChild("activityBased")) {
-                                    if (dataSnapshot.child("activityBased").hasChild(activityName))
-                                        stat_value = (long) dataSnapshot.child("activityBased").child(activityName).child(stat).getValue();
+                                if(dataSnapshot.hasChild("activityBased") &&
+                                        dataSnapshot.child("activityBased").hasChild(activityName) &&
+                                        dataSnapshot.child("activityBased").child(activityName).hasChild(stat)){
+                                    stat_value = (long) dataSnapshot.child("activityBased").child(activityName).child(stat).getValue();
                                 }
                                 else
                                     userDatabaseReference.child("statistics").child("activityBased").child(activityName).child(stat).setValue(0);

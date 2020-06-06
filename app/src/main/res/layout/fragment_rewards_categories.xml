@@ -3,7 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
     tools:context=".rewards.RewardsCategoriesFragment">
+
+    <androidx.viewpager.widget.ViewPager
+        android:foregroundGravity="center"
+        android:id="@+id/categories_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:overScrollMode="never"
+        android:clipToPadding="false"/>
 
     <Button
         android:id="@+id/foodButton"
@@ -13,7 +23,8 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="132dp"
         android:layout_marginBottom="569dp"
-        android:text="Food" />
+        android:text="Food"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/fitnessButton"
@@ -23,7 +34,8 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="134dp"
         android:layout_marginBottom="476dp"
-        android:text="Fitness" />
+        android:text="Fitness"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/entertainmentButton"
@@ -33,7 +45,8 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="134dp"
         android:layout_marginBottom="399dp"
-        android:text="Entertainment" />
+        android:text="Entertainment"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/travelButton"
@@ -43,5 +56,6 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="136dp"
         android:layout_marginBottom="313dp"
-        android:text="Travel" />
+        android:text="Travel"
+        android:visibility="gone"/>
 </RelativeLayout>

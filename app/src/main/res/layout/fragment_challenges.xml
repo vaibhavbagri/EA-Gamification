@@ -35,10 +35,10 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="0dp"
         android:layout_marginEnd="16dp"
-        android:fontFamily="@font/bangers"
+        android:fontFamily="@font/gravity_regular"
         android:text="Time Remaining"
         android:textAlignment="center"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/colorAccent"
         android:textSize="20sp" />
 
     <Button
@@ -64,7 +64,9 @@
         android:id="@+id/weeklyChallengesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/weeklyChallengesTimer" />
+        android:layout_below="@+id/weeklyChallengesTimer"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"/>
 
 
     <TextView
@@ -93,10 +95,10 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="0dp"
         android:layout_marginEnd="16dp"
-        android:fontFamily="@font/bangers"
+        android:fontFamily="@font/gravity_regular"
         android:text="Time Remaining"
         android:textAlignment="center"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/colorAccent"
         android:textSize="20sp" />
 
     <ImageView
@@ -110,6 +112,8 @@
         android:id="@+id/dailyChallengesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/dailyChallengesTimer" />
+        android:layout_below="@+id/dailyChallengesTimer"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"/>
 
 </RelativeLayout>

@@ -99,6 +99,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     //Enable GPS alert dialog box
     private AlertDialog alert;
 
+    BottomNavigationView bottomNavigationView;
+
     @SuppressLint("MissingPermission")
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -116,30 +118,36 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
 
         // Build the map.
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        assert mapFragment != null;
         mapFragment.getMapAsync(this);
 
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
 
         // Construct a FusedLocationProviderClient.
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
 
         // Navigation Bar
-        BottomNavigationView bottomNavigationView = root.findViewById(R.id.bottom_navigation);
+        bottomNavigationView = root.findViewById(R.id.bottom_navigation);
         bottomNavigationView.setItemIconTintList(null);
-        bottomNavigationView.getMenu().getItem(0).setCheckable(false);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.live_updates:
                     item.setCheckable(true);
+                    item.setIcon(R.drawable.camp_logo);
+                    bottomNavigationView.getMenu().getItem(1).setIcon(R.drawable.challenges_logo);
                     getChildFragmentManager().beginTransaction().replace(R.id.popupFrameLayout, new LiveUpdatesFragment()).commit();
                     return true;
                 case R.id.challenges:
                     getChildFragmentManager().beginTransaction().replace(R.id.popupFrameLayout, new ChallengesFragment()).commit();
+                    item.setIcon(R.drawable.live_updates_logo);
+                    bottomNavigationView.getMenu().getItem(0).setIcon(R.drawable.live_updates_logo);
                     return true;
                 case R.id.ar_camp:
+                    dismissPopupFragment();
                     startActivity(new Intent(getActivity(), CampActivity.class));
                     return true;
                 case R.id.rewards_button:
+                    dismissPopupFragment();
                     startActivity(new Intent(getActivity(), RewardsActivity.class));
                     return true;
             }
@@ -147,6 +155,17 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
         });
 
         return root;
+    }
+
+    //If any popups are on display, dismiss them before opening rewards or camp activity
+    private void dismissPopupFragment(){
+        if(getChildFragmentManager().findFragmentById(R.id.popupFrameLayout) != null) {
+            getChildFragmentManager().beginTransaction()
+                    .remove(Objects.requireNonNull(getChildFragmentManager().findFragmentById(R.id.popupFrameLayout)))
+                    .commit();
+            bottomNavigationView.getMenu().getItem(0).setIcon(R.drawable.live_updates_logo);
+            bottomNavigationView.getMenu().getItem(1).setIcon(R.drawable.challenges_logo);
+        }
     }
 
     // Function to show alert box to ask user to enable GPS
@@ -169,6 +188,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
     public void onResume()
     {
         super.onResume();
+
+        //If popup is not dismissed, recycler view of challenges and live updates is populated with duplicate entries
+        dismissPopupFragment();
+
         if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
         {
             Log.d(TAG,"GPS enabled by user");
