@@ -13,13 +13,10 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,10 +24,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
@@ -48,12 +42,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.liminal.eagamification.LocationBasedActivity;
 import com.liminal.eagamification.MainActivity;
@@ -62,9 +54,6 @@ import com.liminal.eagamification.rewards.RewardsActivity;
 import com.liminal.eagamification.ar_camp.CampActivity;
 import com.liminal.eagamification.R;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 import java.util.Objects;
 
 import static android.content.Context.LOCATION_SERVICE;
@@ -133,7 +122,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
             switch (item.getItemId()) {
                 case R.id.live_updates:
                     item.setCheckable(true);
-                    item.setIcon(R.drawable.camp_logo);
+                    item.setIcon(R.drawable.camp_icon);
                     bottomNavigationView.getMenu().getItem(1).setIcon(R.drawable.challenges_logo);
                     getChildFragmentManager().beginTransaction().replace(R.id.popupFrameLayout, new LiveUpdatesFragment()).commit();
                     return true;

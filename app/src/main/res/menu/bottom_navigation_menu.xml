@@ -14,7 +14,7 @@
             android:title="Challenges" />
         <item
             android:id="@+id/ar_camp"
-            android:icon="@drawable/camp_logo"
+            android:icon="@drawable/camp_icon"
             android:title="AR Camp" />
         <item
             android:id="@+id/rewards_button"
