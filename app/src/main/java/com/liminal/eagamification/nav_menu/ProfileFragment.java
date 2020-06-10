@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -49,7 +51,7 @@ public class ProfileFragment extends Fragment {
     private EditText DOBEditText;
     private EditText bioEditText;
 
-    private ImageView profilePictureView;
+    private ImageView profilePictureImageView;
 
     private SharedPreferences sharedPreferences;
     private StorageReference profilePictureRef;
@@ -73,11 +75,11 @@ public class ProfileFragment extends Fragment {
         DOBEditText = root.findViewById(R.id.dobEditText);
         bioEditText = root.findViewById(R.id.bioEditText);
 
-        profilePictureView = root.findViewById(R.id.profilePictureview);
+        profilePictureImageView = root.findViewById(R.id.profilePictureImageView);
 
-        Button changePicButton = root.findViewById(R.id.addPicButton);
-        Button chooseDateButton = root.findViewById(R.id.selectDOBButton);
-        CardView updateProfileButton = root.findViewById(R.id.updateProfileCardView);
+        FloatingActionButton changePicButton = root.findViewById(R.id.addPicButton);
+        ImageButton chooseDateButton = root.findViewById(R.id.selectDOBButton);
+        FloatingActionButton updateProfileButton = root.findViewById(R.id.updateProfileButton);
         CardView inviteFriendsButton = root.findViewById(R.id.inviteFriendsCardView);
 
         userProfileReference = FirebaseDatabase.getInstance().getReference().child("userProfileTable");
@@ -112,7 +114,7 @@ public class ProfileFragment extends Fragment {
         userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("photoURL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Glide.with(requireActivity().getApplicationContext()).load(Uri.parse(String.valueOf(dataSnapshot.getValue()))).into(profilePictureView);
+                Glide.with(requireActivity().getApplicationContext()).load(Uri.parse(String.valueOf(dataSnapshot.getValue()))).into(profilePictureImageView);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -308,7 +310,7 @@ public class ProfileFragment extends Fragment {
                                 userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("lastName").setValue(lastName);
                                 userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("DOB").setValue(DOB);
                                 userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("mobileNo").setValue(mobileNumber);
-                                userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("bio").setValue(bio);
+                                userProfileReference.child(sharedPreferences.getString("id","")).child("personalDetails").child("bio").setValue(bio).addOnCompleteListener(task -> Toast.makeText(requireActivity(), "Your profile has been updated.", Toast.LENGTH_SHORT).show());
                             }
                             else
                                 Toast.makeText(getActivity(), "Username already exists", Toast.LENGTH_SHORT).show();
@@ -326,7 +328,7 @@ public class ProfileFragment extends Fragment {
     private boolean isMobileNumberValid(String text)
     {
         // Only allow numbers with + and -
-        if (!text.matches("^[-a-zA-Z0-9+]*$") && !text.equals("NA"))
+        if (!text.matches("^[-0-9+]*$") && !text.equals("NA"))
         {
             Toast.makeText(getActivity(), "Mobile number cannot contain alphabets or special characters", Toast.LENGTH_SHORT).show();
             return false;

@@ -37,7 +37,7 @@
     <string name="tickets">tickets</string>
     <string name="weekly_challenges">Weekly Challenges</string>
     <string name="profile_picture">profile picture</string>
-    <string name="default_username">"ANONYMOUS USER "</string>
+    <string name="default_username">"Anonymous User"</string>
     <string name="username">username</string>
     <string name="enter_new_username">Enter new Username</string>
     <string name="name">name</string>
@@ -46,7 +46,7 @@
     <string name="enter_mobile_number">Enter mobile number</string>
     <string name="dd_mm_yyyy">dd/mm/yyyy</string>
     <string name="bio">bio</string>
-    <string name="date_of_birth">date of birth</string>
+    <string name="date_of_birth">Date of Birth</string>
     <string name="i_am_interested_in">I am interested in ...</string>
     <string name="update_profile">"Update Profile "</string>
     <string name="invite_friends">"Invite Friends "</string>
@@ -54,6 +54,4 @@
     <string name="rewards_tab_text_1">Claim Rewards</string>
     <string name="rewards_tab_text_2">My Rewards</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
