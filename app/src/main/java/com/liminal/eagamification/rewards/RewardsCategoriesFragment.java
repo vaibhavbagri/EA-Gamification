@@ -31,16 +31,16 @@ public class RewardsCategoriesFragment extends Fragment implements View.OnClickL
         root.findViewById(R.id.entertainmentButton).setOnClickListener(this);
         root.findViewById(R.id.travelButton).setOnClickListener(this);
 
-        rewardCategoryList = new ArrayList<>();
-        rewardCategoryList.add(new RewardCategory(R.drawable.holidays_background, "Holidays", "Holidays are fun"));
-        rewardCategoryList.add(new RewardCategory(R.drawable.live_updates_logo, "Holidays", "Holidays are fun"));
-        rewardCategoryList.add(new RewardCategory(R.drawable.rewards_logo, "Holidays", "Holidays are fun"));
-        rewardCategoryList.add(new RewardCategory(R.drawable.challenges_logo, "Holidays", "Holidays are fun"));
-
-        rewardsCategoryAdapter = new RewardsCategoryAdapter(rewardCategoryList, inflater, getContext());
-        viewPager = root.findViewById(R.id.categories_view_pager);
-        viewPager.setAdapter(rewardsCategoryAdapter);
-        viewPager.setPadding(130, 0, 130, 0);
+//        rewardCategoryList = new ArrayList<>();
+//        rewardCategoryList.add(new RewardCategory(R.drawable.holidays_background, "Holidays", "Holidays are fun"));
+//        rewardCategoryList.add(new RewardCategory(R.drawable.live_updates_logo, "Holidays", "Holidays are fun"));
+//        rewardCategoryList.add(new RewardCategory(R.drawable.rewards_logo, "Holidays", "Holidays are fun"));
+//        rewardCategoryList.add(new RewardCategory(R.drawable.challenges_logo, "Holidays", "Holidays are fun"));
+//
+//        rewardsCategoryAdapter = new RewardsCategoryAdapter(rewardCategoryList, inflater, getContext());
+//        viewPager = root.findViewById(R.id.categories_view_pager);
+//        viewPager.setAdapter(rewardsCategoryAdapter);
+//        viewPager.setPadding(130, 0, 130, 0);
 
         return root;
     }
@@ -68,7 +68,7 @@ public class RewardsCategoriesFragment extends Fragment implements View.OnClickL
 
     private void replaceFragment(String category) {
         getParentFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container_rewards,new RewardsListFragment(category))
+                .replace(R.id.fragment_container_rewards, new RewardsListFragment(category))
                 .addToBackStack("RewardCategories")
                 .commit();
     }

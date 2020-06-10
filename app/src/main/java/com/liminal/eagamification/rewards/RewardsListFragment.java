@@ -61,6 +61,7 @@ public class RewardsListFragment extends Fragment {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(claimRewardsAdapter);
 
+        Log.d("RewardsList", "On create view");
         return root;
     }
 
@@ -68,6 +69,7 @@ public class RewardsListFragment extends Fragment {
     public void onStart() {
         super.onStart();
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("User_Details", Context.MODE_PRIVATE);
+        Log.d("RewardsList", "On start");
 
         // Firebase references to user profile and reward details table
         userDetailsReference = FirebaseDatabase.getInstance().getReference().child("userProfileTable").child(sharedPreferences.getString("id",""));

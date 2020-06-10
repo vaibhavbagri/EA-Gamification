@@ -1,42 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".rewards.RewardsActivity">
+    tools:context=".rewards.RewardsActivity"
+    android:background="@color/cardview_dark_background">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
+
+    <TextView
+        android:id="@+id/rewards_title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        android:id="@+id/app_bar_layout">
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="30dp"
+        android:textSize="40dp"
+        android:text="Rewards"
+        android:textColor="@color/colorAccent"
+        android:fontFamily="@font/gravity_regular" />
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+    <Button
+        android:id="@+id/homeButton"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="30dp"
+        android:layout_marginTop="30dp"
+        android:clickable="true"
+        android:background="@drawable/home"
+        android:elevation="10dp"/>
 
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/view_pager"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/app_bar_layout"
-        android:layout_above="@id/tabs"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_above="@+id/tabs_linear_layout"
+        android:layout_below="@+id/rewards_title"
+        android:id="@+id/rewards_fragment_container">
+    </FrameLayout>
 
-
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabs"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:orientation="horizontal"
         android:layout_alignParentBottom="true"
-        app:tabIndicatorAnimationDuration="100"
-        app:tabIndicatorHeight="4dp"/>
+        android:id="@+id/tabs_linear_layout"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/claim_rewards_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/reward_tab_button_drawable"
+            android:fontFamily="@font/gravity_regular"
+            android:text="Claim Rewards"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/my_rewards_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:alpha="0.5"
+            android:background="@drawable/reward_tab_button_drawable"
+            android:fontFamily="@font/gravity_regular"
+            android:text="My Rewards"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+    </LinearLayout>
 
 </RelativeLayout>
