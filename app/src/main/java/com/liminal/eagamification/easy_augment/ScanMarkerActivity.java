@@ -72,7 +72,7 @@ public class ScanMarkerActivity extends AppCompatActivity {
 
                 SharedPreferences.Editor editor = sharedPreferencesUnity.edit();
                 editor.putString("user_id", sharedPreferencesUser.getString("id",""));
-                editor.putString("asset_bundle_link", sharedPreferencesMarker.getString("asset_bundle_link",""));
+                editor.putString("asset_bundle_link", sharedPreferencesMarker.getString("assetBundleLink",""));
                 editor.apply();
 
                 Log.d("EAG_MARKER_SCAN", "Marker detected");
