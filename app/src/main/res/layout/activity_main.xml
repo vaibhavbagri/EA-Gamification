@@ -18,11 +18,19 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:layout_marginTop="80dp"
         android:alpha="0.9"
-        android:background="#FFFFFF"
+        android:background="@drawable/menu_bg"
         android:backgroundTintMode="add"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_bar_user_profile"
-        app:menu="@menu/activity_menu_drawer" />
+        app:itemIconPadding="24dp"
+        app:itemIconSize="20dp"
+        app:itemIconTint="#B3FFFFFF"
+        app:itemTextAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:itemTextColor="#D9FFAB00"
+        app:menu="@menu/activity_menu_drawer">
+
+    </com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>

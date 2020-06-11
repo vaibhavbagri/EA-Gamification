@@ -16,7 +16,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/temple_card"
+        android:background="@color/zxing_result_view"
         android:orientation="vertical">
 
         <TextView
@@ -74,8 +74,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:paddingBottom="8dp"
             android:fontFamily="@font/roboto_slab_light"
+            android:paddingBottom="8dp"
             android:text="Haiku is a game about poems! Play against the best players in the world."
             android:textAlignment="center"
             android:textColor="#FFFFFF"

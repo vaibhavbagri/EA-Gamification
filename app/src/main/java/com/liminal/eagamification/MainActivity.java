@@ -6,8 +6,10 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.Menu;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -48,9 +50,12 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+//        NavigationUI.setupWithNavController(navigationView, navController);
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setItemIconTintList(null);
+        ImageButton expandMenuButton = findViewById(R.id.expandMenuButton);
 
         // Passing each menu ID as a set of Ids because each menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -62,10 +67,6 @@ public class MainActivity extends AppCompatActivity {
                 R.id.nav_sign_out)
                 .setDrawerLayout(drawer)
                 .build();
-
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
 
         DatabaseReference userProfileReference = FirebaseDatabase.getInstance().getReference().child("userProfileTable");
 
@@ -87,6 +88,13 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         userProfileReference.child(sharedPreferences.getString("id","")).addValueEventListener(eventListener);
+
+        // Inflate the navigation drawer
+        expandMenuButton.setOnClickListener(v -> mAppBarConfiguration.getDrawerLayout().openDrawer(Gravity.LEFT));
+
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+//        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+        NavigationUI.setupWithNavController(navigationView, navController);
     }
 
 

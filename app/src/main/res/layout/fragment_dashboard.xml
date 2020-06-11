@@ -10,13 +10,13 @@
         android:id="@+id/usernameTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="50dp"
+        android:layout_marginEnd="80dp"
         android:fontFamily="@font/gravity_book"
         android:text="@string/default_username"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/cardView"
         app:layout_constraintTop_toTopOf="@+id/cardView" />
@@ -68,7 +68,7 @@
         app:layout_constraintDimensionRatio="1"
         app:layout_constraintStart_toEndOf="@+id/coinsTextView"
         app:layout_constraintTop_toTopOf="@+id/coinsTextView"
-        app:srcCompat="@drawable/ticket_logo" />
+        app:srcCompat="@drawable/ticket_icon" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"

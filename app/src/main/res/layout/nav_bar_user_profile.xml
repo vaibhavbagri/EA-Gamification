@@ -1,34 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/userProfileLayout"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/nav_header_height"
-    android:background="@drawable/nav_bar_bg"
+    android:layout_height="wrap_content"
+    android:alpha="0.9"
     android:gravity="bottom"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="20dp" />
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="70dp"
+        android:alpha="0.85"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/profile_pic_menu_bg" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/profilePictureHolder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
         android:alpha="0.8"
-        app:cardCornerRadius="35dp"
-        app:cardElevation="10dp">
+        app:cardCornerRadius="45dp"
+        app:cardElevation="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/profilePictureview"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:contentDescription="@string/nav_header_desc"
             android:paddingTop="0dp"
             android:scaleType="centerCrop"
@@ -37,22 +47,33 @@
 
     <TextView
         android:id="@+id/userNameView"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/bangers"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:fontFamily="@font/gravity_book"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="@string/placeholder_greeting"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textSize="24sp" />
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/profilePictureHolder"
+        app:layout_constraintTop_toBottomOf="@+id/profilePictureHolder" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rewardPointsHolder"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/userNameView"
+        app:layout_constraintStart_toStartOf="@+id/userNameView"
+        app:layout_constraintTop_toBottomOf="@+id/userNameView">
 
         <ImageView
             android:id="@+id/coinIcon"
-            android:layout_width="35dp"
+            android:layout_width="20dp"
             android:layout_height="35dp"
             android:layout_gravity="center_vertical"
             android:layout_marginTop="4dp"
@@ -67,19 +88,19 @@
             android:id="@+id/ticketPointsView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:fontFamily="@font/bangers"
+            android:layout_marginStart="8dp"
+            android:fontFamily="@font/gravity_book"
             android:text="@string/default_coin_value"
-            android:textSize="30sp"
+            android:textColor="@color/white"
+            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ticketIcon"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.333" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/ticketIcon"
-            android:layout_width="50dp"
-            android:layout_height="35dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="32dp"
             android:layout_marginTop="12dp"
@@ -89,19 +110,21 @@
             app:layout_constraintStart_toEndOf="@+id/coinPointsView"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/ticket_logo" />
+            app:srcCompat="@drawable/ticket_icon" />
 
         <TextView
             android:id="@+id/coinPointsView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:fontFamily="@font/bangers"
+            android:layout_marginStart="8dp"
+            android:fontFamily="@font/gravity_book"
             android:text="@string/default_coin_value"
-            android:textSize="30sp"
+            android:textColor="@color/white"
+            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/coinIcon"
             app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

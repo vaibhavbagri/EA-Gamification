@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn="navigation_view">
-
-    <group android:checkableBehavior="single">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/home_logo"
@@ -24,14 +21,11 @@
             android:id="@+id/nav_about_us"
             android:icon="@drawable/about_us_logo"
             android:title="About us" />
-
         <item
             android:id="@+id/nav_sign_out"
             android:icon="@drawable/sign_out_logo"
             android:title="Sign Out" />
-
         <item
             android:icon="@drawable/version_logo"
             android:title="Version 9.4.1999" />
-    </group>
 </menu>
