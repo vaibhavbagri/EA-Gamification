@@ -1,11 +1,11 @@
 package com.liminal.eagamification.rewards;
 
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,55 +15,92 @@ import com.liminal.eagamification.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RewardsCategoriesFragment extends Fragment implements View.OnClickListener{
+public class RewardsCategoriesFragment extends Fragment{
 
     ViewPager viewPager;
     RewardsCategoryAdapter rewardsCategoryAdapter;
     List<RewardCategory> rewardCategoryList;
+    final static float RATIO_SCALE_SIZE = 0.1f;
+    final static float RATIO_SCALE_ALPHA = 0.5f;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_rewards_categories, container, false);
-        root.findViewById(R.id.foodButton).setOnClickListener(this);
-        root.findViewById(R.id.fitnessButton).setOnClickListener(this);
-        root.findViewById(R.id.entertainmentButton).setOnClickListener(this);
-        root.findViewById(R.id.travelButton).setOnClickListener(this);
+        viewPager = root.findViewById(R.id.categories_view_pager);
 
-//        rewardCategoryList = new ArrayList<>();
-//        rewardCategoryList.add(new RewardCategory(R.drawable.holidays_background, "Holidays", "Holidays are fun"));
-//        rewardCategoryList.add(new RewardCategory(R.drawable.live_updates_logo, "Holidays", "Holidays are fun"));
-//        rewardCategoryList.add(new RewardCategory(R.drawable.rewards_logo, "Holidays", "Holidays are fun"));
-//        rewardCategoryList.add(new RewardCategory(R.drawable.challenges_logo, "Holidays", "Holidays are fun"));
-//
-//        rewardsCategoryAdapter = new RewardsCategoryAdapter(rewardCategoryList, inflater, getContext());
-//        viewPager = root.findViewById(R.id.categories_view_pager);
-//        viewPager.setAdapter(rewardsCategoryAdapter);
-//        viewPager.setPadding(130, 0, 130, 0);
+        rewardCategoryList = new ArrayList<>();
+        rewardCategoryList.add(new RewardCategory(R.drawable.holidays_rewards_bg, R.drawable.holidays, "Travel", "Exciting offers to make your next vacation cheaper"));
+        rewardCategoryList.add(new RewardCategory(R.drawable.food_rewards_bg, R.drawable.food, "Food", "Delicacies that you certainly don't want to miss out on!"));
+        rewardCategoryList.add(new RewardCategory(R.drawable.health_rewards_bg, R.drawable.health, "Fitness", "For all the fitness freaks out there!"));
+        rewardCategoryList.add(new RewardCategory(R.drawable.style_rewards_bg, R.drawable.style, "style", "Discounts that will never go out of style!"));
+        rewardCategoryList.add(new RewardCategory(R.drawable.sustainable_rewards_bg, R.drawable.sustainable, "sustainable", "Sustainable goods to fulfil your needs, and help Mother Earth as well!"));
+        rewardCategoryList.add(new RewardCategory(R.drawable.freebies_reward_bg, R.drawable.freebies, "freebies", "Who doesn't love free gifts?!"));
+
+        rewardsCategoryAdapter = new RewardsCategoryAdapter(rewardCategoryList, inflater, getContext(), viewPager,
+                position -> replaceFragment(rewardCategoryList.get(position).getTitle()));
+
+        viewPager.setAdapter(rewardsCategoryAdapter);
+        viewPager.setClipToPadding(false);
+        viewPager.setPageMargin(24);
+        viewPager.setPadding(130, 30, 130, 20);
+        viewPager.setOffscreenPageLimit(3);
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                Log.d("EAG_REWARDS", "Page scrolled");
+                View view = ((RewardsCategoryAdapter) viewPager.getAdapter()).getRewardView(position);
+                scaleView(view, 1 - (positionOffset * RATIO_SCALE_SIZE), 1 - (positionOffset * RATIO_SCALE_ALPHA));
+                if (position + 1 < viewPager.getAdapter().getCount()) {
+                    view = ((RewardsCategoryAdapter) viewPager.getAdapter()).getRewardView(position + 1);
+                    scaleView(view,
+                            positionOffset * RATIO_SCALE_SIZE + (1 - RATIO_SCALE_SIZE),
+                            positionOffset * RATIO_SCALE_ALPHA + (1 - RATIO_SCALE_ALPHA));
+                }
+
+                //Get the view two positions ahead to prevent snappy behaviour of card blurring
+                if (viewPager.getCurrentItem() + 2 < viewPager.getAdapter().getCount()) {
+                    view = ((RewardsCategoryAdapter) viewPager.getAdapter()).getRewardView(viewPager.getCurrentItem() + 2);
+                    scaleView(view, 1 - RATIO_SCALE_SIZE, 1 - RATIO_SCALE_ALPHA);
+                }
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Log.d("EAG_REWARDS", "Page selected");
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                Log.d("EAG_REWARDS", "Scroll state changed");
+                if (state == ViewPager.SCROLL_STATE_IDLE) {
+                    View view = ((RewardsCategoryAdapter) viewPager.getAdapter()).getRewardView(viewPager.getCurrentItem());
+                    scaleView(view, 1, 1);
+                    //Get the view to the left of the current page if it isn't the first item
+                    if (viewPager.getCurrentItem() > 0) {
+                        view = ((RewardsCategoryAdapter) viewPager.getAdapter()).getRewardView(viewPager.getCurrentItem() - 1);
+                        scaleView(view, 1 - RATIO_SCALE_SIZE, 1 - RATIO_SCALE_ALPHA);
+                    }
+
+                    //Get the view to the right of the current page if it isn't the last item
+                    if (viewPager.getCurrentItem() + 1 < viewPager.getAdapter().getCount()) {
+                        view = ((RewardsCategoryAdapter) viewPager.getAdapter()).getRewardView(viewPager.getCurrentItem() + 1);
+                        scaleView(view, 1 - RATIO_SCALE_SIZE, 1 - RATIO_SCALE_ALPHA);
+                    }
+                }
+            }
+        });
 
         return root;
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.foodButton:
-                replaceFragment("Food");
-                break;
-
-            case R.id.fitnessButton:
-                replaceFragment("Fitness");
-                break;
-
-            case R.id.entertainmentButton:
-                replaceFragment("Entertainment");
-                break;
-
-            case R.id.travelButton:
-                replaceFragment("Travel");
-                break;
-        }
+    //Function to blur and decrease size of views present to the right and left of current view
+    public void scaleView(View view, float scaleSize, float scaleAlpha)
+    {
+        view.setScaleY(scaleSize);
+        view.setAlpha(scaleAlpha);
     }
 
     private void replaceFragment(String category) {
@@ -71,5 +108,10 @@ public class RewardsCategoriesFragment extends Fragment implements View.OnClickL
                 .replace(R.id.fragment_container_rewards, new RewardsListFragment(category))
                 .addToBackStack("RewardCategories")
                 .commit();
+    }
+
+    //Needed to handle button clicks on each page
+    public interface ClickListener {
+        void onPositionClicked(int position);
     }
 }

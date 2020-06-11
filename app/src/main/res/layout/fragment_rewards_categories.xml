@@ -13,46 +13,6 @@
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:overScrollMode="never"
-        android:clipToPadding="false"
-        android:visibility="gone"/>
+        android:clipToPadding="false" />
 
-    <Button
-        android:id="@+id/foodButton"
-        android:layout_width="156dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="132dp"
-        android:layout_marginBottom="569dp"
-        android:text="Food"/>
-
-    <Button
-        android:id="@+id/fitnessButton"
-        android:layout_width="156dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="134dp"
-        android:layout_marginBottom="476dp"
-        android:text="Fitness"/>
-
-    <Button
-        android:id="@+id/entertainmentButton"
-        android:layout_width="156dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="134dp"
-        android:layout_marginBottom="399dp"
-        android:text="Entertainment"/>
-
-    <Button
-        android:id="@+id/travelButton"
-        android:layout_width="156dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="136dp"
-        android:layout_marginBottom="313dp"
-        android:text="Travel"/>
 </RelativeLayout>

@@ -1,22 +1,32 @@
 package com.liminal.eagamification.rewards;
 
 public class RewardCategory {
-    private int image;
+    private int background_image;
+    private int category_image;
     private String title;
     private String description;
 
-    public RewardCategory(int image, String title, String description) {
-        this.image = image;
+    public RewardCategory(int background_image, int category_image, String title, String description) {
+        this.background_image = background_image;
+        this.category_image = category_image;
         this.title = title;
         this.description = description;
     }
 
-    public int getImage() {
-        return image;
+    public int getBackground_image() {
+        return background_image;
     }
 
-    public void setImage(int image) {
-        this.image = image;
+    public void setBackground_image(int background_image) {
+        this.background_image = background_image;
+    }
+
+    public int getCategory_image() {
+        return category_image;
+    }
+
+    public void setCategory_image(int category_image) {
+        this.category_image = category_image;
     }
 
     public String getTitle() {
