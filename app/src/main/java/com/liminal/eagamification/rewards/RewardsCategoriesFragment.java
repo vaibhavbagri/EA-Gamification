@@ -31,11 +31,11 @@ public class RewardsCategoriesFragment extends Fragment{
         viewPager = root.findViewById(R.id.categories_view_pager);
 
         rewardCategoryList = new ArrayList<>();
-        rewardCategoryList.add(new RewardCategory(R.drawable.holidays_rewards_bg, R.drawable.holidays, "Travel", "Exciting offers to make your next vacation cheaper"));
-        rewardCategoryList.add(new RewardCategory(R.drawable.food_rewards_bg, R.drawable.food, "Food", "Delicacies that you certainly don't want to miss out on!"));
-        rewardCategoryList.add(new RewardCategory(R.drawable.health_rewards_bg, R.drawable.health, "Fitness", "For all the fitness freaks out there!"));
+        rewardCategoryList.add(new RewardCategory(R.drawable.holidays_rewards_bg, R.drawable.holidays, "holidays", "Exciting offers to make your next vacation cheaper"));
         rewardCategoryList.add(new RewardCategory(R.drawable.style_rewards_bg, R.drawable.style, "style", "Discounts that will never go out of style!"));
-        rewardCategoryList.add(new RewardCategory(R.drawable.sustainable_rewards_bg, R.drawable.sustainable, "sustainable", "Sustainable goods to fulfil your needs, and help Mother Earth as well!"));
+//        rewardCategoryList.add(new RewardCategory(R.drawable.sustainable_rewards_bg, R.drawable.sustainable, "sustainable", "Sustainable goods to fulfil your needs, and help Mother Earth as well!"));
+        rewardCategoryList.add(new RewardCategory(R.drawable.food_rewards_bg, R.drawable.food, "food", "Delicacies that you certainly don't want to miss out on!"));
+        rewardCategoryList.add(new RewardCategory(R.drawable.health_rewards_bg, R.drawable.health, "health", "For all the fitness freaks out there!"));
         rewardCategoryList.add(new RewardCategory(R.drawable.freebies_reward_bg, R.drawable.freebies, "freebies", "Who doesn't love free gifts?!"));
 
         rewardsCategoryAdapter = new RewardsCategoryAdapter(rewardCategoryList, inflater, getContext(), viewPager,
@@ -60,9 +60,13 @@ public class RewardsCategoriesFragment extends Fragment{
                             positionOffset * RATIO_SCALE_ALPHA + (1 - RATIO_SCALE_ALPHA));
                 }
 
-                //Get the view two positions ahead to prevent snappy behaviour of card blurring
+                //Get the view two positions ahead and behind to prevent snappy behaviour of card blurring
                 if (viewPager.getCurrentItem() + 2 < viewPager.getAdapter().getCount()) {
                     view = ((RewardsCategoryAdapter) viewPager.getAdapter()).getRewardView(viewPager.getCurrentItem() + 2);
+                    scaleView(view, 1 - RATIO_SCALE_SIZE, 1 - RATIO_SCALE_ALPHA);
+                }
+                if (viewPager.getCurrentItem() - 2 >= 0) {
+                    view = ((RewardsCategoryAdapter) viewPager.getAdapter()).getRewardView(viewPager.getCurrentItem() - 2);
                     scaleView(view, 1 - RATIO_SCALE_SIZE, 1 - RATIO_SCALE_ALPHA);
                 }
             }

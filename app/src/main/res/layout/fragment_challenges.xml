@@ -1,119 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/bottom_navigation_background"
     android:alpha="0.9"
+    android:background="@drawable/bottom_navigation_background"
     android:backgroundTint="@color/cardview_dark_background">
 
     <TextView
         android:id="@+id/weeklyChallengesTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:fontFamily="@font/gravity_regular"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/gravity_book"
         android:text="Weekly Challenges"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp"
-        android:textAlignment="center"
         android:textColor="@color/colorAccent"
-        android:textSize="25sp" />
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/weeklyChallengesTimer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/weeklyChallengesTextView"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="16dp"
-        android:fontFamily="@font/gravity_regular"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/gravity_book"
         android:text="Time Remaining"
-        android:textAlignment="center"
         android:textColor="@color/colorAccent"
-        android:textSize="20sp" />
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weeklyChallengesTextView"/>
 
     <Button
         android:id="@+id/quitMissionsPopupButton"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginTop="7dp"
         android:background="@drawable/exit_button_2"
-        app:layout_constraintEnd_toStartOf="@+id/weeklyChallengesTextView"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/weeklyChallengesTextView"
+        app:layout_constraintStart_toStartOf="@id/imageView8"
+        app:layout_constraintTop_toTopOf="@+id/weeklyChallengesTextView" />
 
     <ImageView
+        android:id="@+id/imageView8"
         android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:layout_alignTop="@+id/weeklyChallengesRecyclerView"
+        android:layout_height="4dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
         android:layerType="software"
-        android:src="@drawable/dashed_line" />
+        android:src="@drawable/dashed_line"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weeklyChallengesTimer" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/weeklyChallengesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/weeklyChallengesTimer"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"/>
-
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintEnd_toEndOf="@+id/imageView8"
+        app:layout_constraintStart_toStartOf="@+id/imageView8"
+        app:layout_constraintTop_toBottomOf="@+id/imageView8" />
 
     <TextView
         android:id="@+id/dailyChallengesTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/weeklyChallengesRecyclerView"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:fontFamily="@font/gravity_regular"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/gravity_book"
         android:text="Daily Challenges"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp"
-        android:textAlignment="center"
         android:textColor="@color/colorAccent"
-        android:textSize="25sp" />
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weeklyChallengesRecyclerView" />
 
     <TextView
         android:id="@+id/dailyChallengesTimer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/dailyChallengesTextView"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="16dp"
-        android:fontFamily="@font/gravity_regular"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/gravity_book"
         android:text="Time Remaining"
-        android:textAlignment="center"
         android:textColor="@color/colorAccent"
-        android:textSize="20sp" />
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dailyChallengesTextView"/>
 
     <ImageView
+        android:id="@+id/imageView9"
         android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:layout_alignTop="@+id/dailyChallengesRecyclerView"
+        android:layout_height="4dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
         android:layerType="software"
-        android:src="@drawable/dashed_line" />
+        android:src="@drawable/dashed_line"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dailyChallengesTimer" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/dailyChallengesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/dailyChallengesTimer"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"/>
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintEnd_toEndOf="@+id/imageView9"
+        app:layout_constraintStart_toStartOf="@+id/imageView9"
+        app:layout_constraintTop_toBottomOf="@+id/imageView9" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

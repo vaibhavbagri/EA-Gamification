@@ -15,6 +15,7 @@
         android:adjustViewBounds="true"
         app:srcCompat="@drawable/holidays"
         app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="20sp"
         android:elevation="20dp"/>
 
 

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -14,6 +15,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -122,13 +124,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
             switch (item.getItemId()) {
                 case R.id.live_updates:
                     item.setCheckable(true);
-                    item.setIcon(R.drawable.camp_icon);
+                    item.setIcon(R.drawable.live_updates_selected_logo);
                     bottomNavigationView.getMenu().getItem(1).setIcon(R.drawable.challenges_logo);
                     getChildFragmentManager().beginTransaction().replace(R.id.popupFrameLayout, new LiveUpdatesFragment()).commit();
                     return true;
                 case R.id.challenges:
                     getChildFragmentManager().beginTransaction().replace(R.id.popupFrameLayout, new ChallengesFragment()).commit();
-                    item.setIcon(R.drawable.live_updates_logo);
+                    item.setIcon(R.drawable.challenges_selected_logo);
                     bottomNavigationView.getMenu().getItem(0).setIcon(R.drawable.live_updates_logo);
                     return true;
                 case R.id.ar_camp:
@@ -448,7 +450,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Locati
             try
             {
                 mMap.setMyLocationEnabled(true);
-                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                mMap.getUiSettings().setMyLocationButtonEnabled(false);
             }
             catch (SecurityException e)
             {

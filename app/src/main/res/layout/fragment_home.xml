@@ -14,70 +14,6 @@
         android:layout_height="match_parent"
         tools:ignore="FragmentTagUsage" />
 
-<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--        android:id="@+id/claimRewardsButton"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentEnd="true"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_gravity="bottom|end"-->
-<!--        android:layout_marginTop="@dimen/fab_margin"-->
-<!--        android:layout_marginEnd="16dp"-->
-<!--        android:layout_marginBottom="16dp"-->
-<!--        app:borderWidth="0dp"-->
-<!--        app:fabSize="auto"-->
-<!--        app:srcCompat="@drawable/rewards_logo"-->
-<!--        android:visibility="gone"/>-->
-
-<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--        android:id="@+id/missionsButton"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentStart="true"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_gravity="bottom|end"-->
-<!--        android:layout_marginStart="16dp"-->
-<!--        android:layout_marginTop="@dimen/fab_margin"-->
-<!--        android:layout_marginBottom="16dp"-->
-<!--        android:backgroundTint="@color/colorPrimary"-->
-<!--        android:backgroundTintMode="add"-->
-<!--        app:borderWidth="0dp"-->
-<!--        app:fabSize="auto"-->
-<!--        app:srcCompat="@drawable/mission"-->
-<!--        android:visibility="gone"/>-->
-
-<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--        android:id="@+id/socialButton"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_gravity="bottom|end"-->
-<!--        android:layout_marginStart="16dp"-->
-<!--        android:layout_marginTop="@dimen/fab_margin"-->
-<!--        android:layout_marginBottom="16dp"-->
-<!--        android:layout_toEndOf="@+id/missionsButton"-->
-<!--        android:backgroundTint="@color/colorPrimary"-->
-<!--        app:borderWidth="0dp"-->
-<!--        app:fabSize="auto"-->
-<!--        app:srcCompat="@drawable/social"-->
-<!--        android:visibility="gone"/>-->
-
-<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--        android:id="@+id/campButton"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_gravity="bottom|end"-->
-<!--        android:layout_marginStart="16dp"-->
-<!--        android:layout_marginTop="@dimen/fab_margin"-->
-<!--        android:layout_marginBottom="16dp"-->
-<!--        android:layout_toEndOf="@+id/socialButton"-->
-<!--        android:backgroundTint="@color/colorPrimary"-->
-<!--        app:borderWidth="0dp"-->
-<!--        app:fabSize="auto"-->
-<!--        app:srcCompat="@drawable/camp"-->
-<!--        android:visibility="gone"/>-->
-
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
@@ -87,7 +23,7 @@
         android:background="@drawable/bottom_navigation_background"
         android:elevation="8dp"
         app:labelVisibilityMode="unlabeled"
-        app:menu="@menu/bottom_navigation_menu" />
+        app:menu="@menu/bottom_navigation_menu"/>
 
     <FrameLayout
         android:layout_width="match_parent"

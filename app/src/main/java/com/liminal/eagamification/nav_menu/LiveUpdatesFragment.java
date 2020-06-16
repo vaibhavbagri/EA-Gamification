@@ -49,11 +49,15 @@ public class LiveUpdatesFragment extends Fragment {
         liveUpdatesRecyclerView.addItemDecoration(dividerItemDecoration);
 
         Button button = root.findViewById(R.id.quitLiveUpdatesPopupButton);
-        button.setOnClickListener(v -> getParentFragmentManager()
-                .beginTransaction()
-                .remove(Objects.requireNonNull(getParentFragmentManager().findFragmentById(R.id.popupFrameLayout)))
-                .commit());
+        button.setOnClickListener(v -> dismissFragment());
         return root;
+    }
+
+    private void dismissFragment() {
+        HomeFragment homeFragment = (HomeFragment) getParentFragment();
+        assert homeFragment != null;
+        homeFragment.bottomNavigationView.getMenu().getItem(0).setIcon(R.drawable.live_updates_logo);
+        getParentFragmentManager().beginTransaction().remove(getParentFragmentManager().findFragmentById(R.id.popupFrameLayout)).commit();
     }
 
     @Override
