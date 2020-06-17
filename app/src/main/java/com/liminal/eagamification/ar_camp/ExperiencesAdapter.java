@@ -10,6 +10,7 @@ import com.liminal.eagamification.R;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ExperiencesAdapter extends RecyclerView.Adapter<ExperiencesAdapter.MyViewHolder> {
@@ -28,9 +29,19 @@ public class ExperiencesAdapter extends RecyclerView.Adapter<ExperiencesAdapter.
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         ARExperiences arExperiences = arExperiencesList.get(position);
-        holder.title.setText(arExperiences.title);
-        holder.description.setText(arExperiences.description);
-        holder.rewards.setText(arExperiences.rewards);
+        //Even position yellow, odd position blue
+        if(position % 2 == 0){
+            holder.yellow_title.setText(arExperiences.title);
+            holder.yellow_description.setText(arExperiences.description);
+            holder.yellow_card.setVisibility(View.VISIBLE);
+            holder.blue_card.setVisibility(View.GONE);
+        }
+        else {
+            holder.blue_title.setText(arExperiences.title);
+            holder.blue_description.setText(arExperiences.description);
+            holder.blue_card.setVisibility(View.VISIBLE);
+            holder.yellow_card.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -40,13 +51,18 @@ public class ExperiencesAdapter extends RecyclerView.Adapter<ExperiencesAdapter.
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView title, description, rewards;
+        TextView yellow_title, yellow_description;
+        TextView blue_title, blue_description;
+        CardView yellow_card, blue_card;
 
         MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            title = itemView.findViewById(R.id.title);
-            description = itemView.findViewById(R.id.description);
-            rewards = itemView.findViewById(R.id.rewards);
+            yellow_title = itemView.findViewById(R.id.yellow_title);
+            yellow_description = itemView.findViewById(R.id.yellow_description);
+            blue_title = itemView.findViewById(R.id.blue_title);
+            blue_description = itemView.findViewById(R.id.blue_description);
+            yellow_card = itemView.findViewById(R.id.yellow_card);
+            blue_card = itemView.findViewById(R.id.blue_card);
         }
     }
 

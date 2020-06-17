@@ -47,8 +47,6 @@ public class MainActivity extends AppCompatActivity {
         // Get user details stored in shared preferences
         SharedPreferences sharedPreferences = getSharedPreferences("User_Details", Context.MODE_PRIVATE);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
 //        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 //        NavigationUI.setupWithNavController(navigationView, navController);

@@ -5,11 +5,13 @@ public class ARExperiences {
     public String title;
     public String description;
     public String rewards;
+    public String assetBundleLink;
 
-    ARExperiences(String arxid, String title, String description, String rewards){
+    ARExperiences(String arxid, String title, String description, String rewards, String assetBundleLink){
         this.arxid = arxid;
         this.title = title;
         this.description = description;
         this.rewards = rewards;
+        this.assetBundleLink = assetBundleLink;
     }
 }
