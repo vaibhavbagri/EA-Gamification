@@ -1,88 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_rowWeight="1"
-    android:layout_columnWeight="1"
     android:layout_marginStart="16dp"
     android:layout_marginTop="16dp"
     android:layout_marginEnd="8dp"
     android:layout_marginBottom="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="10dp"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    app:cardBackgroundColor="#00FFFFFF"
+    app:cardCornerRadius="0dp"
+    app:cardElevation="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/zxing_result_view"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:fontFamily="@font/bangers"
-            android:text="Haikumon "
-            android:textAlignment="center"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="100dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/view_details_icon"
+            android:fontFamily="@font/gravity_light"
+            android:text="View Details"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/rewardIconImageView"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/rewardIconImageView" />
+
+        <ImageView
+            android:id="@+id/rewardIconImageView"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/divider"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/reward_icon_logo" />
 
         <TextView
             android:id="@+id/description"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:fontFamily="@font/roboto_slab_light"
-            android:text="Haiku is a game about poems! Play against the best players in the world."
-            android:textAlignment="center"
-            android:textColor="#FFFFFF"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title" />
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="@font/gravity_light"
+            android:text="Reward Details"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@+id/divider"
+            app:layout_constraintEnd_toStartOf="@+id/button2"
+            app:layout_constraintStart_toEndOf="@+id/rewardIconImageView"
+            app:layout_constraintTop_toTopOf="@+id/rewardIconImageView"
+            app:layout_constraintVertical_bias="0.0" />
 
-        <TextView
-            android:id="@+id/cost"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:fontFamily="@font/roboto_slab_light"
-            android:text="Haiku is a game about poems! Play against the best players in the world."
-            android:textAlignment="center"
-            android:textColor="#FFFFFF"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/description" />
-
-        <TextView
-            android:id="@+id/quantity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:fontFamily="@font/roboto_slab_light"
-            android:paddingBottom="8dp"
-            android:text="Haiku is a game about poems! Play against the best players in the world."
-            android:textAlignment="center"
-            android:textColor="#FFFFFF"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cost" />
-
+        <View
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@drawable/divider_3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/button2"
+            app:layout_constraintStart_toStartOf="@+id/rewardIconImageView" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

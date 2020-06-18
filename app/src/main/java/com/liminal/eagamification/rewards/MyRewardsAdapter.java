@@ -28,10 +28,10 @@ public class MyRewardsAdapter extends RecyclerView.Adapter<MyRewardsAdapter.MyVi
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         RewardDetails rewardDetails = rewardDetailsList.get(position);
-        holder.title.setText(rewardDetails.title);
+//        holder.title.setText(rewardDetails.title);
         holder.description.setText(rewardDetails.description);
-        holder.cost.setText(String.valueOf(rewardDetails.cost));
-        holder.quantity.setText(String.valueOf(rewardDetails.quantity));
+//        holder.cost.setText(String.valueOf(rewardDetails.cost));
+//        holder.quantity.setText(String.valueOf(rewardDetails.quantity));
     }
 
     @Override
@@ -45,10 +45,10 @@ public class MyRewardsAdapter extends RecyclerView.Adapter<MyRewardsAdapter.MyVi
 
         MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            title = itemView.findViewById(R.id.title);
+//            title = itemView.findViewById(R.id.title);
             description = itemView.findViewById(R.id.description);
-            cost = itemView.findViewById(R.id.cost);
-            quantity = itemView.findViewById(R.id.quantity);
+//            cost = itemView.findViewById(R.id.cost);
+//            quantity = itemView.findViewById(R.id.quantity);
         }
     }
 

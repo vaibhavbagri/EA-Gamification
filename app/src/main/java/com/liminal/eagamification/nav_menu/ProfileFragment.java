@@ -40,6 +40,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
+import id.zelory.compressor.Compressor;
+
 public class ProfileFragment extends Fragment {
 
     private TextView userNameTextView;

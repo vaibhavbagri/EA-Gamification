@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -57,7 +58,7 @@ public class RewardsListFragment extends Fragment {
 
         recyclerView = root.findViewById(R.id.recycler_view);
         claimRewardsAdapter = new ClaimRewardsAdapter(rewardDetailsList);
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(),2);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(claimRewardsAdapter);
 
