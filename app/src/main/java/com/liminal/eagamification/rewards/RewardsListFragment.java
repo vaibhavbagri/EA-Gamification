@@ -55,7 +55,8 @@ public class RewardsListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_rewards_list, container, false);
-
+        int background_id = getResources().getIdentifier(category + "_rewards_bg", "drawable", getActivity().getPackageName());
+        root.setBackgroundResource(background_id);
         recyclerView = root.findViewById(R.id.recycler_view);
         claimRewardsAdapter = new ClaimRewardsAdapter(rewardDetailsList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());

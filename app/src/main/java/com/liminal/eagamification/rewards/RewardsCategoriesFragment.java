@@ -36,7 +36,7 @@ public class RewardsCategoriesFragment extends Fragment{
 //        rewardCategoryList.add(new RewardCategory(R.drawable.sustainable_rewards_bg, R.drawable.sustainable, "sustainable", "Sustainable goods to fulfil your needs, and help Mother Earth as well!"));
         rewardCategoryList.add(new RewardCategory(R.drawable.food_rewards_bg, R.drawable.food, "food", "Delicacies that you certainly don't want to miss out on!"));
         rewardCategoryList.add(new RewardCategory(R.drawable.health_rewards_bg, R.drawable.health, "health", "For all the fitness freaks out there!"));
-        rewardCategoryList.add(new RewardCategory(R.drawable.freebies_reward_bg, R.drawable.freebies, "freebies", "Who doesn't love free gifts?!"));
+        rewardCategoryList.add(new RewardCategory(R.drawable.freebies_rewards_bg, R.drawable.freebies, "freebies", "Who doesn't love free gifts?!"));
 
         rewardsCategoryAdapter = new RewardsCategoryAdapter(rewardCategoryList, inflater, getContext(), viewPager,
                 position -> replaceFragment(rewardCategoryList.get(position).getTitle()));
