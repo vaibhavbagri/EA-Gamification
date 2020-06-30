@@ -1,0 +1,37 @@
+-- Merging decision tree log ---
+manifest
+ADDED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml:9:1-12:48
+INJECTED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml:9:1-12:48
+INJECTED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml:9:1-12:48
+INJECTED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml:9:1-12:48
+INJECTED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml:9:1-12:48
+INJECTED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml:9:1-12:48
+INJECTED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml:9:1-12:48
+	package
+		ADDED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml:10:11-46
+		INJECTED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml
+		INJECTED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml
+	android:versionName
+		ADDED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml:12:11-36
+		INJECTED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml
+		INJECTED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml
+	xmlns:android
+		ADDED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml:9:11-69
+	android:versionCode
+		ADDED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml:11:11-34
+		INJECTED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml
+		INJECTED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml
+uses-sdk
+INJECTED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml
+INJECTED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml
+INJECTED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml
+INJECTED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml
+		ADDED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml
+		INJECTED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml
+		ADDED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml
+		INJECTED from C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml

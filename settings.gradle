@@ -1,2 +1,3 @@
 rootProject.name='EA Gamification'
-include ':app'
+include ':app', ':unityLibrary'
+include 'unityLibrary:Firebase'

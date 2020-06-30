@@ -16,6 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.liminal.eagamification.R;
 import com.liminal.eagamification.RecyclerTouchListener;
+import com.unity3d.player.UnityPlayerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,15 +58,15 @@ public class ExperiencesFragment extends Fragment {
             public void onClick(View view, int position) {
                 ARExperiences arExperiences = arExperiencesList.get(position);
                 Toast.makeText(getContext(),arExperiences.title,Toast.LENGTH_SHORT).show();
-//                String playerPrefs = getActivity().getPackageName() + ".v2.playerprefs";
-//                SharedPreferences sharedPreferencesUnity = getActivity().getSharedPreferences(playerPrefs, MODE_PRIVATE);
-//
-//                SharedPreferences.Editor editor = sharedPreferencesUnity.edit();
-//                editor.putString("user_id", sharedPreferencesUser.getString("id",""));
-//                editor.putString("assetBundleLink", arExperiences.assetBundleLink);
-//                editor.apply();
-//                Intent intent = new Intent(getActivity(), UnityPlayerActivity.class);
-//                startActivity(intent);
+                String playerPrefs = getActivity().getPackageName() + ".v2.playerprefs";
+                SharedPreferences sharedPreferencesUnity = getActivity().getSharedPreferences(playerPrefs, MODE_PRIVATE);
+
+                SharedPreferences.Editor editor = sharedPreferencesUnity.edit();
+                editor.putString("user_id", sharedPreferencesUser.getString("id",""));
+                editor.putString("assetBundleLink", arExperiences.assetBundleLink);
+                editor.apply();
+                Intent intent = new Intent(getActivity(), UnityPlayerActivity.class);
+                startActivity(intent);
             }
 
             @Override

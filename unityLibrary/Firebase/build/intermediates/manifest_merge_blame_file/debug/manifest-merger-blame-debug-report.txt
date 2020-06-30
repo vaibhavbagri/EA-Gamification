@@ -1,0 +1,21 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<!--
+3 Copyright (C) 2016 Google Inc. All Rights Reserved.
+4
+5This file is placed in the Unity Android Plugin to make it support the
+6eclipse style directory structure. It's currently used only as a stub, and has
+7no real data that gets merged with the final manifest, but is none-the-less
+8needed for the plugin to be parsed correctly in the folder structure we use.
+9-->
+10<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+11    package="com.google.firebase.unity"
+12    android:versionCode="1"
+13    android:versionName="1.0" >
+14
+15    <uses-sdk
+16        android:minSdkVersion="14"
+16-->C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml
+17        android:targetSdkVersion="26" />
+17-->C:\Users\vaibh\Downloads\Liminal\Backup\EA-Gamification Firebase and Asset Bundle\EA-Gamification\unityLibrary\Firebase\AndroidManifest.xml
+18
+19</manifest>
