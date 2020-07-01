@@ -1,22 +1,14 @@
 package com.liminal.eagamification.ar_camp;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
-import com.google.android.material.tabs.TabLayout;
 import com.liminal.eagamification.MainActivity;
 import com.liminal.eagamification.R;
-import com.liminal.eagamification.rewards.ClaimRewardsFragment;
-import com.liminal.eagamification.rewards.MyRewardsFragment;
-import com.liminal.eagamification.rewards.RewardsActivity;
-
-import java.util.Objects;
 
 public class CampActivity extends AppCompatActivity {
 
@@ -30,7 +22,7 @@ public class CampActivity extends AppCompatActivity {
         replaceFragment(new ExperiencesFragment());
 
         experiences_button.setOnClickListener(view -> {
-            //To indicate claim rewards button as the current active button
+            //To indicate experiences button as the current active button
             experiences_button.setAlpha(1);
             collection_button.setAlpha(0.5f);
 
@@ -38,7 +30,7 @@ public class CampActivity extends AppCompatActivity {
         });
 
         collection_button.setOnClickListener(view -> {
-            //To indicate my rewards button as the current active button
+            //To indicate collection button as the current active button
             collection_button.setAlpha(1);
             experiences_button.setAlpha(0.5f);
 
@@ -51,6 +43,7 @@ public class CampActivity extends AppCompatActivity {
         });
     }
 
+    //Navigate between Experiences and Collection fragment
     private void replaceFragment(Fragment fragment){
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.camp_fragment_container, fragment)

@@ -1,5 +1,6 @@
 package com.liminal.eagamification.nav_menu;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.liminal.eagamification.R;
 
 public class AboutUsFragment extends Fragment {
 
+    @SuppressLint("SetJavaScriptEnabled")
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_about_us, container, false);
 

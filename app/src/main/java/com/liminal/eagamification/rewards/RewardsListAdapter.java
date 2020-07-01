@@ -12,7 +12,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class ClaimRewardsAdapter extends RecyclerView.Adapter<ClaimRewardsAdapter.MyViewHolder> {
+public class RewardsListAdapter extends RecyclerView.Adapter<RewardsListAdapter.MyViewHolder> {
 
     private List<RewardDetails> rewardDetailsList;
 
@@ -28,10 +28,7 @@ public class ClaimRewardsAdapter extends RecyclerView.Adapter<ClaimRewardsAdapte
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         RewardDetails rewardDetails = rewardDetailsList.get(position);
-//        holder.title.setText(rewardDetails.title);
-        holder.description.setText(rewardDetails.description);
-//        holder.cost.setText(String.valueOf(rewardDetails.cost));
-//        holder.quantity.setText(String.valueOf(rewardDetails.quantity));
+        holder.description.setText(rewardDetails.getDescription());
     }
 
     @Override
@@ -41,18 +38,15 @@ public class ClaimRewardsAdapter extends RecyclerView.Adapter<ClaimRewardsAdapte
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView title, description, cost, quantity;
+        TextView description;
 
         MyViewHolder(@NonNull View itemView) {
             super(itemView);
-//            title = itemView.findViewById(R.id.title);
             description = itemView.findViewById(R.id.description);
-//            cost = itemView.findViewById(R.id.cost);
-//            quantity = itemView.findViewById(R.id.qu1antity);
         }
     }
 
-    ClaimRewardsAdapter(List<RewardDetails> rewardDetailsList){
+    RewardsListAdapter(List<RewardDetails> rewardDetailsList){
         this.rewardDetailsList = rewardDetailsList;
     }
 }

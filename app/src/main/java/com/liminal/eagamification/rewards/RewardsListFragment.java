@@ -6,9 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,7 +35,7 @@ public class RewardsListFragment extends Fragment {
     private List<RewardDetails> rewardDetailsList = new ArrayList<>();
     private List<String> savedRewardIDList = new ArrayList<>();
 
-    private ClaimRewardsAdapter claimRewardsAdapter;
+    private RewardsListAdapter rewardsListAdapter;
     private RecyclerView recyclerView;
 
     private DatabaseReference userDetailsReference;
@@ -55,13 +53,13 @@ public class RewardsListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_rewards_list, container, false);
-        int background_id = getResources().getIdentifier(category + "_rewards_bg", "drawable", getActivity().getPackageName());
+        int background_id = getResources().getIdentifier(category + "_rewards_bg", "drawable", requireActivity().getPackageName());
         root.setBackgroundResource(background_id);
         recyclerView = root.findViewById(R.id.recycler_view);
-        claimRewardsAdapter = new ClaimRewardsAdapter(rewardDetailsList);
+        rewardsListAdapter = new RewardsListAdapter(rewardDetailsList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setAdapter(claimRewardsAdapter);
+        recyclerView.setAdapter(rewardsListAdapter);
 
         Log.d("RewardsList", "On create view");
         return root;
@@ -78,9 +76,9 @@ public class RewardsListFragment extends Fragment {
         rewardDetailsReference = FirebaseDatabase.getInstance().getReference().child("rewardsTable").child(category);
 
         // Read amount of coins user has from firebase
-        ValueEventListener rewardsEventListener = new ValueEventListener() {
+        userDetailsReference.child("rewardDetails").child("coins").addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // Read data from firebase
                 rewardPoints = (long) dataSnapshot.getValue();
             }
@@ -89,15 +87,14 @@ public class RewardsListFragment extends Fragment {
                 // Read failed
                 Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
             }
-        };
-        userDetailsReference.child("rewardDetails").child("coins").addValueEventListener(rewardsEventListener);
+        });
 
         // Add listener to recycler view items to allow user to buy offers
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
                 RewardDetails rewardDetails = rewardDetailsList.get(position);
-                if(savedRewardIDList.contains(rewardDetails.rid))
+                if(savedRewardIDList.contains(rewardDetails.getRid()))
                     Toast.makeText(getContext(), "Reward already purchased.", Toast.LENGTH_SHORT).show();
                 else {
                     // setup dialog box to allow purchase of rewards
@@ -111,15 +108,15 @@ public class RewardsListFragment extends Fragment {
                     TextView description = inputTextDialog.findViewById(R.id.description);
                     TextView cost = inputTextDialog.findViewById(R.id.cost);
 
-                    title.setText(rewardDetails.title);
-                    description.setText(rewardDetails.description);
-                    cost.setText(String.valueOf(rewardDetails.cost));
+                    title.setText(rewardDetails.getTitle());
+                    description.setText(rewardDetails.getDescription());
+                    cost.setText(String.valueOf(rewardDetails.getCost()));
 
                     cancelButton.setOnClickListener(v -> inputTextDialog.dismiss());
 
                     buyButton.setOnClickListener(v -> {
                         // Notify the user that he is indeed poor
-                        if (rewardDetails.cost > rewardPoints)
+                        if (rewardDetails.getCost() > rewardPoints)
                             Toast.makeText(getContext(), "Insufficient coins in wallet.", Toast.LENGTH_SHORT).show();
                         // Purchase the reward
                         else {
@@ -127,7 +124,7 @@ public class RewardsListFragment extends Fragment {
                             userDetailsReference.child("statistics").child("achievements").child("rewardBoughtStatus").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if(dataSnapshot.getValue().equals("incomplete"))
+                                    if(Objects.equals(dataSnapshot.getValue(), "incomplete"))
                                         userDetailsReference.child("statistics").child("achievements").child("rewardBoughtStatus").setValue("completed");
                                 }
                                 @Override
@@ -138,9 +135,9 @@ public class RewardsListFragment extends Fragment {
                             });
 
                             // Process the transaction
-                            userDetailsReference.child("rewardDetails").child("coins").setValue(rewardPoints - rewardDetails.cost);
-                            rewardDetailsReference.child(rewardDetails.rid).child("quantity").setValue(rewardDetails.quantity - 1);
-                            userDetailsReference.child("rewardDetails").child("savedRewards").child(rewardDetails.rid).setValue(rewardDetails);
+                            userDetailsReference.child("rewardDetails").child("coins").setValue(rewardPoints - rewardDetails.getCost());
+                            rewardDetailsReference.child(rewardDetails.getRid()).child("quantity").setValue(rewardDetails.getQuantity() - 1);
+                            userDetailsReference.child("rewardDetails").child("savedRewards").child(rewardDetails.getRid()).setValue(rewardDetails);
 
                             Toast.makeText(getContext(), "Transaction successful.", Toast.LENGTH_SHORT).show();
                         }
@@ -158,9 +155,9 @@ public class RewardsListFragment extends Fragment {
         }));
 
         // Add purchased rewards to user profile
-        ValueEventListener savedRewardsEventListener = new ValueEventListener() {
+        userDetailsReference.child("rewardDetails").child("savedRewards").addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // Read data from firebase
                 savedRewardIDList.clear();
                 for (DataSnapshot reward : dataSnapshot.getChildren()) {
@@ -172,13 +169,12 @@ public class RewardsListFragment extends Fragment {
                 // Read failed
                 Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
             }
-        };
-        userDetailsReference.child("rewardDetails").child("savedRewards").addValueEventListener(savedRewardsEventListener);
+        });
 
         // Retrieve rewards from firebase
-        ValueEventListener rewardDetailsListener = new ValueEventListener() {
+        rewardDetailsReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // Read data from firebase
                 rewardDetailsList.clear();
                 for (DataSnapshot reward : dataSnapshot.getChildren()) {
@@ -190,16 +186,16 @@ public class RewardsListFragment extends Fragment {
                     long quantity = (long) reward.child("quantity").getValue();
                     RewardDetails rewardDetails = new RewardDetails(rid, adminID, title, description, cost, quantity);
                     rewardDetailsList.add(rewardDetails);
+                    assert rid != null;
                     Log.d("EAG_REWARDS", rid);
                 }
-                claimRewardsAdapter.notifyDataSetChanged();
+                rewardsListAdapter.notifyDataSetChanged();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 // Read failed
                 Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
             }
-        };
-        rewardDetailsReference.addValueEventListener(rewardDetailsListener);
+        });
     }
 }

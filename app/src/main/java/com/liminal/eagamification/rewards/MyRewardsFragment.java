@@ -53,6 +53,8 @@ public class MyRewardsFragment extends Fragment {
     public void onStart() {
         super.onStart();
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("User_Details", Context.MODE_PRIVATE);
+
+        //Firebase reference to saved rewards for the user
         userRewardsReference = FirebaseDatabase.getInstance().getReference()
                 .child("userProfileTable")
                 .child(sharedPreferences.getString("id",""))
@@ -64,8 +66,9 @@ public class MyRewardsFragment extends Fragment {
             public void onClick(View view, int position) {
                 RewardDetails rewardDetails = rewardDetailsList.get(position);
                 claimedReward = rewardDetails;
+                //Open QR Scanner when user tries to retrieve reward
                 Intent intent = new Intent(getActivity(), QRScannerActivity.class);
-                intent.putExtra("adminID",rewardDetails.adminID);
+                intent.putExtra("adminID",rewardDetails.getAdminID());
                 startActivityForResult(intent,QRCODE_CAPTURE);
             }
 
@@ -75,9 +78,10 @@ public class MyRewardsFragment extends Fragment {
             }
         }));
 
-        ValueEventListener eventListener = new ValueEventListener() {
+        //Add listener to extract saved rewards
+        userRewardsReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // Read data from firebase
                 rewardDetailsList.clear();
                 for (DataSnapshot reward : dataSnapshot.getChildren()) {
@@ -100,17 +104,14 @@ public class MyRewardsFragment extends Fragment {
                 // Read failed
                 Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
             }
-        };
-
-        userRewardsReference.addValueEventListener(eventListener);
+        });
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        Log.d("REWARDS_FRAGMENT",data.toString()+requestCode+resultCode);
         if(requestCode == QRCODE_CAPTURE){
             if(resultCode == CommonStatusCodes.SUCCESS){
-                userRewardsReference.child(claimedReward.rid).removeValue();
+                userRewardsReference.child(claimedReward.getRid()).removeValue();
                 Toast.makeText(getContext(),"CORRECT QR CODE",Toast.LENGTH_SHORT).show();
             }
             else

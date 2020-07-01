@@ -31,14 +31,14 @@ public class ExperiencesAdapter extends RecyclerView.Adapter<ExperiencesAdapter.
         ARExperiences arExperiences = arExperiencesList.get(position);
         //Even position yellow, odd position blue
         if(position % 2 == 0){
-            holder.yellow_title.setText(arExperiences.title);
-            holder.yellow_description.setText(arExperiences.description);
+            holder.yellow_title.setText(arExperiences.getTitle());
+            holder.yellow_description.setText(arExperiences.getDescription());
             holder.yellow_card.setVisibility(View.VISIBLE);
             holder.blue_card.setVisibility(View.GONE);
         }
         else {
-            holder.blue_title.setText(arExperiences.title);
-            holder.blue_description.setText(arExperiences.description);
+            holder.blue_title.setText(arExperiences.getTitle());
+            holder.blue_description.setText(arExperiences.getDescription());
             holder.blue_card.setVisibility(View.VISIBLE);
             holder.yellow_card.setVisibility(View.GONE);
         }

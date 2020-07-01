@@ -50,6 +50,7 @@ public class RewardsActivity extends AppCompatActivity {
         });
     }
 
+    //Inflate fragment specified
     private void replaceFragment(Fragment fragment){
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.rewards_fragment_container, fragment)

@@ -26,27 +26,24 @@ public class QRScannerActivity extends AppCompatActivity {
     SurfaceView surfaceView;
     private CameraSource cameraSource;
     private static final int REQUEST_CAMERA_PERMISSION = 201;
-    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_q_r_scanner);
         surfaceView = findViewById(R.id.surfaceView);
-        intent = new Intent();
         Log.d("REWARDS_FRAGMENT","On create");
     }
 
     private void initialiseDetectorsAndSources() {
 
-//        Toast.makeText(getApplicationContext(), "Barcode scanner started", Toast.LENGTH_SHORT).show();
         BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(this)
                 .setBarcodeFormats(Barcode.ALL_FORMATS)
                 .build();
 
         cameraSource = new CameraSource.Builder(this, barcodeDetector)
                 .setRequestedPreviewSize(1920, 1080)
-                .setAutoFocusEnabled(true) //you should add this feature
+                .setAutoFocusEnabled(true)
                 .build();
 
         surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
@@ -85,14 +82,12 @@ public class QRScannerActivity extends AppCompatActivity {
                 final SparseArray<Barcode> barcodes = detections.getDetectedItems();
                 if (barcodes.size() != 0) {
                     new Thread(() -> {
-                        if(barcodes.valueAt(0).displayValue.equals(getIntent().getStringExtra("adminID"))){
+                        //If barcode scanned matched admin ID for the particular reward, set result a success
+                        if(barcodes.valueAt(0).displayValue.equals(getIntent().getStringExtra("adminID")))
                             setResult(CommonStatusCodes.SUCCESS, new Intent());
-                            finish();
-                        }
-                        else {
+                        else
                             setResult(CommonStatusCodes.ERROR, new Intent());
-                            finish();
-                        }
+                        finish();
                     }).start();
                 }
             }

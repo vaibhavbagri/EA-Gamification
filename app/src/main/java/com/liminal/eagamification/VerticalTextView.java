@@ -8,6 +8,7 @@ import android.view.Gravity;
 
 import androidx.appcompat.widget.AppCompatTextView;
 
+//Class to convert normal text view into a vertical format. Used in reward categories
 public class VerticalTextView extends AppCompatTextView {
     final boolean topDown;
 

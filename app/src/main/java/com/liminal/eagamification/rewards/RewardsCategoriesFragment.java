@@ -14,6 +14,7 @@ import com.liminal.eagamification.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class RewardsCategoriesFragment extends Fragment{
 
@@ -31,6 +32,7 @@ public class RewardsCategoriesFragment extends Fragment{
         viewPager = root.findViewById(R.id.categories_view_pager);
 
         rewardCategoryList = new ArrayList<>();
+        //Add different reward categories
         rewardCategoryList.add(new RewardCategory(R.drawable.holidays_rewards_bg, R.drawable.holidays, "holidays", "Exciting offers to make your next vacation cheaper"));
         rewardCategoryList.add(new RewardCategory(R.drawable.style_rewards_bg, R.drawable.style, "style", "Discounts that will never go out of style!"));
 //        rewardCategoryList.add(new RewardCategory(R.drawable.sustainable_rewards_bg, R.drawable.sustainable, "sustainable", "Sustainable goods to fulfil your needs, and help Mother Earth as well!"));
@@ -42,6 +44,7 @@ public class RewardsCategoriesFragment extends Fragment{
                 position -> replaceFragment(rewardCategoryList.get(position).getTitle()));
 
         viewPager.setAdapter(rewardsCategoryAdapter);
+        //View pager settings
         viewPager.setClipToPadding(false);
         viewPager.setPageMargin(24);
         viewPager.setPadding(130, 30, 130, 20);
@@ -51,10 +54,12 @@ public class RewardsCategoriesFragment extends Fragment{
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 Log.d("EAG_REWARDS", "Page scrolled");
-                View view = ((RewardsCategoryAdapter) viewPager.getAdapter()).getRewardView(position);
+                View view = ((RewardsCategoryAdapter) Objects.requireNonNull(viewPager.getAdapter())).getRewardView(position);
+                //Alter size and alpha of current page for a smooth transition
                 scaleView(view, 1 - (positionOffset * RATIO_SCALE_SIZE), 1 - (positionOffset * RATIO_SCALE_ALPHA));
                 if (position + 1 < viewPager.getAdapter().getCount()) {
                     view = ((RewardsCategoryAdapter) viewPager.getAdapter()).getRewardView(position + 1);
+                    //Alter size and alpha of next page for a smooth transition
                     scaleView(view,
                             positionOffset * RATIO_SCALE_SIZE + (1 - RATIO_SCALE_SIZE),
                             positionOffset * RATIO_SCALE_ALPHA + (1 - RATIO_SCALE_ALPHA));
@@ -80,7 +85,7 @@ public class RewardsCategoriesFragment extends Fragment{
             public void onPageScrollStateChanged(int state) {
                 Log.d("EAG_REWARDS", "Scroll state changed");
                 if (state == ViewPager.SCROLL_STATE_IDLE) {
-                    View view = ((RewardsCategoryAdapter) viewPager.getAdapter()).getRewardView(viewPager.getCurrentItem());
+                    View view = ((RewardsCategoryAdapter) Objects.requireNonNull(viewPager.getAdapter())).getRewardView(viewPager.getCurrentItem());
                     scaleView(view, 1, 1);
                     //Get the view to the left of the current page if it isn't the first item
                     if (viewPager.getCurrentItem() > 0) {
@@ -107,6 +112,7 @@ public class RewardsCategoriesFragment extends Fragment{
         view.setAlpha(scaleAlpha);
     }
 
+    //Replace the categories fragment with the list for that particular category
     private void replaceFragment(String category) {
         getParentFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container_rewards, new RewardsListFragment(category))

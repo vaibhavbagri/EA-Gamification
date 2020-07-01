@@ -17,16 +17,8 @@ public class RewardCategory {
         return background_image;
     }
 
-    public void setBackground_image(int background_image) {
-        this.background_image = background_image;
-    }
-
     public int getCategory_image() {
         return category_image;
-    }
-
-    public void setCategory_image(int category_image) {
-        this.category_image = category_image;
     }
 
     public String getTitle() {

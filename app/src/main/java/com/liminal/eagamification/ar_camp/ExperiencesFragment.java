@@ -7,11 +7,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.liminal.eagamification.R;
@@ -24,7 +22,6 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,7 +42,7 @@ public class ExperiencesFragment extends Fragment {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(experiencesAdapter);
-        sharedPreferencesUser = getActivity().getSharedPreferences("User_Details", MODE_PRIVATE);
+        sharedPreferencesUser = requireActivity().getSharedPreferences("User_Details", MODE_PRIVATE);
         return root;
     }
 
@@ -57,13 +54,12 @@ public class ExperiencesFragment extends Fragment {
             @Override
             public void onClick(View view, int position) {
                 ARExperiences arExperiences = arExperiencesList.get(position);
-                Toast.makeText(getContext(),arExperiences.title,Toast.LENGTH_SHORT).show();
-                String playerPrefs = getActivity().getPackageName() + ".v2.playerprefs";
-                SharedPreferences sharedPreferencesUnity = getActivity().getSharedPreferences(playerPrefs, MODE_PRIVATE);
-
+                //Player prefs are used to share data to Unity locally
+                String playerPrefs = requireActivity().getPackageName() + ".v2.playerprefs";
+                SharedPreferences sharedPreferencesUnity = requireActivity().getSharedPreferences(playerPrefs, MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferencesUnity.edit();
                 editor.putString("user_id", sharedPreferencesUser.getString("id",""));
-                editor.putString("assetBundleLink", arExperiences.assetBundleLink);
+                editor.putString("assetBundleLink", arExperiences.getAssetBundleLink());
                 editor.apply();
                 Intent intent = new Intent(getActivity(), UnityPlayerActivity.class);
                 startActivity(intent);
@@ -75,19 +71,18 @@ public class ExperiencesFragment extends Fragment {
             }
         }));
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("arExperiencesTable");
-        ValueEventListener eventListener = new ValueEventListener() {
+        //Read and display stored AR Experiences
+        FirebaseDatabase.getInstance().getReference().child("arExperiencesTable").addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // Read data from firebase
                 arExperiencesList.clear();
                 for (DataSnapshot arExperience : dataSnapshot.getChildren()) {
-                    String arxid = arExperience.getKey();
                     String title = Objects.requireNonNull(arExperience.child("title").getValue()).toString();
                     String description = Objects.requireNonNull(arExperience.child("description").getValue()).toString();
                     String rewards = Objects.requireNonNull(arExperience.child("rewards").getValue()).toString();
                     String assetBundleLink = Objects.requireNonNull(arExperience.child("assetBundleLink").getValue()).toString();
-                    ARExperiences arExperiences = new ARExperiences(arxid, title, description, rewards, assetBundleLink);
+                    ARExperiences arExperiences = new ARExperiences(title, description, rewards, assetBundleLink);
                     arExperiencesList.add(arExperiences);
                 }
                 experiencesAdapter.notifyDataSetChanged();
@@ -98,8 +93,6 @@ public class ExperiencesFragment extends Fragment {
                 // Read failed
                 Log.d("EAG_FIREBASE_DB", "Failed to read data from Firebase : ", databaseError.toException());
             }
-        };
-
-        databaseReference.addValueEventListener(eventListener);
+        });
     }
 }

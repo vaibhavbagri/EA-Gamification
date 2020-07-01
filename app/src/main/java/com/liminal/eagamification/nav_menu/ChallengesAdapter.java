@@ -1,5 +1,6 @@
 package com.liminal.eagamification.nav_menu;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
@@ -22,6 +23,7 @@ import com.liminal.eagamification.R;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -46,6 +48,7 @@ public class ChallengesAdapter extends RecyclerView.Adapter<ChallengesAdapter.My
 
 
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Challenge challenge = challengeList.get(position);
@@ -70,7 +73,7 @@ public class ChallengesAdapter extends RecyclerView.Adapter<ChallengesAdapter.My
         ValueEventListener iconLinkListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String iconLink =  dataSnapshot.child(challenge.activityName).child("iconLink").getValue().toString();
+                String iconLink =  Objects.requireNonNull(dataSnapshot.child(challenge.activityName).child("iconLink").getValue()).toString();
                 Log.d("EAG_FIREBASE_DB", "Activity : " + challenge.activityName + "\nIcon link : " + iconLink );
                 // set activity icon
                 Glide.with(context).load(Uri.parse(iconLink)).into(holder.activityIcon);
